@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const App = () => {
   const videoRef = useRef(null);
   const photoRef = useRef(null);
   const stripRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState("");
 
   useEffect(() => {
     getVideo();
@@ -53,10 +54,27 @@ const App = () => {
     strip.insertBefore(link, strip.firstChild);
   };
 
+  const onFileChange = (event) => {
+    // Update the state
+    setSelectedFile(event.target.files[0]);
+    console.log(event.target.files[0]);
+
+    var file = event.target.files[0];
+    var type = file.type;
+    let video = videoRef.current;
+
+    var URL = window.URL || window.webkitURL;
+
+    var fileURL = URL.createObjectURL(file);
+    video.src = fileURL;
+    video.play();
+  };
+
   return (
     <div>
       <button onClick={() => takePhoto()}>Take a photo</button>
       <video onCanPlay={() => paintToCanvas()} ref={videoRef} />
+      <input type="file" onChange={onFileChange} accept="video/*" />
       <canvas ref={photoRef} />
       <div>
         <div ref={stripRef} />
