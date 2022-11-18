@@ -35,7 +35,6 @@ const App = () => {
   };
 
   const [selectedFile, setSelectedFile] = useState("");
-  //const modelPromise = load_model();
 
   useEffect(() => {
     getVideo();
@@ -52,21 +51,6 @@ const App = () => {
       .catch((err) => {
         console.error("error:", err);
       });
-  };
-
-  const paintToCanvasOld = () => {
-    let video = videoRef.current;
-    let photo = photoRef.current;
-    let ctx = photo.getContext("2d");
-
-    const width = 320;
-    const height = 240;
-    photo.width = width;
-    photo.height = height;
-    //ctx.drawImage(video, 0, 0, width, height);
-    setInterval(() => {
-      ctx.drawImage(video, 0, 0, width, height);
-    }, 200);
   };
 
   const paintToCanvas = () => {
@@ -87,25 +71,8 @@ const App = () => {
       .catch((error) => {
         console.error(error);
       });
-
-    //ctx.drawImage(video, 0, 0, width, height);
-    // setInterval(() => {
-    //   ctx.drawImage(video, 0, 0, width, height);
-    // }, 200);
   };
 
-  //////////
-
-  // const modelPromise = load_model();
-
-  // Promise.all([modelPromise])
-  //   .then((values) => {
-  //     this.detectFrame(this.videoRef.current, values[0]);
-  //   })
-  //   .catch((error) => {
-  //     console.error(error);
-  //   });
-  // // };
   const buildDetectedObjects = (
     scores,
     threshold,
@@ -138,7 +105,6 @@ const App = () => {
     return detectionObjects;
   };
 
-  ////////////
   const renderPredictions = (predictions) => {
     let ctx = photo.getContext("2d");
 
@@ -195,10 +161,6 @@ const App = () => {
     });
   };
 
-  const detectFrame2 = (video, model) => {
-    console.log("detectFrame2!!!!!!!");
-  };
-
   const detectFrame = (video, model) => {
     tf.engine().startScope();
 
@@ -229,30 +191,6 @@ const App = () => {
     return video_frame;
   };
 
-  const paintToCanvas_new = () => {
-    let video = videoRef.current;
-    let photo = photoRef.current;
-    let ctx = photo.getContext("2d");
-    const width = 320;
-    const height = 240;
-    photo.width = width;
-    photo.height = height;
-    const tfimg = tf.browser.fromPixels(video).toInt();
-    ctx.drawImage(video, 0, 0, width, height);
-    // tf.engine().startScope();
-    model
-      .executeAsync(tf.browser.fromPixels(video).toInt())
-      .then(console.log("!!!!!"));
-    console.log(hh);
-    //   .then((predictions) => {
-    //     ctx.drawImage(video, 0, 0, width, height);
-    //     // requestAnimationFrame(() => {
-    //     //   this.detectFrame(video, model);
-    //     // });
-    //     tf.engine().endScope();
-    //   });
-  };
-
   const takePhoto = () => {
     let photo = photoRef.current;
     let strip = stripRef.current;
@@ -279,16 +217,6 @@ const App = () => {
     video.src = fileURL;
     video.play();
   };
-  // const modelPromise = load_model();
-
-  // Promise.all([modelPromise])
-  //   .then((values) => {
-  //     this.detectFrame(this.videoRef.current, values[0]);
-  //   })
-  //   .catch((error) => {
-  //     console.error(error);
-  //   });
-  // // };
 
   // const useEffectClosure = (modelPromise) => {
   useEffect(() => {
@@ -299,43 +227,11 @@ const App = () => {
       playVideoFile(file);
       paintToCanvas();
     }
-
-    // var type = file.type;
-    // let video = videoRef.current;
-
-    // var URL = window.URL || window.webkitURL;
-
-    // var fileURL = URL.createObjectURL(file);
-    // video.src = fileURL;
-    // video.play();
-
-    // const modelPromise = load_model();
-
-    // Promise.all([modelPromise])
-    //   .then((values) => {
-    //     detectFrame(videoRef.current, values[0]);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
   }, [selectedFile]);
 
   const onFileChange = (event) => {
     // Update the state
     setSelectedFile(event.target.files[0]);
-    // console.log("!!!!!!!!!!!!!!!!!!!!", selectedFile);
-    // console.log(selectedFile);
-
-    // var file = event.target.files[0];
-    // var type = file.type;
-    // console.log({ selectedFile });
-    // let video = videoRef.current;
-
-    // var URL = window.URL || window.webkitURL;
-
-    // var fileURL = URL.createObjectURL(file);
-    // video.src = fileURL;
-    // video.play();
   };
 
   const onClick2o = () => {
@@ -350,16 +246,10 @@ const App = () => {
   const onClick2 = () => {
     // Update the state
     if (selectedFile) {
-      //console.log(selectedFile);
       playVideoFile(selectedFile);
       paintToCanvas();
-
-      // playVideoFile(selectedFile);
     }
-    // video.play();
   };
-
-  //
 
   return (
     <div>
