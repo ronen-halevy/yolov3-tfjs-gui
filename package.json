@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "@tensorflow/tfjs": "^4.0.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
   },
