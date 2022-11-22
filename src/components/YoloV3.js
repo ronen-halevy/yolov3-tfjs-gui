@@ -5,16 +5,8 @@ import { loadGraphModel } from "@tensorflow/tfjs-converter";
 tf.setBackend("webgl");
 
 import LoadModel from "./LoadModel.js";
-
-// async function LoadModel() {
-//   // It's possible to load the model locally or from a repo
-//   // You can choose whatever IP and PORT you want in the "http://127.0.0.1:8080/model.json" just set it before in your https server
-//   //const model = await loadGraphModel("http://127.0.0.1:8080/model.json");
-//   const model = await loadGraphModel(
-//     "https://raw.githubusercontent.com/hugozanini/TFJS-object-detection/master/models/kangaroo-detector/model.json"
-//   );
-//   return model;
-// }
+import yolo_decode from "./yolo_decode.js";
+import yolo_nms from "./yolo_nms.js";
 
 export const YoloV3 = () => {
   const videoRef = useRef(null);
@@ -54,23 +46,37 @@ export const YoloV3 = () => {
         console.error("error:", err);
       });
   };
-  // var count = 0;
+
   const df = (video, model) => {
     tf.engine().startScope();
 
     model.then(
-      function tt(res) {
+      async function tt(res) {
         tf.engine().startScope();
 
         let imgTensor = tf.browser.fromPixels(video);
         var resized = tf.image.resizeBilinear(imgTensor, [416, 416]);
 
         resized = resized.expandDims(0);
-        // count = count + 1;
-        // if (count % 20 == 0) {
-        //   console.log(count);
-        // }
-        const prediction = res.predict(resized);
+
+        const model_output_grids = await res.predict(resized);
+
+        const nclasses = 7; // TODO!!
+        let [bboxes, confidences, classProbs] = await yolo_decode(
+          model_output_grids,
+          nclasses
+        );
+        let yolo_max_boxes = 100; // TODO!! config
+        let nms_iou_threshold = 0.5;
+        let nms_score_threshold = 0.5;
+        let [selBboxes, scores, classIndices] = await yolo_nms(
+          bboxes,
+          confidences,
+          classProbs,
+          yolo_max_boxes,
+          nms_iou_threshold,
+          nms_score_threshold
+        );
 
         let photo = photoRef.current;
         const width = 320;
@@ -81,8 +87,6 @@ export const YoloV3 = () => {
         let ctx = photo.getContext("2d");
 
         ctx.drawImage(video, 0, 0, width, height);
-
-        // console.log(prediction);
 
         requestAnimationFrame(() => {
           df(video, model);
@@ -99,43 +103,12 @@ export const YoloV3 = () => {
     let video = videoRef.current;
     let photo = photoRef.current;
     let ctx = photo.getContext("2d");
-
     const width = 320;
     const height = 240;
     photo.width = width;
     photo.height = height;
-
     const modelPromise = LoadModel();
     df(video, modelPromise);
-
-    // tf.engine().startScope();
-
-    // modelPromise.then(
-    //   function tt(res) {
-    //     tf.engine().startScope();
-
-    //     let imgTensor = tf.browser.fromPixels(video);
-    //     var resized = tf.image.resizeBilinear(imgTensor, [416, 416]);
-
-    //     resized = resized.expandDims(0);
-
-    //     const prediction = res.predict(resized);
-    //     console.log(prediction);
-    //     tf.engine().endScope();
-    //   },
-    //   function (err) {
-    //     console.log(err);
-    //   }
-    // );
-
-    //const modelPromise = load_model();
-    // Promise.all([modelPromise])
-    //   .then((values) => {
-    //     detectFrame(video, values[0]);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
   };
 
   const detectFrame = (video, model) => {
@@ -150,20 +123,6 @@ export const YoloV3 = () => {
     let ctx = photo.getContext("2d");
 
     ctx.drawImage(video, 0, 0, width, height);
-
-    // //
-    // model.executeAsync.then(
-    //   function (res) {
-    //     const example = imagePreprocess(video); //tf.browser.fromPixels(canvas);
-
-    //     const prediction = res.predict(example);
-    //     console.log(prediction);
-    //   },
-    //   function (err) {
-    //     console.log(err);
-    //   }
-    // );
-    // //
 
     model.executeAsync(imagePreprocess(video)).then((predictions) => {
       renderPredictions(predictions, video);
@@ -183,7 +142,6 @@ export const YoloV3 = () => {
     return tensor;
   };
   const process_input = (video_frame) => {
-    //const tfimg = tf.tensor2d(video_frame);
     const tfimg = tf.browser.fromPixels(video_frame).toInt();
     const expandedimg = tfimg.transpose([0, 1, 2]).expandDims();
     return expandedimg;
@@ -217,9 +175,7 @@ export const YoloV3 = () => {
     video.play();
   };
 
-  // const useEffectClosure = (modelPromise) => {
   useEffect(() => {
-    // action on update of movies
     console.log(selectedFile);
     var file = selectedFile;
     if (file) {
