@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 
 import { loadGraphModel } from "@tensorflow/tfjs-converter";
-import LoadModel from "./LoadModel.js";
-
 tf.setBackend("webgl");
 
-// async function load_model() {
+import LoadModel from "./LoadModel.js";
+
+// async function LoadModel() {
 //   // It's possible to load the model locally or from a repo
 //   // You can choose whatever IP and PORT you want in the "http://127.0.0.1:8080/model.json" just set it before in your https server
 //   //const model = await loadGraphModel("http://127.0.0.1:8080/model.json");
@@ -16,7 +16,7 @@ tf.setBackend("webgl");
 //   return model;
 // }
 
-export const Detection = () => {
+export const YoloV3 = () => {
   const videoRef = useRef(null);
   const photoRef = useRef(null);
   const stripRef = useRef(null);
@@ -65,6 +65,7 @@ export const Detection = () => {
     photo.width = width;
     photo.height = height;
 
+    //const modelPromise = load_model();
     const modelPromise = LoadModel();
     Promise.all([modelPromise])
       .then((values) => {
@@ -176,7 +177,21 @@ export const Detection = () => {
 
     ctx.drawImage(video, 0, 0, width, height);
 
-    model.executeAsync(process_input(video)).then((predictions) => {
+    // //
+    // model.executeAsync.then(
+    //   function (res) {
+    //     const example = imagePreprocess(video); //tf.browser.fromPixels(canvas);
+
+    //     const prediction = res.predict(example);
+    //     console.log(prediction);
+    //   },
+    //   function (err) {
+    //     console.log(err);
+    //   }
+    // );
+    // //
+
+    model.executeAsync(imagePreprocess(video)).then((predictions) => {
       renderPredictions(predictions, video);
       requestAnimationFrame(() => {
         detectFrame(video, model);
@@ -185,6 +200,14 @@ export const Detection = () => {
     });
   };
 
+  const imagePreprocess = (video_frame) => {
+    const imgTensor = tf.browser.fromPixels(video_frame);
+
+    var resized = tf.image.resizeBilinear(imgTensor, [416, 416]);
+    var tensor = resized.expandDims(0);
+    tensor = tensor.div(255).toInt();
+    return tensor;
+  };
   const process_input = (video_frame) => {
     //const tfimg = tf.tensor2d(video_frame);
     const tfimg = tf.browser.fromPixels(video_frame).toInt();
@@ -257,7 +280,6 @@ export const Detection = () => {
     <div>
       <button onClick={() => takePhoto()}>Take a photo</button>
       <button onClick={onClick2}>Replay</button>
-      // <video ref={videoRef} />
       <input type="file" onChange={onFileChange} accept="video/*" />
       // // <canvas ref={photoRef} />
       <video
@@ -279,4 +301,4 @@ export const Detection = () => {
   );
 };
 
-export default Detection;
+export default YoloV3;
