@@ -54,7 +54,47 @@ export const YoloV3 = () => {
         console.error("error:", err);
       });
   };
+  // var count = 0;
+  const df = (video, model) => {
+    tf.engine().startScope();
 
+    model.then(
+      function tt(res) {
+        tf.engine().startScope();
+
+        let imgTensor = tf.browser.fromPixels(video);
+        var resized = tf.image.resizeBilinear(imgTensor, [416, 416]);
+
+        resized = resized.expandDims(0);
+        // count = count + 1;
+        // if (count % 20 == 0) {
+        //   console.log(count);
+        // }
+        const prediction = res.predict(resized);
+
+        let photo = photoRef.current;
+        const width = 320;
+        const height = 240;
+        photo.width = width;
+        photo.height = height;
+
+        let ctx = photo.getContext("2d");
+
+        ctx.drawImage(video, 0, 0, width, height);
+
+        // console.log(prediction);
+
+        requestAnimationFrame(() => {
+          df(video, model);
+        });
+
+        tf.engine().endScope();
+      },
+      function (err) {
+        console.log(err);
+      }
+    );
+  };
   const paintToCanvas = () => {
     let video = videoRef.current;
     let photo = photoRef.current;
@@ -65,103 +105,37 @@ export const YoloV3 = () => {
     photo.width = width;
     photo.height = height;
 
-    //const modelPromise = load_model();
     const modelPromise = LoadModel();
-    Promise.all([modelPromise])
-      .then((values) => {
-        detectFrame(video, values[0]);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+    df(video, modelPromise);
 
-  const buildDetectedObjects = (
-    scores,
-    threshold,
-    boxes,
-    classes,
-    classesDir
-  ) => {
-    const detectionObjects = [];
-    var video_frame = document.getElementById("frame");
+    // tf.engine().startScope();
 
-    scores[0].forEach((score, i) => {
-      if (score > threshold) {
-        const bbox = [];
-        const minY = boxes[0][i][0] * video_frame.offsetHeight;
-        const minX = boxes[0][i][1] * video_frame.offsetWidth;
-        const maxY = boxes[0][i][2] * video_frame.offsetHeight;
-        const maxX = boxes[0][i][3] * video_frame.offsetWidth;
-        bbox[0] = minX;
-        bbox[1] = minY;
-        bbox[2] = maxX - minX;
-        bbox[3] = maxY - minY;
-        detectionObjects.push({
-          class: classes[i],
-          label: "Kangaroo", // ronen todo classesDir[classes[i]].name,
-          score: score.toFixed(4),
-          bbox: bbox,
-        });
-      }
-    });
-    return detectionObjects;
-  };
+    // modelPromise.then(
+    //   function tt(res) {
+    //     tf.engine().startScope();
 
-  const renderPredictions = (predictions) => {
-    let ctx = photo.getContext("2d");
+    //     let imgTensor = tf.browser.fromPixels(video);
+    //     var resized = tf.image.resizeBilinear(imgTensor, [416, 416]);
 
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //     resized = resized.expandDims(0);
 
-    // Font options.
-    const font = "16px sans-serif";
-    ctx.font = font;
-    ctx.textBaseline = "top";
+    //     const prediction = res.predict(resized);
+    //     console.log(prediction);
+    //     tf.engine().endScope();
+    //   },
+    //   function (err) {
+    //     console.log(err);
+    //   }
+    // );
 
-    //Getting predictions
-    const boxes = predictions[4].arraySync();
-    const scores = predictions[5].arraySync();
-    const classes = predictions[6].dataSync();
-    const detections = buildDetectedObjects(
-      scores,
-      threshold,
-      boxes,
-      classes,
-      classesDir
-    );
-
-    detections.forEach((item) => {
-      const x = item["bbox"][0];
-      const y = item["bbox"][1];
-      const width = item["bbox"][2];
-      const height = item["bbox"][3];
-
-      // Draw the bounding box.
-      ctx.strokeStyle = "#00FFFF";
-      ctx.lineWidth = 4;
-      ctx.strokeRect(x, y, width, height);
-
-      // Draw the label background.
-      ctx.fillStyle = "#00FFFF";
-      const textWidth = ctx.measureText(
-        item["label"] + " " + (100 * item["score"]).toFixed(2) + "%"
-      ).width;
-      const textHeight = parseInt(font, 10); // base 10
-      ctx.fillRect(x, y, textWidth + 4, textHeight + 4);
-    });
-
-    detections.forEach((item) => {
-      const x = item["bbox"][0];
-      const y = item["bbox"][1];
-
-      // Draw the text last to ensure it's on top.
-      ctx.fillStyle = "#000000";
-      ctx.fillText(
-        item["label"] + " " + (100 * item["score"]).toFixed(2) + "%",
-        x,
-        y
-      );
-    });
+    //const modelPromise = load_model();
+    // Promise.all([modelPromise])
+    //   .then((values) => {
+    //     detectFrame(video, values[0]);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
   };
 
   const detectFrame = (video, model) => {
