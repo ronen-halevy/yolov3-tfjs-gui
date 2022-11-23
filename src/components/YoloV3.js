@@ -8,6 +8,9 @@ import LoadModel from "./LoadModel.js";
 import yolo_decode from "./yolo_decode.js";
 import yolo_nms from "./yolo_nms.js";
 
+const imageHeight = 416;
+const imageWidth = 416;
+
 export const YoloV3 = () => {
   const videoRef = useRef(null);
   const photoRef = useRef(null);
@@ -51,7 +54,7 @@ export const YoloV3 = () => {
     tf.engine().startScope();
 
     model.then(
-      async function tt(res) {
+      async (res) => {
         tf.engine().startScope();
         let resized = imagePreprocess(imageFrame);
         const model_output_grids = await res.predict(resized);
@@ -63,7 +66,7 @@ export const YoloV3 = () => {
         );
         let yolo_max_boxes = 100; // TODO!! config
         let nms_iou_threshold = 0.5;
-        let nms_score_threshold = 0.1;
+        let nms_score_threshold = 0.3;
         let [selBboxes, scores, classIndices] = await yolo_nms(
           bboxes,
           confidences,
@@ -110,7 +113,7 @@ export const YoloV3 = () => {
 
   const imagePreprocess = (image) => {
     const imgTensor = tf.browser.fromPixels(image);
-    var resized = tf.image.resizeBilinear(imgTensor, [416, 416]);
+    var resized = tf.image.resizeBilinear(imgTensor, [imageHeight, imageWidth]);
     var tensor = resized.expandDims(0).toFloat();
     tensor = tensor.div(255);
     return tensor;
