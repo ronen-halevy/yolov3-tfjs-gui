@@ -7,6 +7,7 @@ tf.setBackend("webgl");
 import LoadModel from "./LoadModel.js";
 import yolo_decode from "./yolo_decode.js";
 import yolo_nms from "./yolo_nms.js";
+import Draw from "./draw.js";
 
 const imageHeight = 416;
 const imageWidth = 416;
@@ -15,6 +16,7 @@ export const YoloV3 = () => {
   const videoRef = useRef(null);
   const photoRef = useRef(null);
   const stripRef = useRef(null);
+  const canvasRef = useRef(null);
 
   let photo = photoRef.current;
 
@@ -55,7 +57,7 @@ export const YoloV3 = () => {
 
     model.then(
       async (res) => {
-        tf.engine().startScope();
+        //  tf.engine().startScope();
         let resized = imagePreprocess(imageFrame);
         const model_output_grids = await res.predict(resized);
 
@@ -75,7 +77,7 @@ export const YoloV3 = () => {
           nms_iou_threshold,
           nms_score_threshold
         );
-        console.log("scores", scores);
+        // console.log("scores", scores);
         //scores.print();
 
         let photo = photoRef.current;
@@ -84,15 +86,21 @@ export const YoloV3 = () => {
         // photo.width = width;
         // photo.height = height;
 
-        let ctx = photo.getContext("2d");
+        //let ctx = photo.getContext("2d");
 
-        ctx.drawImage(imageFrame, 0, 0, width, height);
+        // ctx.drawImage(imageFrame, 0, 0, width, height);
 
         requestAnimationFrame(() => {
           detectFrame(imageFrame, model);
         });
 
-        tf.engine().endScope();
+        let canvas = canvasRef.current;
+
+        // let context = canvas.getContext("2d");
+        var draw = new Draw(canvas);
+        await draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
+
+        //tf.engine().endScope();
       },
       function (err) {
         console.log(err);
@@ -194,7 +202,7 @@ export const YoloV3 = () => {
         height="500"
         id="frame"
       />
-      <canvas className="size" ref={photoRef} width="600" height="500" />
+      <canvas className="size" ref={canvasRef} width="600" height="500" />
       <div>
         <div ref={stripRef} />
       </div>
