@@ -82,10 +82,10 @@ export const YoloV3 = () => {
         //scores.print();
 
         let photo = photoRef.current;
-        const width = 320;
-        const height = 240;
-        photo.width = width;
-        photo.height = height;
+        const width = imageFrame.videoWidth;
+        const height = imageFrame.videoHeight;
+        // photo.width = width;
+        // photo.height = height;
 
         let ctx = photo.getContext("2d");
 
@@ -104,12 +104,12 @@ export const YoloV3 = () => {
   };
   const paintToCanvas = () => {
     let imageFrame = videoRef.current;
-    let photo = photoRef.current;
-    let ctx = photo.getContext("2d");
-    const width = 320;
-    const height = 240;
-    photo.width = width;
-    photo.height = height;
+    // let photo = photoRef.current;
+    // let ctx = photo.getContext("2d");
+    // const width = 320;
+    // const height = 240;
+    // photo.width = width;
+    // photo.height = height;
     const modelPromise = LoadModel();
     detectFrame(imageFrame, modelPromise);
   };
