@@ -53,13 +53,7 @@ export const YoloV3 = () => {
     model.then(
       async function tt(res) {
         tf.engine().startScope();
-
-        let imgTensor = tf.browser.fromPixels(imageFrame);
-
-        var resized = tf.image.resizeBilinear(imgTensor, [416, 416]);
-        resized = resized.expandDims(0).toFloat();
-        resized = resized.div(255);
-
+        let resized = imagePreprocess(imageFrame);
         const model_output_grids = await res.predict(resized);
 
         const nclasses = 7; // TODO!!
@@ -114,20 +108,12 @@ export const YoloV3 = () => {
     detectFrame(imageFrame, modelPromise);
   };
 
-  const imagePreprocess = (video_frame) => {
-    const imgTensor = tf.browser.fromPixels(video_frame);
-
+  const imagePreprocess = (image) => {
+    const imgTensor = tf.browser.fromPixels(image);
     var resized = tf.image.resizeBilinear(imgTensor, [416, 416]);
     var tensor = resized.expandDims(0).toFloat();
     tensor = tensor.div(255);
-    tensor.print();
     return tensor;
-  };
-  const process_input = (video_frame) => {
-    const tfimg = tf.browser.fromPixels(video_frame).toInt();
-    const expandedimg = tfimg.transpose([0, 1, 2]).expandDims();
-    return expandedimg;
-    return video_frame;
   };
 
   const takePhoto = () => {
