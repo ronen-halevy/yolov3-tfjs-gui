@@ -47,7 +47,7 @@ export const YoloV3 = () => {
       });
   };
 
-  const df = (imageFrame, model) => {
+  const detectFrame = (imageFrame, model) => {
     tf.engine().startScope();
 
     model.then(
@@ -92,7 +92,7 @@ export const YoloV3 = () => {
         ctx.drawImage(imageFrame, 0, 0, width, height);
 
         requestAnimationFrame(() => {
-          df(imageFrame, model);
+          detectFrame(imageFrame, model);
         });
 
         tf.engine().endScope();
@@ -111,7 +111,7 @@ export const YoloV3 = () => {
     photo.width = width;
     photo.height = height;
     const modelPromise = LoadModel();
-    df(imageFrame, modelPromise);
+    detectFrame(imageFrame, modelPromise);
   };
 
   const imagePreprocess = (video_frame) => {
