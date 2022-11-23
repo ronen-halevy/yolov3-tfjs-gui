@@ -47,17 +47,18 @@ export const YoloV3 = () => {
       });
   };
 
-  const df = (video, model) => {
+  const df = (imageFrame, model) => {
     tf.engine().startScope();
 
     model.then(
       async function tt(res) {
         tf.engine().startScope();
 
-        let imgTensor = tf.browser.fromPixels(video);
-        var resized = tf.image.resizeBilinear(imgTensor, [416, 416]);
+        let imgTensor = tf.browser.fromPixels(imageFrame);
 
-        resized = resized.expandDims(0);
+        var resized = tf.image.resizeBilinear(imgTensor, [416, 416]);
+        resized = resized.expandDims(0).toFloat();
+        resized = resized.div(255);
 
         const model_output_grids = await res.predict(resized);
 
@@ -68,7 +69,7 @@ export const YoloV3 = () => {
         );
         let yolo_max_boxes = 100; // TODO!! config
         let nms_iou_threshold = 0.5;
-        let nms_score_threshold = 0.5;
+        let nms_score_threshold = 0.1;
         let [selBboxes, scores, classIndices] = await yolo_nms(
           bboxes,
           confidences,
@@ -77,6 +78,8 @@ export const YoloV3 = () => {
           nms_iou_threshold,
           nms_score_threshold
         );
+        console.log("scores", scores);
+        //scores.print();
 
         let photo = photoRef.current;
         const width = 320;
@@ -86,10 +89,10 @@ export const YoloV3 = () => {
 
         let ctx = photo.getContext("2d");
 
-        ctx.drawImage(video, 0, 0, width, height);
+        ctx.drawImage(imageFrame, 0, 0, width, height);
 
         requestAnimationFrame(() => {
-          df(video, model);
+          df(imageFrame, model);
         });
 
         tf.engine().endScope();
@@ -100,7 +103,7 @@ export const YoloV3 = () => {
     );
   };
   const paintToCanvas = () => {
-    let video = videoRef.current;
+    let imageFrame = videoRef.current;
     let photo = photoRef.current;
     let ctx = photo.getContext("2d");
     const width = 320;
@@ -108,37 +111,16 @@ export const YoloV3 = () => {
     photo.width = width;
     photo.height = height;
     const modelPromise = LoadModel();
-    df(video, modelPromise);
-  };
-
-  const detectFrame = (video, model) => {
-    tf.engine().startScope();
-
-    let photo = photoRef.current;
-    const width = 320;
-    const height = 240;
-    photo.width = width;
-    photo.height = height;
-
-    let ctx = photo.getContext("2d");
-
-    ctx.drawImage(video, 0, 0, width, height);
-
-    model.executeAsync(imagePreprocess(video)).then((predictions) => {
-      renderPredictions(predictions, video);
-      requestAnimationFrame(() => {
-        detectFrame(video, model);
-      });
-      tf.engine().endScope();
-    });
+    df(imageFrame, modelPromise);
   };
 
   const imagePreprocess = (video_frame) => {
     const imgTensor = tf.browser.fromPixels(video_frame);
 
     var resized = tf.image.resizeBilinear(imgTensor, [416, 416]);
-    var tensor = resized.expandDims(0);
-    tensor = tensor.div(255).toInt();
+    var tensor = resized.expandDims(0).toFloat();
+    tensor = tensor.div(255);
+    tensor.print();
     return tensor;
   };
   const process_input = (video_frame) => {
