@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 
-import { loadGraphModel } from "@tensorflow/tfjs-converter";
 tf.setBackend("webgl");
 
 import LoadModel from "./LoadModel.js";
-import yolo_decode from "./yolo_decode.js";
-import yolo_nms from "./yolo_nms.js";
+import yoloDecode from "./yolo_decode.js";
+// import yolo_nms from "./yolo_nms.js";
 import Draw from "./draw.js";
 
 const imageHeight = 416;
@@ -117,7 +116,7 @@ export const YoloV3 = () => {
       .then((model_output_grids) => {
         let nclasses = 7; // TODO!!
 
-        let [bboxes, confidences, classProbs] = yolo_decode(
+        let [bboxes, confidences, classProbs] = yoloDecode(
           model_output_grids,
           nclasses
         );
@@ -155,7 +154,6 @@ export const YoloV3 = () => {
 
       .then((nmsOutput) => {
         let [nmsResults1, bboxes, scores, classIndices] = nmsOutput;
-        //console.log("scores", scores);
         nmsResults1
           .then((nmsResults) => {
             //let [bboxesArray, scoresArray, classIndicesArray]
@@ -172,10 +170,7 @@ export const YoloV3 = () => {
           })
           .then((reasultArrays) => {
             let [selBboxes, scores, classIndices] = reasultArrays;
-            //console.log("scores", scores);
-
             let canvas = canvasRef.current;
-
             var draw = new Draw(canvas);
             draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
             requestAnimationFrame(() => {

@@ -29,7 +29,7 @@ function arrange_bbox(xy, wh) {
   return bbox;
 }
 
-function get_anchors(anchors_file) {
+function getAnchors(anchors_file) {
   const nanchors_per_scale = 3;
   const anchor_entry_size = 2;
   //   // anchors_table = loadtxt(anchors_file, (dtype = np.float), (delimiter = ","));
@@ -48,7 +48,7 @@ function get_anchors(anchors_file) {
   // return anchors_table;
 }
 
-function yolo_decode(grids_outputs, nclasses) {
+function yoloDecode(grids_outputs, nclasses) {
   const anchors = [
     0.16827, 0.16827, 0.16827, 0.16827, 0.16827, 0.16827, 0.16827, 0.16827,
     0.16827, 0.16827, 0.16827, 0.16827,
@@ -61,10 +61,10 @@ function yolo_decode(grids_outputs, nclasses) {
     nanchors_per_scale,
     anchor_entry_size,
   ]);
-  let pred_xy = [];
-  let pred_wh = [];
-  let pred_obj = [];
-  let class_probs = [];
+  // let pred_xy = [];
+  // let pred_wh = [];
+  // let pred_obj = [];
+  // let class_probs = [];
 
   let grids_bboxes = [];
   let grids_confidence = [];
@@ -76,10 +76,10 @@ function yolo_decode(grids_outputs, nclasses) {
       [2, 2, 1, nclasses],
       axis
     );
-    var whh = wh.exp();
-    const indices = tf.tensor1d([0], "int32");
+    // var whh = wh.exp();
+    // const indices = tf.tensor1d([0], "int32");
     let anchors = tf.slice(anchors_table, [idx], 1);
-    var wha = whh.mul(anchors); //.print();
+    // var wha = whh.mul(anchors); //.print();
 
     const bboxes_in_grid = arrange_bbox(tf.sigmoid(xy), wh.exp().mul(anchors));
 
@@ -112,4 +112,4 @@ function yolo_decode(grids_outputs, nclasses) {
 
   return [grids_bboxes, grids_confidence, grids_class_probs];
 }
-export default yolo_decode;
+export default yoloDecode;
