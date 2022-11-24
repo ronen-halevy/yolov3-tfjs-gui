@@ -3,41 +3,45 @@ import * as tf from "@tensorflow/tfjs";
 async function yolo_nms(
   bboxes,
   confidence,
-  class_probs,
+  classProbs,
   yolo_max_boxes,
   nms_iou_threshold,
   nms_score_threshold
 ) {
-  let axis = 0;
-  bboxes = bboxes.squeeze(axis);
-  confidence = confidence.squeeze(axis);
-  let classProbs = class_probs.squeeze(axis);
+  // let axis = 0;
+  // let [selectedBboxes, selectedScores, selectedClasses] = [0, 0, 0];
+  // return [selectedBboxes, selectedScores, selectedClasses];
+  // bboxes = bboxes.squeeze(axis);
+  // confidence = confidence.squeeze(axis);
+  // let classProbs = class_probs.squeeze(axis);
   axis = -1;
   // pre each bbox, select class with max prob:
-  let classIndices = classProbs.argMax(axis);
+  // let classIndices = classProbs.argMax(axis);
   // select class from class probs array
-  classProbs = classProbs.max(axis);
 
+  classProbs = classProbs.max(axis);
   confidence = confidence.squeeze(axis);
   let scores = confidence.mul(classProbs);
 
   // non_max_suppression_padded vs non_max_suppression supports batched input, returns results per batch
-  const pad_to_max_output_size = true;
-  let nmsResults = await tf.image.nonMaxSuppressionAsync(
+  //const pad_to_max_output_size = true;
+  let nmsResults = tf.image.nonMaxSuppressionAsync(
     bboxes,
     scores,
     yolo_max_boxes,
     nms_iou_threshold,
     nms_score_threshold
   );
-  nmsResults.print();
+  //nmsResults.print();
 
-  bboxes.gather(nmsResults).print(); // todo clean
-  classIndices.gather(nmsResults).print();
-  scores.gather(nmsResults).print();
-  let selectedBboxes = bboxes.gather(nmsResults);
-  let selectedClasses = classIndices.gather(nmsResults);
-  let selectedScores = scores.gather(nmsResults);
+  //bboxes.gather(nmsResults).print(); // todo clean
+  //classIndices.gather(nmsResults).print();
+  // scores.gather(nmsResults).print();
+  return nmsResults;
+
+  // let selectedBboxes = bboxes.gather(nmsResults);
+  // let selectedClasses = classIndices.gather(nmsResults);
+  // let selectedScores = scores.gather(nmsResults);
 
   return [selectedBboxes, selectedScores, selectedClasses];
 }

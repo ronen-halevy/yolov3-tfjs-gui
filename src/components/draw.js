@@ -37,7 +37,7 @@ class Draw {
   }
   async drawOnImage(image, bboxes, scores, classIndices) {
     const context = this.canvas.getContext("2d");
-    console.log("drawOnImage");
+    // console.log("drawOnImage");
 
     const imageWidth = image.width;
     const imageHeight = image.height;
@@ -47,16 +47,16 @@ class Draw {
 
     context.drawImage(image, 0, 0, imageWidth, imageHeight);
 
-    const bboxesArray = await bboxes.array();
-    const scoresArray = await scores.array();
-    const classIndicesArray = await classIndices.array();
+    // const bboxesArray = await bboxes.array();
+    // const scoresArray = await scores.array();
+    // const classIndicesArray = await classIndices.array();
 
-    bboxesArray.forEach((box, idx) =>
+    bboxes.forEach((box, idx) =>
       this.drawBbox(
         context,
         box,
-        scoresArray[idx],
-        classIndicesArray[idx],
+        scores[idx],
+        classIndices[idx],
         imageWidth,
         imageHeight
       )

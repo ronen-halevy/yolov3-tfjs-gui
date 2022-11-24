@@ -4,7 +4,7 @@ import * as tf from "@tensorflow/tfjs";
 
 // function fn1(){};
 
-async function arrange_bbox(xy, wh) {
+function arrange_bbox(xy, wh) {
   let grid_size = [xy.shape[1], xy.shape[1]];
 
   let grid = tf.meshgrid(
@@ -48,7 +48,7 @@ function get_anchors(anchors_file) {
   // return anchors_table;
 }
 
-async function yolo_decode(grids_outputs, nclasses) {
+function yolo_decode(grids_outputs, nclasses) {
   const anchors = [
     0.16827, 0.16827, 0.16827, 0.16827, 0.16827, 0.16827, 0.16827, 0.16827,
     0.16827, 0.16827, 0.16827, 0.16827,
@@ -81,10 +81,7 @@ async function yolo_decode(grids_outputs, nclasses) {
     let anchors = tf.slice(anchors_table, [idx], 1);
     var wha = whh.mul(anchors); //.print();
 
-    const bboxes_in_grid = await arrange_bbox(
-      tf.sigmoid(xy),
-      wh.exp().mul(anchors)
-    );
+    const bboxes_in_grid = arrange_bbox(tf.sigmoid(xy), wh.exp().mul(anchors));
 
     grids_bboxes.push(
       tf.reshape(bboxes_in_grid, [

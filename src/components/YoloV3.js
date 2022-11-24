@@ -52,60 +52,138 @@ export const YoloV3 = () => {
       });
   };
 
+  function doPredict8(field) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", () => {
+        resolve(reader.result);
+      });
+
+      reader.readAsDataURL(field);
+    });
+  }
+
+  function doPredict(res, imageFrame) {
+    return new Promise((resolve) => {
+      let resized = imagePreprocess(imageFrame);
+
+      resolve(res.predict(resized));
+    });
+  }
+
+  function doDecode(model_output_grids) {
+    return new Promise((resolve) => {
+      let nclasses = 7; // TODO!!
+      resolve(yolo_decode(model_output_grids, nclasses));
+    });
+  }
+
+  function drawDetections(imageFrame, selBboxes, scores, classIndices) {
+    return new Promise((resolve) => {
+      // tf.tidy(() => {
+      let canvas = canvasRef.current;
+
+      var draw = new Draw(canvas);
+      resolve(draw.drawOnImage(imageFrame, selBboxes, scores, classIndices));
+    });
+  }
+
+  function outArrays(nmsResults, bboxes, scores, classIndices) {
+    return new Promise((resolve) => {
+      // let [] = nmsResults;
+      let selectedBboxes = bboxes.gather(nmsResults);
+      let selectedClasses = classIndices.gather(nmsResults);
+      let selectedScores = scores.gather(nmsResults);
+      const bboxesArray = selectedBboxes.array();
+      const scoresArray = selectedScores.array();
+      const classIndicesArray = selectedClasses.array();
+      resolve([bboxesArray, scoresArray, classIndicesArray]);
+    });
+  }
+
   const detectFrame = (imageFrame, model) => {
     tf.engine().startScope();
 
-    model.then(
-      async (res) => {
-        //  tf.engine().startScope();
-        let resized = imagePreprocess(imageFrame);
-        const model_output_grids = await res.predict(resized);
+    //  model.executeAsync
+    //     (res).then(() => {
 
-        const nclasses = 7; // TODO!!
-        let [bboxes, confidences, classProbs] = await yolo_decode(
+    model
+      .then(async (res) => {
+        tf.engine().startScope();
+        const model_output_grids = doPredict(res, imageFrame);
+        return model_output_grids;
+      })
+      .then((model_output_grids) => {
+        let nclasses = 7; // TODO!!
+
+        let [bboxes, confidences, classProbs] = yolo_decode(
           model_output_grids,
           nclasses
         );
-        let yolo_max_boxes = 100; // TODO!! config
-        let nms_iou_threshold = 0.5;
-        let nms_score_threshold = 0.3;
-        let [selBboxes, scores, classIndices] = await yolo_nms(
+        return [bboxes, confidences, classProbs];
+      })
+
+      .then((decodeOutput) => {
+        let yoloMaxBoxes = 100; // TODO!! config
+        let nmsIouThreshold = 0.1;
+        let nmsScoreThreshold = 0.3;
+        let [bboxes, confidences, classProbs] = decodeOutput;
+        let axis = 0;
+        bboxes = bboxes.squeeze(axis);
+        classProbs = classProbs.squeeze(axis);
+        confidences = confidences.squeeze(axis);
+
+        axis = -1;
+
+        classProbs = classProbs.max(axis);
+        confidences = confidences.squeeze(axis);
+        let scores = confidences.mul(classProbs);
+
+        // non_max_suppression_padded vs non_max_suppression supports batched input, returns results per batch
+        //const pad_to_max_output_size = true;
+
+        let nmsResults = tf.image.nonMaxSuppressionAsync(
           bboxes,
-          confidences,
-          classProbs,
-          yolo_max_boxes,
-          nms_iou_threshold,
-          nms_score_threshold
+          scores,
+          yoloMaxBoxes,
+          nmsIouThreshold,
+          nmsScoreThreshold
         );
-        // console.log("scores", scores);
-        //scores.print();
+        return [nmsResults, bboxes, confidences, classProbs];
+      })
 
-        let photo = photoRef.current;
-        const width = imageFrame.videoWidth;
-        const height = imageFrame.videoHeight;
-        // photo.width = width;
-        // photo.height = height;
+      .then((nmsOutput) => {
+        let [nmsResults1, bboxes, scores, classIndices] = nmsOutput;
+        //console.log("scores", scores);
+        nmsResults1
+          .then((nmsResults) => {
+            //let [bboxesArray, scoresArray, classIndicesArray]
+            // let x = outArrays(nmsResults, bboxes, scores, classIndices);
+            let selectedBboxes = bboxes.gather(nmsResults);
+            let selectedClasses = classIndices.gather(nmsResults);
+            let selectedScores = scores.gather(nmsResults);
 
-        //let ctx = photo.getContext("2d");
+            const bboxesArray = selectedBboxes.array();
+            const scoresArray = selectedScores.array();
+            const classIndicesArray = selectedClasses.array();
+            let x = Promise.all([bboxesArray, scoresArray, classIndicesArray]);
+            return x;
+          })
+          .then((reasultArrays) => {
+            let [selBboxes, scores, classIndices] = reasultArrays;
+            //console.log("scores", scores);
 
-        // ctx.drawImage(imageFrame, 0, 0, width, height);
+            let canvas = canvasRef.current;
 
-        requestAnimationFrame(() => {
-          detectFrame(imageFrame, model);
-        });
-
-        let canvas = canvasRef.current;
-
-        // let context = canvas.getContext("2d");
-        var draw = new Draw(canvas);
-        await draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
-
-        //tf.engine().endScope();
-      },
-      function (err) {
-        console.log(err);
-      }
-    );
+            var draw = new Draw(canvas);
+            draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
+            requestAnimationFrame(() => {
+              detectFrame(imageFrame, model);
+            });
+            tf.engine().endScope();
+          });
+      });
   };
   const paintToCanvas = () => {
     let imageFrame = videoRef.current;
@@ -198,7 +276,7 @@ export const YoloV3 = () => {
         playsInline
         muted
         ref={videoRef}
-        width="600"
+        width="500"
         height="500"
         id="frame"
       />
