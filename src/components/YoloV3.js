@@ -32,7 +32,9 @@ export const YoloV3 = () => {
 		},
 	};
 
-	const [selectedFile, setSelectedFile] = useState('');
+	const [selectedVidFile, setSelectedVidFile] = useState('');
+	const [selectedImageFile, setSelectedImageFile] = useState('');
+	const [imageUrl, setImageUrl] = useState(null);
 
 	useEffect(() => {
 		getVideo();
@@ -186,7 +188,7 @@ export const YoloV3 = () => {
 		};
 		return detectFrame;
 	};
-	const paintToCanvas = () => {
+	const paintToCanvas = (isVideo) => {
 		let imageFrame = videoRef.current;
 		// let photo = photoRef.current;
 		// let ctx = photo.getContext("2d");
@@ -195,7 +197,6 @@ export const YoloV3 = () => {
 		// photo.width = width;
 		// photo.height = height;
 		const modelPromise = LoadModel();
-		const isVideo = true;
 		const detectFrame = makeDetectFrame(isVideo);
 		detectFrame(imageFrame, modelPromise);
 	};
@@ -235,18 +236,70 @@ export const YoloV3 = () => {
 		video.play();
 	};
 
-	useEffect(() => {
-		console.log(selectedFile);
-		var file = selectedFile;
-		if (file) {
-			playVideoFile(file);
-			paintToCanvas();
-		}
-	}, [selectedFile]);
+	function fileToDataUri(field) {
+		return new Promise((resolve) => {
+			const reader = new FileReader();
 
-	const onFileChange = (event) => {
+			reader.addEventListener('load', () => {
+				resolve(reader.result);
+			});
+
+			reader.readAsDataURL(field);
+		});
+	}
+
+	useEffect(() => {
+		// let imageFrame;
+		if (selectedVidFile) {
+			playVideoFile(selectedVidFile);
+			var isVideo = true;
+			// paintToCanvas(isVideo);
+			var imageFrame = videoRef.current;
+			const modelPromise = LoadModel();
+			const detectFrame = makeDetectFrame(isVideo);
+			detectFrame(imageFrame, modelPromise);
+		} else if (selectedImageFile) {
+			var isVideo = false;
+			var imageFrame = new window.Image();
+			var promise = fileToDataUri(selectedImageFile);
+
+			promise.then((contents) => {
+				imageFrame.src = contents;
+			});
+
+			const modelPromise = LoadModel();
+			const detectFrame = makeDetectFrame(isVideo);
+			detectFrame(imageFrame, modelPromise);
+			//const imgTensor = tf.browser.fromPixels(image);
+			//	let canvas = canvasRef.current;
+			// let context = canvas.getContext('2d');
+
+			// var inference = new Inference(model);
+
+			// let [bboxes, scores, classIndices] = await inference.runInference(
+			// 	imgTensor
+			// );
+			//	var draw = new Draw(canvas);
+
+			//	await draw.drawOnImage(image, bboxes, scores, classIndices);
+
+			// paintToCanvas(isVideo);
+		}
+		// if (selectedVidFile || selectedImageFile) {
+		// 	const modelPromise = LoadModel();
+		// 	const detectFrame = makeDetectFrame(isVideo);
+		// 	detectFrame(imageFrame, modelPromise);
+		// }
+	}, [selectedVidFile, selectedImageFile]);
+
+	const onImageFileChange = (event) => {
+		setImageUrl(URL.createObjectURL(event.target.files[0]));
+		setSelectedImageFile(event.target.files[0]);
+	};
+	const onVidFileChange = (event) => {
 		// Update the state
-		setSelectedFile(event.target.files[0]);
+		setImageUrl('');
+		setSelectedVidFile(event.target.files[0]);
 	};
 
 	const onClick2o = () => {
@@ -270,7 +323,9 @@ export const YoloV3 = () => {
 		<div>
 			<button onClick={() => takePhoto()}>Take a photo</button>
 			<button onClick={onClick2}>Replay</button>
-			<input type='file' onChange={onFileChange} accept='video/*' />
+			<input type='file' onChange={onVidFileChange} accept='video/*' />
+			<label format='name'>Image:</label>
+			<input type='file' onChange={onImageFileChange} accept='image/*' />
 			// // <canvas ref={photoRef} />
 			<video
 				style={{ height: '600px', width: '500px' }}
@@ -284,6 +339,7 @@ export const YoloV3 = () => {
 				id='frame'
 			/>
 			<canvas className='size' ref={canvasRef} width='600' height='500' />
+			{imageUrl && <img id='myimage' src={imageUrl} alt='image' />}
 			<div>
 				<div ref={stripRef} />
 			</div>
