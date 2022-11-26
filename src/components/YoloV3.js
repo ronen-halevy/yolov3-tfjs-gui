@@ -7,15 +7,19 @@ import LoadModel from './LoadModel.js';
 import yoloDecode from './yolo_decode.js';
 // import yoloNms from "./yolo_nms.js";
 import Draw from './draw.js';
+import { image } from '@tensorflow/tfjs';
 
 const imageHeight = 416;
 const imageWidth = 416;
+
+const MODEL_URL = 'http://127.0.0.1:8887/models/shapes/model.json';
 
 export const YoloV3 = () => {
 	const videoRef = useRef(null);
 	const photoRef = useRef(null);
 	const stripRef = useRef(null);
 	const canvasRef = useRef(null);
+	const [model, setModel] = useState(null);
 
 	let photo = photoRef.current;
 
@@ -73,132 +77,88 @@ export const YoloV3 = () => {
 		});
 	}
 
-	function doDecode(model_output_grids) {
-		return new Promise((resolve) => {
-			let nclasses = 7; // TODO!!
-			resolve(yolo_decode(model_output_grids, nclasses));
-		});
-	}
-
-	function drawDetections(imageFrame, selBboxes, scores, classIndices) {
-		return new Promise((resolve) => {
-			// tf.tidy(() => {
-			let canvas = canvasRef.current;
-
-			var draw = new Draw(canvas);
-			resolve(draw.drawOnImage(imageFrame, selBboxes, scores, classIndices));
-		});
-	}
-
-	function outArrays(nmsResults, bboxes, scores, classIndices) {
-		return new Promise((resolve) => {
-			// let [] = nmsResults;
-			let selectedBboxes = bboxes.gather(nmsResults);
-			let selectedClasses = classIndices.gather(nmsResults);
-			let selectedScores = scores.gather(nmsResults);
-			const bboxesArray = selectedBboxes.array();
-			const scoresArray = selectedScores.array();
-			const classIndicesArray = selectedClasses.array();
-			resolve([bboxesArray, scoresArray, classIndicesArray]);
-		});
-	}
-	const makeDetectFrame = (isVideo) => {
-		const detectFrame = (imageFrame, model) => {
+	const makeDetectFrameNew = (isVideo) => {
+		const detectFrame = (model, imageFrame) => {
 			tf.engine().startScope();
+			const imageTensor = imagePreprocess(imageFrame);
+			const model_output_grids = model.predict(imageTensor);
 
-			//  model.executeAsync
-			//     (res).then(() => {
+			let nclasses = 7; // TODO!!
 
-			model
-				.then(async (res) => {
-					tf.engine().startScope();
-					const model_output_grids = doPredict(res, imageFrame);
-					return model_output_grids;
+			let [bboxes, confidences, classProbs] = yoloDecode(
+				model_output_grids,
+				nclasses
+			);
+
+			let yoloMaxBoxes = 100;
+
+			let nmsIouThreshold = 0.5;
+
+			let nmsScoreThreshold = 0.3;
+
+			let axis = 0;
+
+			bboxes = bboxes.squeeze(axis);
+
+			classProbs = classProbs.squeeze(axis);
+
+			confidences = confidences.squeeze(axis);
+
+			axis = -1;
+			let classIndices = classProbs.argMax(axis);
+
+			classProbs = classProbs.max(axis);
+
+			confidences = confidences.squeeze(axis);
+
+			let scores = confidences.mul(classProbs);
+
+			const nms = new Promise((resolve) => {
+				const nmsResults = tf.image.nonMaxSuppressionAsync(
+					bboxes,
+					scores,
+					yoloMaxBoxes,
+					nmsIouThreshold,
+					nmsScoreThreshold
+				);
+				resolve(nmsResults);
+			});
+
+			nms
+				.then((nmsResults) => {
+					//let [bboxesArray, scoresArray, classIndicesArray]
+					// let x = outArrays(nmsResults, bboxes, scores, classIndices);
+					let selectedBboxes = bboxes.gather(nmsResults);
+					let selectedClasses = classIndices.gather(nmsResults);
+					let selectedScores = scores.gather(nmsResults);
+
+					const bboxesArray = selectedBboxes.array();
+					const scoresArray = selectedScores.array();
+					const classIndicesArray = selectedClasses.array();
+					let reasultArrays = Promise.all([
+						bboxesArray,
+						scoresArray,
+						classIndicesArray,
+					]);
+					return reasultArrays;
 				})
-				.then((model_output_grids) => {
-					let nclasses = 7; // TODO!!
-
-					let [bboxes, confidences, classProbs] = yoloDecode(
-						model_output_grids,
-						nclasses
-					);
-					return [bboxes, confidences, classProbs];
-				})
-
-				.then((decodeOutput) => {
-					let yoloMaxBoxes = 100;
-					let nmsIouThreshold = 0.1;
-					let nmsScoreThreshold = 0.3;
-					let [bboxes, confidences, classProbs] = decodeOutput;
-					let axis = 0;
-					bboxes = bboxes.squeeze(axis);
-					classProbs = classProbs.squeeze(axis);
-					confidences = confidences.squeeze(axis);
-
-					axis = -1;
-
-					classProbs = classProbs.max(axis);
-					confidences = confidences.squeeze(axis);
-					let scores = confidences.mul(classProbs);
-
-					let nmsResults = tf.image.nonMaxSuppressionAsync(
-						bboxes,
-						scores,
-						yoloMaxBoxes,
-						nmsIouThreshold,
-						nmsScoreThreshold
-					);
-					return [nmsResults, bboxes, confidences, classProbs];
-				})
-
-				.then((nmsOutput) => {
-					let [nmsResults1, bboxes, scores, classIndices] = nmsOutput;
-					nmsResults1
-						.then((nmsResults) => {
-							//let [bboxesArray, scoresArray, classIndicesArray]
-							// let x = outArrays(nmsResults, bboxes, scores, classIndices);
-							let selectedBboxes = bboxes.gather(nmsResults);
-							let selectedClasses = classIndices.gather(nmsResults);
-							let selectedScores = scores.gather(nmsResults);
-
-							const bboxesArray = selectedBboxes.array();
-							const scoresArray = selectedScores.array();
-							const classIndicesArray = selectedClasses.array();
-							let x = Promise.all([
-								bboxesArray,
-								scoresArray,
-								classIndicesArray,
-							]);
-							return x;
-						})
-						.then((reasultArrays) => {
-							let [selBboxes, scores, classIndices] = reasultArrays;
-							let canvas = canvasRef.current;
-							var draw = new Draw(canvas);
-							draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
-							if (isVideo) {
-								requestAnimationFrame(() => {
-									detectFrame(imageFrame, model);
-								});
-							}
-
-							tf.engine().endScope();
+				.then((reasultArrays) => {
+					let [selBboxes, scores, classIndices] = reasultArrays;
+					let canvas = canvasRef.current;
+					var draw = new Draw(canvas);
+					draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
+					if (isVideo) {
+						requestAnimationFrame(() => {
+							detectFrame(model, imageFrame);
 						});
+					}
+
+					tf.engine().endScope();
 				});
+
+			// });
 		};
 		return detectFrame;
-	};
-	const paintToCanvas = (isVideo) => {
-		let imageFrame = videoRef.current;
-		// let photo = photoRef.current;
-		// let ctx = photo.getContext("2d");
-		// const width = 320;
-		// const height = 240;
-		// photo.width = width;
-		// photo.height = height;
-		const modelPromise = LoadModel();
-		const detectFrame = makeDetectFrame(isVideo);
-		detectFrame(imageFrame, modelPromise);
 	};
 
 	const imagePreprocess = (image) => {
@@ -240,7 +200,7 @@ export const YoloV3 = () => {
 		return new Promise((resolve) => {
 			const reader = new FileReader();
 
-			reader.addEventListener('load', () => {
+			reader.addEventListener('loadend', () => {
 				resolve(reader.result);
 			});
 
@@ -249,15 +209,43 @@ export const YoloV3 = () => {
 	}
 
 	useEffect(() => {
+		console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!! setModel', model);
+	}, [model]);
+
+	useEffect(() => {
+		const bb = async () => {
+			setModel(await LoadModel());
+		};
+		bb();
+	}, []);
+
+	///
+	useEffect(() => {
 		// let imageFrame;
 		if (selectedVidFile) {
 			playVideoFile(selectedVidFile);
 			var isVideo = true;
-			// paintToCanvas(isVideo);
 			var imageFrame = videoRef.current;
+
 			const modelPromise = LoadModel();
-			const detectFrame = makeDetectFrame(isVideo);
-			detectFrame(imageFrame, modelPromise);
+			const detectFrame = makeDetectFrameNew(isVideo);
+
+			let promiseC = new Promise((resolve, reject) => {
+				videoRef.current.onloadedmetadata = () => {
+					resolve();
+				};
+			});
+
+			promiseC.then(() => {
+				detectFrame(model, imageFrame);
+			});
+
+			// imageFrame.addEventListener('load', async () => {
+			// detectFrame(model, imageFrame);
+			// });
+
+			// detectFrame(imageFrame, modelPromise);
+			//detectFrame(model, imageFrame);
 		} else if (selectedImageFile) {
 			var isVideo = false;
 			var imageFrame = new window.Image();
@@ -265,31 +253,24 @@ export const YoloV3 = () => {
 
 			promise.then((contents) => {
 				imageFrame.src = contents;
+				// let resized = imagePreprocess(imageFrame);
 			});
 
-			const modelPromise = LoadModel();
-			const detectFrame = makeDetectFrame(isVideo);
-			detectFrame(imageFrame, modelPromise);
-			//const imgTensor = tf.browser.fromPixels(image);
-			//	let canvas = canvasRef.current;
-			// let context = canvas.getContext('2d');
+			const detectFrame = makeDetectFrameNew(isVideo);
 
-			// var inference = new Inference(model);
+			imageFrame.addEventListener('load', async () => {
+				// imageFrame = imagePreprocess(imageFrame);
+				detectFrame(model, imageFrame);
+			});
 
-			// let [bboxes, scores, classIndices] = await inference.runInference(
-			// 	imgTensor
-			// );
-			//	var draw = new Draw(canvas);
-
-			//	await draw.drawOnImage(image, bboxes, scores, classIndices);
-
-			// paintToCanvas(isVideo);
+			// const modelPromise = LoadModel();
+			// const detectFrame = makeDetectFrame(isVideo);
+			// detectFrame(imageFrame, modelPromise);
 		}
-		// if (selectedVidFile || selectedImageFile) {
-		// 	const modelPromise = LoadModel();
-		// 	const detectFrame = makeDetectFrame(isVideo);
-		// 	detectFrame(imageFrame, modelPromise);
-		// }
+		if (selectedVidFile || selectedImageFile) {
+			//const modelPromise = LoadModel();
+			// const detectFrame = makeDetectFrame(isVideo);
+		}
 	}, [selectedVidFile, selectedImageFile]);
 
 	const onImageFileChange = (event) => {
@@ -302,20 +283,25 @@ export const YoloV3 = () => {
 		setSelectedVidFile(event.target.files[0]);
 	};
 
-	const onClick2o = () => {
-		// Update the state
-		if (selectedFile) {
-			playVideoFile(selectedFile);
-		}
-		video.play();
-	};
-
-	//
 	const onClick2 = () => {
 		// Update the state
-		if (selectedFile) {
-			playVideoFile(selectedFile);
-			paintToCanvas();
+		if (selectedVidFile) {
+			playVideoFile(selectedVidFile);
+			const isVideo = true;
+			var imageFrame = videoRef.current;
+
+			const modelPromise = LoadModel();
+			const detectFrame = makeDetectFrameNew(isVideo);
+
+			let promiseC = new Promise((resolve, reject) => {
+				videoRef.current.onloadedmetadata = () => {
+					resolve();
+				};
+			});
+
+			promiseC.then(() => {
+				detectFrame(model, imageFrame);
+			});
 		}
 	};
 
