@@ -17,8 +17,9 @@ const MODEL_URL = 'http://127.0.0.1:8887/models/shapes/model.json';
 export const YoloV3 = () => {
 	const videoRef = useRef(null);
 	const photoRef = useRef(null);
-	const stripRef = useRef(null);
-	const canvasRef = useRef(null);
+	const canvasRefVideo = useRef(null);
+	const canvasRefImage = useRef(null);
+
 	const [model, setModel] = useState(null);
 
 	let photo = photoRef.current;
@@ -144,7 +145,9 @@ export const YoloV3 = () => {
 				})
 				.then((reasultArrays) => {
 					let [selBboxes, scores, classIndices] = reasultArrays;
-					let canvas = canvasRef.current;
+					let canvas = isVideo
+						? canvasRefVideo.current
+						: canvasRefImage.current;
 					var draw = new Draw(canvas);
 					draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
 					if (isVideo) {
@@ -171,7 +174,6 @@ export const YoloV3 = () => {
 
 	const takePhoto = () => {
 		let photo = photoRef.current;
-		let strip = stripRef.current;
 
 		console.warn(strip);
 
@@ -223,6 +225,7 @@ export const YoloV3 = () => {
 	useEffect(() => {
 		// let imageFrame;
 		if (selectedVidFile) {
+			setSelectedImageFile(null);
 			playVideoFile(selectedVidFile);
 			var isVideo = true;
 			var imageFrame = videoRef.current;
@@ -239,21 +242,14 @@ export const YoloV3 = () => {
 			promiseC.then(() => {
 				detectFrame(model, imageFrame);
 			});
-
-			// imageFrame.addEventListener('load', async () => {
-			// detectFrame(model, imageFrame);
-			// });
-
-			// detectFrame(imageFrame, modelPromise);
-			//detectFrame(model, imageFrame);
 		} else if (selectedImageFile) {
+			setSelectedVidFile(null);
 			var isVideo = false;
 			var imageFrame = new window.Image();
 			var promise = fileToDataUri(selectedImageFile);
 
 			promise.then((contents) => {
 				imageFrame.src = contents;
-				// let resized = imagePreprocess(imageFrame);
 			});
 
 			const detectFrame = makeDetectFrameNew(isVideo);
@@ -274,60 +270,82 @@ export const YoloV3 = () => {
 	}, [selectedVidFile, selectedImageFile]);
 
 	const onImageFileChange = (event) => {
+		setSelectedVidFile(null);
 		setImageUrl(URL.createObjectURL(event.target.files[0]));
 		setSelectedImageFile(event.target.files[0]);
 	};
 	const onVidFileChange = (event) => {
 		// Update the state
-		setImageUrl('');
+		setSelectedImageFile(null);
 		setSelectedVidFile(event.target.files[0]);
 	};
 
-	const onClick2 = () => {
-		// Update the state
-		if (selectedVidFile) {
-			playVideoFile(selectedVidFile);
-			const isVideo = true;
-			var imageFrame = videoRef.current;
-
-			const modelPromise = LoadModel();
-			const detectFrame = makeDetectFrameNew(isVideo);
-
-			let promiseC = new Promise((resolve, reject) => {
-				videoRef.current.onloadedmetadata = () => {
-					resolve();
-				};
-			});
-
-			promiseC.then(() => {
-				detectFrame(model, imageFrame);
-			});
-		}
-	};
-
 	return (
-		<div>
-			<button onClick={() => takePhoto()}>Take a photo</button>
-			<button onClick={onClick2}>Replay</button>
-			<input type='file' onChange={onVidFileChange} accept='video/*' />
-			<label format='name'>Image:</label>
-			<input type='file' onChange={onImageFileChange} accept='image/*' />
-			// // <canvas ref={photoRef} />
-			<video
-				style={{ height: '600px', width: '500px' }}
-				className='size'
-				autoPlay
-				playsInline
-				muted
-				ref={videoRef}
-				width='500'
-				height='500'
-				id='frame'
-			/>
-			<canvas className='size' ref={canvasRef} width='600' height='500' />
-			{imageUrl && <img id='myimage' src={imageUrl} alt='image' />}
-			<div>
-				<div ref={stripRef} />
+		<div className='container '>
+			<div class='row'>
+				<label htmlFor='formFileLg' className='form-label display-5  col-5 '>
+					Video File
+				</label>
+				<div className='col-1'></div>
+				<label htmlFor='formFileLg' className='form-label display-5 col-5'>
+					Image File
+				</label>
+			</div>
+			<div class='row'>
+				<input
+					className='btn btn-success col-5'
+					id='formFileLg'
+					type='file'
+					onChange={onVidFileChange}
+					accept='video/*'
+				/>
+
+				<div className='col-1'></div>
+				<input
+					className='btn btn-success  col-5'
+					id='formFileLg'
+					aria-label='ddddddd'
+					type='file'
+					onChange={onImageFileChange}
+					accept='image/*'
+				/>
+			</div>
+			<div className='row'>
+				<div className='col-6'>
+					<video
+						controls
+						style={{ height: '200px', width: '200px' }}
+						className='size'
+						autoPlay
+						playsInline
+						muted
+						ref={videoRef}
+						width='416'
+						height='416'
+						id='frame'
+					/>
+				</div>
+				<div className='col-6'>
+					{imageUrl && (
+						<img
+							className=''
+							id='myimage'
+							src={imageUrl}
+							alt='image'
+							width='200'
+							height='200'
+						/>
+					)}
+				</div>
+			</div>
+			<div className='row'>
+				<div className='col-6'>
+					<canvas className='video' ref={canvasRefVideo} width='' height='' />
+				</div>
+
+				<div className='col-6'>
+					<canvas className='image' ref={canvasRefImage} width='' height='' />
+				</div>
 			</div>
 		</div>
 	);
