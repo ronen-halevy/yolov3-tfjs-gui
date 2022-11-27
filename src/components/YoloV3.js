@@ -21,10 +21,9 @@ export const YoloV3 = () => {
 	const canvasRefImage = useRef(null);
 
 	const [model, setModel] = useState(null);
+	const [jsxVisibility, setJsxVisibility] = useState('invisible');
 
 	let photo = photoRef.current;
-
-	const threshold = 0.75;
 
 	let classesDir = {
 		1: {
@@ -85,20 +84,16 @@ export const YoloV3 = () => {
 			const model_output_grids = model.predict(imageTensor);
 
 			let nclasses = 7; // TODO!!
+			let yoloMaxBoxes = 100;
+			let nmsIouThreshold = 0.5;
+			let nmsScoreThreshold = 0.3;
 
 			let [bboxes, confidences, classProbs] = yoloDecode(
 				model_output_grids,
 				nclasses
 			);
 
-			let yoloMaxBoxes = 100;
-
-			let nmsIouThreshold = 0.5;
-
-			let nmsScoreThreshold = 0.3;
-
 			let axis = 0;
-
 			bboxes = bboxes.squeeze(axis);
 
 			classProbs = classProbs.squeeze(axis);
@@ -127,8 +122,6 @@ export const YoloV3 = () => {
 
 			nms
 				.then((nmsResults) => {
-					//let [bboxesArray, scoresArray, classIndicesArray]
-					// let x = outArrays(nmsResults, bboxes, scores, classIndices);
 					let selectedBboxes = bboxes.gather(nmsResults);
 					let selectedClasses = classIndices.gather(nmsResults);
 					let selectedScores = scores.gather(nmsResults);
@@ -155,11 +148,8 @@ export const YoloV3 = () => {
 							detectFrame(model, imageFrame);
 						});
 					}
-
 					tf.engine().endScope();
 				});
-
-			// });
 		};
 		return detectFrame;
 	};
@@ -174,9 +164,7 @@ export const YoloV3 = () => {
 
 	const takePhoto = () => {
 		let photo = photoRef.current;
-
 		console.warn(strip);
-
 		const data = photo.toDataURL('image/jpeg');
 
 		console.warn(data);
@@ -190,40 +178,38 @@ export const YoloV3 = () => {
 	const playVideoFile = (file) => {
 		var type = file.type;
 		let video = videoRef.current;
-
 		var URL = window.URL || window.webkitURL;
-
 		var fileURL = URL.createObjectURL(file);
 		video.src = fileURL;
 		video.play();
 	};
 
+	// create image file read promise
 	function fileToDataUri(field) {
 		return new Promise((resolve) => {
 			const reader = new FileReader();
-
 			reader.addEventListener('loadend', () => {
 				resolve(reader.result);
 			});
-
 			reader.readAsDataURL(field);
 		});
 	}
 
+	// Load and create model on start
 	useEffect(() => {
-		console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!! setModel', model);
-	}, [model]);
-
-	useEffect(() => {
-		const bb = async () => {
+		const buildModel = async () => {
 			setModel(await LoadModel());
 		};
-		bb();
+		buildModel();
 	}, []);
 
-	///
+	// Unhide display when model is ready - protect from starting before that
 	useEffect(() => {
-		// let imageFrame;
+		setJsxVisibility('visible');
+	}, [model]);
+
+	// init video session when
+	useEffect(() => {
 		if (selectedVidFile) {
 			setSelectedImageFile(null);
 			playVideoFile(selectedVidFile);
@@ -233,87 +219,78 @@ export const YoloV3 = () => {
 			const modelPromise = LoadModel();
 			const detectFrame = makeDetectFrameNew(isVideo);
 
-			let promiseC = new Promise((resolve, reject) => {
+			let promiseVideoMetadata = new Promise((resolve, reject) => {
 				videoRef.current.onloadedmetadata = () => {
 					resolve();
 				};
 			});
-
-			promiseC.then(() => {
+			promiseVideoMetadata.then(() => {
 				detectFrame(model, imageFrame);
 			});
-		} else if (selectedImageFile) {
+		}
+	}, [selectedVidFile]);
+
+	useEffect(() => {
+		if (selectedImageFile) {
 			setSelectedVidFile(null);
 			var isVideo = false;
 			var imageFrame = new window.Image();
 			var promise = fileToDataUri(selectedImageFile);
-
 			promise.then((contents) => {
 				imageFrame.src = contents;
 			});
-
 			const detectFrame = makeDetectFrameNew(isVideo);
-
 			imageFrame.addEventListener('load', async () => {
-				// imageFrame = imagePreprocess(imageFrame);
 				detectFrame(model, imageFrame);
 			});
-
-			// const modelPromise = LoadModel();
-			// const detectFrame = makeDetectFrame(isVideo);
-			// detectFrame(imageFrame, modelPromise);
 		}
-		if (selectedVidFile || selectedImageFile) {
-			//const modelPromise = LoadModel();
-			// const detectFrame = makeDetectFrame(isVideo);
-		}
-	}, [selectedVidFile, selectedImageFile]);
+	}, [selectedImageFile]);
 
 	const onImageFileChange = (event) => {
-		setSelectedVidFile(null);
 		setImageUrl(URL.createObjectURL(event.target.files[0]));
 		setSelectedImageFile(event.target.files[0]);
 	};
 	const onVidFileChange = (event) => {
-		// Update the state
-		setSelectedImageFile(null);
 		setSelectedVidFile(event.target.files[0]);
 	};
 
 	return (
 		<div className='container '>
-			<div class='row'>
-				<label htmlFor='formFileLg' className='form-label display-5  col-5 '>
-					Video File
-				</label>
-				<div className='col-1'></div>
-				<label htmlFor='formFileLg' className='form-label display-5 col-5'>
-					Image File
-				</label>
-			</div>
-			<div class='row'>
-				<input
-					className='btn btn-success col-5'
-					id='formFileLg'
-					type='file'
-					onChange={onVidFileChange}
-					accept='video/*'
-				/>
+			<h2 className='text-center'>Yolo TfJs Demo</h2>
+			<div className={jsxVisibility}>
+				<div className='row   '>
+					<div className='col-1'></div>
 
-				<div className='col-1'></div>
-				<input
-					className='btn btn-success  col-5'
-					id='formFileLg'
-					aria-label='ddddddd'
-					type='file'
-					onChange={onImageFileChange}
-					accept='image/*'
-				/>
+					<label htmlFor='formFileLg' className='form-label display-5  col-4'>
+						Video File
+					</label>
+					<div className='col-2'></div>
+					<label htmlFor='formFileLg' className='form-label display-5 col-5'>
+						Image File
+					</label>
+				</div>
+				<div className='row'>
+					<input
+						className='btn btn-success col-5'
+						id='formFileLg'
+						type='file'
+						onChange={onVidFileChange}
+						accept='video/*'
+					/>
+
+					<div className='col-1'></div>
+					<input
+						className='btn btn-success  col-5'
+						id='formFileLg'
+						type='file'
+						onChange={onImageFileChange}
+						accept='image/*'
+					/>
+				</div>
 			</div>
 			<div className='row'>
 				<div className='col-6'>
 					<video
-						controls
 						style={{ height: '200px', width: '200px' }}
 						className='size'
 						autoPlay
