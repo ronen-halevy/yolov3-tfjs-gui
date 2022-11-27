@@ -1,7 +1,19 @@
-class Draw {
+/**
+ * Contains methods to draw bounding boxes and text annotations on an image's (same as a single frame) detection.
+ */ class Draw {
 	constructor(canvas) {
 		this.canvas = canvas;
 	}
+	/**
+	 * @summary Draws a bounding box and text annotations for a detection
+	 * @param {contextType} context - THe canvas context to draw on.
+	 * @param {Array<float>} bbox - A normalized to [0,1] bbox: [xmin, ymon, xmax, ymax].
+	 * @param {float} score - Detections's  score value, val range [0,1].
+	 * @param {float} classId - Class's index.
+	 * @param {float} imageWidth - Input image's original width.
+	 * @param {float} imageHeight - Input image's original height.
+	 */
+
 	drawBbox(context, bbox, score, classId, imageWidth, imageHeight) {
 		const font = '16px sans-serif';
 		context.beginPath();
@@ -35,9 +47,17 @@ class Draw {
 			bbox[1] * imageWidth
 		);
 	}
+
+	/**
+	 * @summary Draws a bounding box and text annotations for an array of detections
+	 * @param {img} image - An element to draw into the context. The specification permits any canvas image source,.
+	 * @param {Array<Array<float>>} bboxes - An array with a bbox array per a detection. A bbox is 4 element array which holds normalized to [0,1] bbox: [xmin, ymon, xmax, ymax].
+	 * @param {Array<float>} scores - An array with a score value per a detectiono.
+	 * @param {Array<float>} classIndices - An array with a class index per a detectiono.
+	 */
+
 	async drawOnImage(image, bboxes, scores, classIndices) {
 		const context = this.canvas.getContext('2d');
-		// console.log("drawOnImage");
 
 		const imageWidth = image.width;
 		const imageHeight = image.height;
@@ -46,10 +66,6 @@ class Draw {
 		this.canvas.height = imageHeight;
 
 		context.drawImage(image, 0, 0, imageWidth, imageHeight);
-
-		// const bboxesArray = await bboxes.array();
-		// const scoresArray = await scores.array();
-		// const classIndicesArray = await classIndices.array();
 
 		bboxes.forEach((box, idx) =>
 			this.drawBbox(
