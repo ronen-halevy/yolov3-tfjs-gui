@@ -3,7 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 
 tf.setBackend('webgl');
 
-import LoadModel from './LoadModel.js';
+// import LoadModel from './LoadModel.js';
 import yoloDecode from './yolo_decode.js';
 // import yoloNms from "./yolo_nms.js";
 import Draw from './draw.js';
@@ -57,27 +57,7 @@ export const YoloV3 = () => {
 			});
 	};
 
-	function doPredict8(field) {
-		return new Promise((resolve) => {
-			const reader = new FileReader();
-
-			reader.addEventListener('load', () => {
-				resolve(reader.result);
-			});
-
-			reader.readAsDataURL(field);
-		});
-	}
-
-	function doPredict(res, imageFrame) {
-		return new Promise((resolve) => {
-			let resized = imagePreprocess(imageFrame);
-
-			resolve(res.predict(resized));
-		});
-	}
-
-	const makeDetectFrameNew = (isVideo) => {
+	const makeDetectFrame = (isVideo) => {
 		const detectFrame = (model, imageFrame) => {
 			tf.engine().startScope();
 			const imageTensor = imagePreprocess(imageFrame);
@@ -87,26 +67,18 @@ export const YoloV3 = () => {
 			let yoloMaxBoxes = 100;
 			let nmsIouThreshold = 0.5;
 			let nmsScoreThreshold = 0.3;
+			const MODEL_URL = 'http://127.0.0.1:8887/models/shapes/model.json';
 
+			// Decode predictions: combines all grids detection results
 			let [bboxes, confidences, classProbs] = yoloDecode(
 				model_output_grids,
 				nclasses
 			);
 
-			let axis = 0;
-			bboxes = bboxes.squeeze(axis);
-
-			classProbs = classProbs.squeeze(axis);
-
-			confidences = confidences.squeeze(axis);
-
-			axis = -1;
+			let axis = -1;
 			let classIndices = classProbs.argMax(axis);
-
 			classProbs = classProbs.max(axis);
-
 			confidences = confidences.squeeze(axis);
-
 			let scores = confidences.mul(classProbs);
 
 			const nms = new Promise((resolve) => {
@@ -194,11 +166,12 @@ export const YoloV3 = () => {
 			reader.readAsDataURL(field);
 		});
 	}
+	/* Use Effect Hooks:*/
 
 	// Load and create model on start
 	useEffect(() => {
 		const buildModel = async () => {
-			setModel(await LoadModel());
+			setModel(await tf.loadLayersModel(MODEL_URL));
 		};
 		buildModel();
 	}, []);
@@ -216,8 +189,8 @@ export const YoloV3 = () => {
 			var isVideo = true;
 			var imageFrame = videoRef.current;
 
-			const modelPromise = LoadModel();
-			const detectFrame = makeDetectFrameNew(isVideo);
+			// const modelPromise = LoadModel();
+			const detectFrame = makeDetectFrame(isVideo);
 
 			let promiseVideoMetadata = new Promise((resolve, reject) => {
 				videoRef.current.onloadedmetadata = () => {
@@ -239,7 +212,7 @@ export const YoloV3 = () => {
 			promise.then((contents) => {
 				imageFrame.src = contents;
 			});
-			const detectFrame = makeDetectFrameNew(isVideo);
+			const detectFrame = makeDetectFrame(isVideo);
 			imageFrame.addEventListener('load', async () => {
 				detectFrame(model, imageFrame);
 			});

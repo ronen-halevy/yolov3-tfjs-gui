@@ -32,20 +32,6 @@ function arrange_bbox(xy, wh) {
 function getAnchors(anchors_file) {
 	const nanchors_per_scale = 3;
 	const anchor_entry_size = 2;
-	//   // anchors_table = loadtxt(anchors_file, (dtype = np.float), (delimiter = ","));
-
-	//   fetch(anchors_file)
-	//     .then((r) => r.text())
-	//     .then((text) => {
-	//       console.log("text anchors_table:", text);
-	//     });
-
-	// anchors_table = anchors_table.reshape(
-	//   -1,
-	//   nanchors_per_scale,
-	//   anchor_entry_size
-	// );
-	// return anchors_table;
 }
 
 function yoloDecode(grids_outputs, nclasses) {
@@ -61,14 +47,10 @@ function yoloDecode(grids_outputs, nclasses) {
 		nanchors_per_scale,
 		anchor_entry_size,
 	]);
-	// let pred_xy = [];
-	// let pred_wh = [];
-	// let pred_obj = [];
-	// let class_probs = [];
 
-	let grids_bboxes = [];
-	let grids_confidence = [];
-	let grids_class_probs = [];
+	let bboxes = [];
+	let confidences = [];
+	let classProbs = [];
 	for (let idx = 0; idx < grids_outputs.length; idx++) {
 		let axis = -1;
 		let [xy, wh, obj, class_prob] = tf.split(
@@ -76,14 +58,10 @@ function yoloDecode(grids_outputs, nclasses) {
 			[2, 2, 1, nclasses],
 			axis
 		);
-		// var whh = wh.exp();
-		// const indices = tf.tensor1d([0], "int32");
 		let anchors = tf.slice(anchors_table, [idx], 1);
-		// var wha = whh.mul(anchors); //.print();
-
 		const bboxes_in_grid = arrange_bbox(tf.sigmoid(xy), wh.exp().mul(anchors));
 
-		grids_bboxes.push(
+		bboxes.push(
 			tf.reshape(bboxes_in_grid, [
 				bboxes_in_grid.shape[0],
 				-1,
@@ -91,10 +69,10 @@ function yoloDecode(grids_outputs, nclasses) {
 			])
 		);
 
-		grids_confidence.push(
+		confidences.push(
 			tf.reshape(tf.sigmoid(obj), [obj.shape[0], -1, obj.shape[4]])
 		);
-		grids_class_probs.push(
+		classProbs.push(
 			tf.reshape(tf.sigmoid(class_prob), [
 				class_prob.shape[0],
 				-1,
@@ -104,12 +82,15 @@ function yoloDecode(grids_outputs, nclasses) {
 	}
 
 	let axis = 1;
+	bboxes = tf.concat(bboxes, axis);
+	confidences = tf.concat(confidences, axis);
+	classProbs = tf.concat(classProbs, axis);
 
-	grids_bboxes = tf.concat(grids_bboxes, axis);
-	grids_confidence = tf.concat(grids_confidence, axis);
+	axis = 0;
+	bboxes = bboxes.squeeze(axis);
+	classProbs = classProbs.squeeze(axis);
+	confidences = confidences.squeeze(axis);
 
-	grids_class_probs = tf.concat(grids_class_probs, axis);
-
-	return [grids_bboxes, grids_confidence, grids_class_probs];
+	return [bboxes, confidences, classProbs];
 }
 export default yoloDecode;
