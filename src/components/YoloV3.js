@@ -183,8 +183,11 @@ export const YoloV3 = () => {
 
 	// init video session when
 	useEffect(() => {
+		console.log('!!!!! selectedVidFile', selectedVidFile);
+
 		if (selectedVidFile) {
-			setSelectedImageFile(null);
+			console.log('!!!!! selectedVidFile', selectedVidFile);
+			// setSelectedImageFile(null);
 			playVideoFile(selectedVidFile);
 			var isVideo = true;
 			var imageFrame = videoRef.current;
@@ -205,7 +208,7 @@ export const YoloV3 = () => {
 
 	useEffect(() => {
 		if (selectedImageFile) {
-			setSelectedVidFile(null);
+			// setSelectedVidFile(null);
 			var isVideo = false;
 			var imageFrame = new window.Image();
 			var promise = fileToDataUri(selectedImageFile);
@@ -219,12 +222,13 @@ export const YoloV3 = () => {
 		}
 	}, [selectedImageFile]);
 
-	const onImageFileChange = (event) => {
+	const onChangeImageFile = (event) => {
 		setImageUrl(URL.createObjectURL(event.target.files[0]));
 		setSelectedImageFile(event.target.files[0]);
 	};
-	const onVidFileChange = (event) => {
+	const onChangeVidFile = (event) => {
 		setSelectedVidFile(event.target.files[0]);
+		event.target.value = ''; /* Forces onChange event if same file is uploaded*/
 	};
 
 	return (
@@ -247,7 +251,7 @@ export const YoloV3 = () => {
 						className='btn btn-success col-5'
 						id='formFileLg'
 						type='file'
-						onChange={onVidFileChange}
+						onChange={onChangeVidFile}
 						accept='video/*'
 					/>
 
@@ -256,7 +260,7 @@ export const YoloV3 = () => {
 						className='btn btn-success  col-5'
 						id='formFileLg'
 						type='file'
-						onChange={onImageFileChange}
+						onChange={onChangeImageFile}
 						accept='image/*'
 					/>
 				</div>
