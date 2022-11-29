@@ -4,8 +4,8 @@ import * as tf from '@tensorflow/tfjs';
 tf.setBackend('webgl');
 
 // import LoadModel from './LoadModel.js';
-import yoloDecode from './yolo_decode.js';
-import yoloNms from './yolo_nms.js';
+import yoloDecode from './yoloDecode.js';
+import yoloNms from './yoloNms.js';
 import Draw from './draw.js';
 import { image } from '@tensorflow/tfjs';
 
