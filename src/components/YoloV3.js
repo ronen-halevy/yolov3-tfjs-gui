@@ -40,6 +40,7 @@ export const YoloV3 = () => {
 	const [selectedImageFile, setSelectedImageFile] = useState('');
 	const [imageUrl, setImageUrl] = useState(null);
 	const [vidFileName, setVidFileName] = useState(null);
+	const [imageFileName, setImageFileName] = useState(null);
 
 	useEffect(() => {
 		getVideo();
@@ -220,7 +221,10 @@ export const YoloV3 = () => {
 
 	const onChangeImageFile = (event) => {
 		setImageUrl(URL.createObjectURL(event.target.files[0]));
+		setImageFileName(event.target.value);
+
 		setSelectedImageFile(event.target.files[0]);
+		event.target.value = ''; /* Forces onChange event if same file is uploaded*/
 	};
 
 	const onChangeVidFile = (event) => {
@@ -241,11 +245,24 @@ export const YoloV3 = () => {
 	return (
 		<div className='container '>
 			<h2 className='text-center'>Yolo TfJs Demo</h2>
+
+			{/* set invisible before model loaded - at start, practically not noticed */}
 			<div className={jsxVisibility}>
+				<div class='row justify-content-center'>
+					<b class='col-4'>Uploaded Files:</b>
+				</div>
+
+				<div class='row justify-content-center'>
+					<p1 className='col-4'>{vidFileName}</p1>
+				</div>
+				<div class='row justify-content-center'>
+					<p1 className='col-4'>{imageFileName}</p1>
+				</div>
 				<div className='row'>
 					{/* Hack Explained: filename is changed to '' to let onChange event even for
 					same. To avoid "No file chosen" text by input, it is set
 					invisible+label */}
+
 					<input
 						className=' invisible'
 						id='files'
@@ -253,28 +270,35 @@ export const YoloV3 = () => {
 						onChange={onChangeFile}
 						accept='video/*, image/*'
 					/>
+
 					<div className='col-4'></div>
 					<label for='files' className='btn btn-success col-4'>
 						Select Image/Video File
 					</label>
 				</div>
 			</div>
+
 			<div className='row'>
-				<div className='col-6'>
-					<video
-						style={{ height: '200px', width: '200px' }}
-						className='size'
-						autoPlay
-						playsInline
-						muted
-						ref={videoRef}
-						width='416'
-						height='416'
-						id='frame'
-					/>
+				<div className='mb-3'></div>
+				<div className='col-6 '>
+					{vidFileName && (
+						<video
+							style={{ height: '200px', width: '200px' }}
+							className='size'
+							autoPlay
+							playsInline
+							muted
+							ref={videoRef}
+							width='416'
+							height='416'
+							id='frame'
+							controls
+						/>
+					)}
 				</div>
 				<div className='col-6'>
-					{imageUrl && (
+					{/* Hide image element before any image is selected */}
+					{imageFileName && (
 						<img
 							className=''
 							id='myimage'
@@ -286,6 +310,8 @@ export const YoloV3 = () => {
 					)}
 				</div>
 			</div>
+			<div className='gap-3'></div>
+
 			<div className='row'>
 				<div className='col-6'>
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
