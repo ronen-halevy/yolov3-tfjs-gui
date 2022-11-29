@@ -39,6 +39,7 @@ export const YoloV3 = () => {
 	const [selectedVidFile, setSelectedVidFile] = useState('');
 	const [selectedImageFile, setSelectedImageFile] = useState('');
 	const [imageUrl, setImageUrl] = useState(null);
+	const [vidFileName, setVidFileName] = useState(null);
 
 	useEffect(() => {
 		getVideo();
@@ -183,11 +184,7 @@ export const YoloV3 = () => {
 
 	// init video session when
 	useEffect(() => {
-		console.log('!!!!! selectedVidFile', selectedVidFile);
-
 		if (selectedVidFile) {
-			console.log('!!!!! selectedVidFile', selectedVidFile);
-			// setSelectedImageFile(null);
 			playVideoFile(selectedVidFile);
 			var isVideo = true;
 			var imageFrame = videoRef.current;
@@ -208,7 +205,6 @@ export const YoloV3 = () => {
 
 	useEffect(() => {
 		if (selectedImageFile) {
-			// setSelectedVidFile(null);
 			var isVideo = false;
 			var imageFrame = new window.Image();
 			var promise = fileToDataUri(selectedImageFile);
@@ -226,8 +222,10 @@ export const YoloV3 = () => {
 		setImageUrl(URL.createObjectURL(event.target.files[0]));
 		setSelectedImageFile(event.target.files[0]);
 	};
+
 	const onChangeVidFile = (event) => {
 		setSelectedVidFile(event.target.files[0]);
+		setVidFileName(event.target.value);
 		event.target.value = ''; /* Forces onChange event if same file is uploaded*/
 	};
 
