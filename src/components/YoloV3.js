@@ -229,6 +229,15 @@ export const YoloV3 = () => {
 		event.target.value = ''; /* Forces onChange event if same file is uploaded*/
 	};
 
+	const onChangeFile = (event) => {
+		const filename = event.target.value;
+		if (filename.match(/\.(jpg|jpeg|png|gif)$/i)) {
+			onChangeImageFile(event);
+		} else {
+			onChangeVidFile(event);
+		}
+	};
+
 	return (
 		<div className='container '>
 			<h2 className='text-center'>Yolo TfJs Demo</h2>
@@ -237,11 +246,7 @@ export const YoloV3 = () => {
 					<div className='col-1'></div>
 
 					<label htmlFor='formFileLg' className='form-label display-5  col-4'>
-						Video File
-					</label>
-					<div className='col-2'></div>
-					<label htmlFor='formFileLg' className='form-label display-5 col-5'>
-						Image File
+						Video/Image File
 					</label>
 				</div>
 				<div className='row'>
@@ -249,17 +254,8 @@ export const YoloV3 = () => {
 						className='btn btn-success col-5'
 						id='formFileLg'
 						type='file'
-						onChange={onChangeVidFile}
-						accept='video/*'
-					/>
-
-					<div className='col-1'></div>
-					<input
-						className='btn btn-success  col-5'
-						id='formFileLg'
-						type='file'
-						onChange={onChangeImageFile}
-						accept='image/*'
+						onChange={onChangeFile}
+						accept='video/*, image/*'
 					/>
 				</div>
 			</div>
