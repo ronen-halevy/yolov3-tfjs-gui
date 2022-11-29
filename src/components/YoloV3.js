@@ -5,7 +5,7 @@ tf.setBackend('webgl');
 
 // import LoadModel from './LoadModel.js';
 import yoloDecode from './yolo_decode.js';
-// import yoloNms from "./yolo_nms.js";
+import yoloNms from './yolo_nms.js';
 import Draw from './draw.js';
 import { image } from '@tensorflow/tfjs';
 
@@ -76,13 +76,20 @@ export const YoloV3 = () => {
 				model_output_grids,
 				nclasses
 			);
-
 			let axis = -1;
 			let classIndices = classProbs.argMax(axis);
 			classProbs = classProbs.max(axis);
 			confidences = confidences.squeeze(axis);
 			let scores = confidences.mul(classProbs);
-
+			// const nms =
+			// yoloNms(
+			// 	bboxes,
+			// 	classProbs,
+			// 	confidences,
+			// 	yoloMaxBoxes,
+			// 	nmsIouThreshold,
+			// 	nmsScoreThreshold
+			// )
 			const nms = new Promise((resolve) => {
 				const nmsResults = tf.image.nonMaxSuppressionAsync(
 					bboxes,
@@ -93,7 +100,6 @@ export const YoloV3 = () => {
 				);
 				resolve(nmsResults);
 			});
-
 			nms
 				.then((nmsResults) => {
 					let selectedBboxes = bboxes.gather(nmsResults);
@@ -248,10 +254,6 @@ export const YoloV3 = () => {
 
 			{/* set invisible before model loaded - at start, practically not noticed */}
 			<div className={jsxVisibility}>
-				{/* <div class='row justify-content-center'> */}
-				{/* <b class='col-4'>Uploaded Files:</b> */}
-				{/* </div> */}
-
 				<div className='row'>
 					{/* Hack Explained: filename is changed to '' to let onChange event even for
 					same. To avoid "No file chosen" text by input, it is set
@@ -266,15 +268,15 @@ export const YoloV3 = () => {
 					/>
 
 					<div className='col-4'></div>
-					<label for='files' className='btn btn-success col-4'>
+					<label htmlFor='files' className='btn btn-success col-4'>
 						Select Image/Video File
 					</label>
 				</div>
-				<div class='row justify-content-center'>
-					<p1 className='col-4'>{vidFileName}</p1>
+				<div className='row justify-content-center'>
+					<b className='col-4'>{vidFileName}</b>
 				</div>
-				<div class='row justify-content-center'>
-					<p1 className='col-4'>{imageFileName}</p1>
+				<div className='row justify-content-center'>
+					<b className='col-4'>{imageFileName}</b>
 				</div>
 			</div>
 
