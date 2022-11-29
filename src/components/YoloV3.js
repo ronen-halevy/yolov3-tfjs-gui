@@ -248,16 +248,10 @@ export const YoloV3 = () => {
 
 			{/* set invisible before model loaded - at start, practically not noticed */}
 			<div className={jsxVisibility}>
-				<div class='row justify-content-center'>
-					<b class='col-4'>Uploaded Files:</b>
-				</div>
+				{/* <div class='row justify-content-center'> */}
+				{/* <b class='col-4'>Uploaded Files:</b> */}
+				{/* </div> */}
 
-				<div class='row justify-content-center'>
-					<p1 className='col-4'>{vidFileName}</p1>
-				</div>
-				<div class='row justify-content-center'>
-					<p1 className='col-4'>{imageFileName}</p1>
-				</div>
 				<div className='row'>
 					{/* Hack Explained: filename is changed to '' to let onChange event even for
 					same. To avoid "No file chosen" text by input, it is set
@@ -275,6 +269,12 @@ export const YoloV3 = () => {
 					<label for='files' className='btn btn-success col-4'>
 						Select Image/Video File
 					</label>
+				</div>
+				<div class='row justify-content-center'>
+					<p1 className='col-4'>{vidFileName}</p1>
+				</div>
+				<div class='row justify-content-center'>
+					<p1 className='col-4'>{imageFileName}</p1>
 				</div>
 			</div>
 
