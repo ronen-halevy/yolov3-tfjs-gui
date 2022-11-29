@@ -1,18 +1,13 @@
 import * as tf from '@tensorflow/tfjs';
+
 const yoloNms = (
 	bboxes,
 	scores,
+	classIndices,
 	yoloMaxBoxes,
 	nmsIouThreshold,
 	nmsScoreThreshold
 ) => {
-	// let axis = -1;
-	// let classIndices = classProbs.argMax(axis);
-
-	// classProbs = classProbs.max(axis);
-	// confidences = confidences.squeeze(axis);
-	// let scores = confidences.mul(classProbs);
-
 	const nms = new Promise((resolve) => {
 		const nmsResults = tf.image.nonMaxSuppressionAsync(
 			bboxes,
@@ -22,9 +17,7 @@ const yoloNms = (
 			nmsScoreThreshold
 		);
 		resolve(nmsResults);
-	});
-
-	nms.then((nmsResults) => {
+	}).then((nmsResults) => {
 		let selectedBboxes = bboxes.gather(nmsResults);
 		let selectedClasses = classIndices.gather(nmsResults);
 		let selectedScores = scores.gather(nmsResults);
@@ -39,6 +32,10 @@ const yoloNms = (
 		]);
 		return reasultArrays;
 	});
+
+	return nms;
 };
+
+const ff2a = (bboxes, classIndices, scores, nmsResults) => {};
 
 export default yoloNms;
