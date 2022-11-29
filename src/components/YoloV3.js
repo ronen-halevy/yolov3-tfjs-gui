@@ -5,7 +5,7 @@ tf.setBackend('webgl');
 
 // import LoadModel from './LoadModel.js';
 import yoloDecode from './yolo_decode.js';
-// import yoloNms from './yolo_nms.js';
+import yoloNms from './yolo_nms.js';
 import Draw from './draw.js';
 import { image } from '@tensorflow/tfjs';
 
@@ -59,45 +59,6 @@ export const YoloV3 = () => {
 			});
 	};
 
-	const ff2 = (
-		bboxes,
-		scores,
-		yoloMaxBoxes,
-		nmsIouThreshold,
-		nmsScoreThreshold
-	) => {
-		const nms = new Promise((resolve) => {
-			const nmsResults = tf.image.nonMaxSuppressionAsync(
-				bboxes,
-				scores,
-				yoloMaxBoxes,
-				nmsIouThreshold,
-				nmsScoreThreshold
-			);
-			resolve(nmsResults);
-		});
-
-		return nms;
-	};
-
-	const ff2a = (bboxes, classIndices, scores, nmsResults) => {
-		let selectedBboxes = bboxes.gather(nmsResults);
-		let selectedClasses = classIndices.gather(nmsResults);
-		let selectedScores = scores.gather(nmsResults);
-
-		const bboxesArray = selectedBboxes.array();
-		const scoresArray = selectedScores.array();
-		const classIndicesArray = selectedClasses.array();
-		let reasultArrays = Promise.all([
-			bboxesArray,
-			scoresArray,
-			classIndicesArray,
-		]);
-		return reasultArrays;
-	};
-	//return fu;
-	// };
-
 	const makeDetectFrame = (isVideo) => {
 		const detectFrame = (model, imageFrame) => {
 			tf.engine().startScope();
@@ -120,27 +81,18 @@ export const YoloV3 = () => {
 			classProbs = classProbs.max(axis);
 			confidences = confidences.squeeze(axis);
 			let scores = confidences.mul(classProbs);
-			// const nms = yoloNms(
-			// 	bboxes,
-			// 	classProbs,
-			// 	confidences,
-			// 	yoloMaxBoxes,
-			// 	nmsIouThreshold,
-			// 	nmsScoreThreshold
-			// )
-			const nms1 = ff2(
+
+			const nmsResult = yoloNms(
 				bboxes,
 				scores,
+				classIndices,
 
 				yoloMaxBoxes,
 				nmsIouThreshold,
 				nmsScoreThreshold
-			).then((nmsResults) => {
-				const a = ff2a(bboxes, classIndices, scores, nmsResults);
-				return a;
-			});
+			);
 
-			nms1.then((reasultArrays) => {
+			nmsResult.then((reasultArrays) => {
 				let [selBboxes, scores, classIndices] = reasultArrays;
 				let canvas = isVideo ? canvasRefVideo.current : canvasRefImage.current;
 				var draw = new Draw(canvas);
