@@ -242,21 +242,21 @@ export const YoloV3 = () => {
 		<div className='container '>
 			<h2 className='text-center'>Yolo TfJs Demo</h2>
 			<div className={jsxVisibility}>
-				<div className='row   '>
-					<div className='col-1'></div>
-
-					<label htmlFor='formFileLg' className='form-label display-5  col-4'>
-						Video/Image File
-					</label>
-				</div>
 				<div className='row'>
+					{/* Hack Explained: filename is changed to '' to let onChange event even for
+					same. To avoid "No file chosen" text by input, it is set
+					invisible+label */}
 					<input
-						className='btn btn-success col-5'
-						id='formFileLg'
+						className=' invisible'
+						id='files'
 						type='file'
 						onChange={onChangeFile}
 						accept='video/*, image/*'
 					/>
+					<div className='col-4'></div>
+					<label for='files' className='btn btn-success col-4'>
+						Select Image/Video File
+					</label>
 				</div>
 			</div>
 			<div className='row'>
