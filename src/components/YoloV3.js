@@ -80,7 +80,6 @@ export const YoloV3 = () => {
 		return nms;
 	};
 
-	// const ff2a = () => {
 	const ff2a = (bboxes, classIndices, scores, nmsResults) => {
 		let selectedBboxes = bboxes.gather(nmsResults);
 		let selectedClasses = classIndices.gather(nmsResults);
@@ -132,29 +131,27 @@ export const YoloV3 = () => {
 			const nms1 = ff2(
 				bboxes,
 				scores,
+
 				yoloMaxBoxes,
 				nmsIouThreshold,
 				nmsScoreThreshold
-			);
-			nms1
-				.then((nmsResults) => {
-					const a = ff2a(bboxes, classIndices, scores, nmsResults);
-					return a;
-				})
-				.then((reasultArrays) => {
-					let [selBboxes, scores, classIndices] = reasultArrays;
-					let canvas = isVideo
-						? canvasRefVideo.current
-						: canvasRefImage.current;
-					var draw = new Draw(canvas);
-					draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
-					if (isVideo) {
-						requestAnimationFrame(() => {
-							detectFrame(model, imageFrame);
-						});
-					}
-					tf.engine().endScope();
-				});
+			).then((nmsResults) => {
+				const a = ff2a(bboxes, classIndices, scores, nmsResults);
+				return a;
+			});
+
+			nms1.then((reasultArrays) => {
+				let [selBboxes, scores, classIndices] = reasultArrays;
+				let canvas = isVideo ? canvasRefVideo.current : canvasRefImage.current;
+				var draw = new Draw(canvas);
+				draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
+				if (isVideo) {
+					requestAnimationFrame(() => {
+						detectFrame(model, imageFrame);
+					});
+				}
+				tf.engine().endScope();
+			});
 		};
 		return detectFrame;
 	};
