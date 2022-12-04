@@ -24,7 +24,7 @@
 			(bbox[3] - bbox[1]) * imageHeight
 		);
 		context.fillStyle = 'yellow';
-		context.lineWidth = 7;
+		context.lineWidth = 1;
 		context.strokeStyle = 'yellow';
 		context.stroke();
 		// label background.
