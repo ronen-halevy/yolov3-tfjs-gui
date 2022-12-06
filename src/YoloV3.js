@@ -276,8 +276,8 @@ export const YoloV3 = () => {
 							playsInline
 							muted
 							ref={videoRef}
-							width='${imageWidth}' // {String(imageWidth)}
-							height={String(imageWidth)}
+							width={String(imageWidth)}
+							height={String(imageHeight)}
 							id='frame'
 							controls
 						/>
