@@ -10,8 +10,18 @@ import Draw from './draw.js';
 import { image } from '@tensorflow/tfjs';
 import { loadGraphModel } from '@tensorflow/tfjs-converter';
 
+import configData from './config.json';
+
 const imageHeight = 416;
 const imageWidth = 416;
+
+const inputImageRenderWidth = 200;
+const inputImageRenderHeight = 200;
+
+let nclasses = 7; // TODO!!
+let yoloMaxBoxes = 100;
+let nmsIouThreshold = 0.5;
+let nmsScoreThreshold = 0.1;
 
 const MODEL_URL =
 	'https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/test_temp/model.json';
@@ -54,7 +64,7 @@ export const YoloV3 = () => {
 
 	const getVideo = () => {
 		navigator.mediaDevices
-			.getUserMedia({ video: { width: 300 } })
+			.getUserMedia({ video: {} })
 			.then((stream) => {
 				let video = videoRef.current;
 				video.srcObject = stream;
@@ -71,10 +81,6 @@ export const YoloV3 = () => {
 			const imageTensor = imagePreprocess(imageFrame);
 			const model_output_grids = model.predict(imageTensor);
 
-			let nclasses = 7; // TODO!!
-			let yoloMaxBoxes = 100;
-			let nmsIouThreshold = 0.5;
-			let nmsScoreThreshold = 0.1;
 			// Decode predictions: combines all grids detection results
 			let [bboxes, confidences, classProbs] = yoloDecode(
 				model_output_grids,
@@ -121,18 +127,18 @@ export const YoloV3 = () => {
 		return tensor;
 	};
 
-	const takePhoto = () => {
-		let photo = photoRef.current;
-		console.warn(strip);
-		const data = photo.toDataURL('image/jpeg');
+	// const takePhoto = () => {
+	// 	let photo = photoRef.current;
+	// 	console.warn(strip);
+	// 	const data = photo.toDataURL('image/jpeg');
 
-		console.warn(data);
-		const link = document.createElement('a');
-		link.href = data;
-		link.setAttribute('download', 'myWebcam');
-		link.innerHTML = `<img src='${data}' alt='thumbnail'/>`;
-		strip.insertBefore(link, strip.firstChild);
-	};
+	// 	console.warn(data);
+	// 	const link = document.createElement('a');
+	// 	link.href = data;
+	// 	link.setAttribute('download', 'myWebcam');
+	// 	link.innerHTML = `<img src=document.getElementById(data) alt='thumbnail'/>`;
+	// 	strip.insertBefore(link, strip.firstChild);
+	// };
 
 	const playVideoFile = (file) => {
 		var type = file.type;
@@ -270,8 +276,8 @@ export const YoloV3 = () => {
 							playsInline
 							muted
 							ref={videoRef}
-							width='416'
-							height='416'
+							width='${imageWidth}' // {String(imageWidth)}
+							height={String(imageWidth)}
 							id='frame'
 							controls
 						/>
@@ -285,8 +291,8 @@ export const YoloV3 = () => {
 							id='myimage'
 							src={imageUrl}
 							alt='image'
-							width='200'
-							height='200'
+							width={String(inputImageRenderWidth)}
+							height={String(inputImageRenderHeight)}
 						/>
 					)}
 				</div>
