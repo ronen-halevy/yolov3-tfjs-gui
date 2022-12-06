@@ -8,11 +8,16 @@ import yoloDecode from './yoloDecode.js';
 import yoloNms from './yoloNms.js';
 import Draw from './draw.js';
 import { image } from '@tensorflow/tfjs';
+import { loadGraphModel } from '@tensorflow/tfjs-converter';
 
 const imageHeight = 416;
 const imageWidth = 416;
 
-const MODEL_URL = 'http://127.0.0.1:8887/models/shapes/model.json';
+const MODEL_URL =
+	'https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/test_temp/model.json';
+
+const ANCHOR_URL =
+	'https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/anchors_coco.json';
 
 export const YoloV3 = () => {
 	const videoRef = useRef(null);
@@ -20,9 +25,16 @@ export const YoloV3 = () => {
 	const canvasRefVideo = useRef(null);
 	const canvasRefImage = useRef(null);
 
-	const [model, setModel] = useState(null);
-	const [jsxVisibility, setJsxVisibility] = useState('invisible');
+	const [selectedVidFile, setSelectedVidFile] = useState('');
+	const [selectedImageFile, setSelectedImageFile] = useState('');
+	const [imageUrl, setImageUrl] = useState(null);
+	const [vidFileName, setVidFileName] = useState(null);
+	const [imageFileName, setImageFileName] = useState(null);
 
+	const [model, setModel] = useState(null);
+	const [anchors, setAnchors] = useState(null);
+
+	const [jsxVisibility, setJsxVisibility] = useState('invisible');
 	let photo = photoRef.current;
 
 	let classesDir = {
@@ -35,12 +47,6 @@ export const YoloV3 = () => {
 			id: 2,
 		},
 	};
-
-	const [selectedVidFile, setSelectedVidFile] = useState('');
-	const [selectedImageFile, setSelectedImageFile] = useState('');
-	const [imageUrl, setImageUrl] = useState(null);
-	const [vidFileName, setVidFileName] = useState(null);
-	const [imageFileName, setImageFileName] = useState(null);
 
 	useEffect(() => {
 		getVideo();
@@ -68,13 +74,12 @@ export const YoloV3 = () => {
 			let nclasses = 7; // TODO!!
 			let yoloMaxBoxes = 100;
 			let nmsIouThreshold = 0.5;
-			let nmsScoreThreshold = 0.3;
-			const MODEL_URL = 'http://127.0.0.1:8887/models/shapes/model.json';
-
+			let nmsScoreThreshold = 0.1;
 			// Decode predictions: combines all grids detection results
 			let [bboxes, confidences, classProbs] = yoloDecode(
 				model_output_grids,
-				nclasses
+				nclasses,
+				anchors
 			);
 			let axis = -1;
 			let classIndices = classProbs.argMax(axis);
@@ -150,18 +155,18 @@ export const YoloV3 = () => {
 	}
 	/* Use Effect Hooks:*/
 
-	// Load and create model on start
 	useEffect(() => {
-		const buildModel = async () => {
-			setModel(await tf.loadLayersModel(MODEL_URL));
-		};
-		buildModel();
+		const modelPromise = tf.loadLayersModel(MODEL_URL);
+		const anchorsPromise = fetch(ANCHOR_URL).then((response) =>
+			response.json()
+		);
+		Promise.all([modelPromise, anchorsPromise]).then((values) => {
+			setModel(values[0]);
+			setAnchors(values[1].anchor);
+			// model and anchors ready. All ready to go - so unhide gui
+			setJsxVisibility('visible');
+		});
 	}, []);
-
-	// Unhide display when model is ready - protect from starting before that
-	useEffect(() => {
-		setJsxVisibility('visible');
-	}, [model]);
 
 	// init video session when
 	useEffect(() => {
