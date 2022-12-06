@@ -36,6 +36,4 @@ const yoloNms = (
 	return nms;
 };
 
-const ff2a = (bboxes, classIndices, scores, nmsResults) => {};
-
 export default yoloNms;

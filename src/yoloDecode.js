@@ -29,22 +29,7 @@ function arrange_bbox(xy, wh) {
 	return bbox;
 }
 
-function getAnchors(anchors_file) {
-	const nanchors_per_scale = 3;
-	const anchor_entry_size = 2;
-}
-
 function yoloDecode(grids_outputs, nclasses, anchors) {
-	// const anchors = [
-	// 	0.16827, 0.16827, 0.16827, 0.16827, 0.16827, 0.16827, 0.16827, 0.16827,
-	// 	0.16827, 0.16827, 0.16827, 0.16827,
-	// ];
-
-	// const anchors = [
-	// 	0.194711538, 0.197115385, 0.324519231, 0.40625, 0.826923077, 0.766826923,
-	// 	0.02403846, 0.03365384, 0.05528846, 0.064903846, 0.0889423, 0.139423077,
-	// ];
-
 	const nanchors_per_scale = 3;
 	const anchor_entry_size = 2;
 	let anchors_table = tf.reshape(anchors, [
