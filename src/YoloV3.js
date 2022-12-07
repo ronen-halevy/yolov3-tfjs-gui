@@ -12,51 +12,44 @@ import { loadGraphModel } from '@tensorflow/tfjs-converter';
 
 import configData from './config.json';
 
-const imageHeight = 416;
-const imageWidth = 416;
-
-const inputImageRenderWidth = 200;
-const inputImageRenderHeight = 200;
-
-let nclasses = 7; // TODO!!
-let yoloMaxBoxes = 100;
-let nmsIouThreshold = 0.5;
-let nmsScoreThreshold = 0.1;
-
-const MODEL_URL =
-	'https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/test_temp/model.json';
-
-const ANCHOR_URL =
-	'https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/anchors_coco.json';
-
 export const YoloV3 = () => {
+	// Yolo input width:
+	const imageHeight = 416;
+	const imageWidth = 416;
+
+	// Load Configs
+	let yoloMaxBoxes = configData.yoloMaxBoxes;
+	let nmsIouThreshold = configData.nmsIouThreshold;
+	let nmsScoreThreshold = configData.nmsScoreThreshold;
+	const modelUrl = configData.modelUrl;
+	const anchorsUrl = configData.anchorsUrl;
+	const cocoClassNamesUrl = configData.cocoClassNamesUrl;
+	const font = configData.font;
+	const lineWidth = configData.lineWidth;
+	const lineColor = configData.lineColor;
+	const textColor = configData.textColor;
+	const textBackgoundColor = configData.textBackgoundColor;
+	const textAlpha = configData.textAlpha;
+	const textBackgroundAlpha = configData.textBackgroundAlpha;
+	const lineAlpha = configData.lineAlpha;
+
+	// Refs:
 	const videoRef = useRef(null);
 	const photoRef = useRef(null);
 	const canvasRefVideo = useRef(null);
 	const canvasRefImage = useRef(null);
 
+	// States:
 	const [selectedVidFile, setSelectedVidFile] = useState('');
 	const [selectedImageFile, setSelectedImageFile] = useState('');
 	const [imageUrl, setImageUrl] = useState(null);
 	const [vidFileName, setVidFileName] = useState(null);
 	const [imageFileName, setImageFileName] = useState(null);
-
 	const [model, setModel] = useState(null);
 	const [anchors, setAnchors] = useState(null);
-
+	const [classNames, setClassNames] = useState(null);
+	const [nclasses, setNclasses] = useState(null);
 	const [jsxVisibility, setJsxVisibility] = useState('invisible');
-	let photo = photoRef.current;
-
-	let classesDir = {
-		1: {
-			name: 'Kangaroo',
-			id: 1,
-		},
-		2: {
-			name: 'Other',
-			id: 2,
-		},
-	};
 
 	useEffect(() => {
 		getVideo();
@@ -106,7 +99,18 @@ export const YoloV3 = () => {
 			nmsResult.then((reasultArrays) => {
 				let [selBboxes, scores, classIndices] = reasultArrays;
 				let canvas = isVideo ? canvasRefVideo.current : canvasRefImage.current;
-				var draw = new Draw(canvas);
+				var draw = new Draw(
+					canvas,
+					classNames,
+					font,
+					lineWidth,
+					lineColor,
+					textColor,
+					textBackgoundColor,
+					textAlpha,
+					textBackgroundAlpha,
+					lineAlpha
+				);
 				draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
 				if (isVideo) {
 					requestAnimationFrame(() => {
@@ -126,19 +130,6 @@ export const YoloV3 = () => {
 		tensor = tensor.div(255);
 		return tensor;
 	};
-
-	// const takePhoto = () => {
-	// 	let photo = photoRef.current;
-	// 	console.warn(strip);
-	// 	const data = photo.toDataURL('image/jpeg');
-
-	// 	console.warn(data);
-	// 	const link = document.createElement('a');
-	// 	link.href = data;
-	// 	link.setAttribute('download', 'myWebcam');
-	// 	link.innerHTML = `<img src=document.getElementById(data) alt='thumbnail'/>`;
-	// 	strip.insertBefore(link, strip.firstChild);
-	// };
 
 	const playVideoFile = (file) => {
 		var type = file.type;
@@ -162,16 +153,27 @@ export const YoloV3 = () => {
 	/* Use Effect Hooks:*/
 
 	useEffect(() => {
-		const modelPromise = tf.loadLayersModel(MODEL_URL);
-		const anchorsPromise = fetch(ANCHOR_URL).then((response) =>
+		const modelPromise = tf.loadLayersModel(modelUrl);
+		const anchorsPromise = fetch(anchorsUrl).then((response) =>
 			response.json()
 		);
-		Promise.all([modelPromise, anchorsPromise]).then((values) => {
-			setModel(values[0]);
-			setAnchors(values[1].anchor);
-			// model and anchors ready. All ready to go - so unhide gui
-			setJsxVisibility('visible');
-		});
+
+		const cocoClassNamesPromise = fetch(cocoClassNamesUrl).then((x) =>
+			x.text()
+		);
+
+		Promise.all([modelPromise, anchorsPromise, cocoClassNamesPromise]).then(
+			(values) => {
+				setModel(values[0]);
+				setAnchors(values[1].anchor);
+
+				const classNames = values[2].split(/\r?\n/);
+				setClassNames(classNames);
+				setNclasses(classNames.length);
+				// model and anchors ready. All ready to go - so unhide gui
+				setJsxVisibility('visible');
+			}
+		);
 	}, []);
 
 	// init video session when
@@ -265,46 +267,39 @@ export const YoloV3 = () => {
 				</div>
 			</div>
 
-			<div className='row'>
-				<div className='mb-3'></div>
-				<div className='col-6 '>
-					{vidFileName && (
-						<video
-							style={{ height: '200px', width: '200px' }}
-							className='size'
-							autoPlay
-							playsInline
-							muted
-							ref={videoRef}
-							width={String(imageWidth)}
-							height={String(imageHeight)}
-							id='frame'
-							controls
-						/>
-					)}
-				</div>
-				<div className='col-6'>
-					{/* Hide image element before any image is selected */}
-					{imageFileName && (
-						<img
-							className=''
-							id='myimage'
-							src={imageUrl}
-							alt='image'
-							width={String(inputImageRenderWidth)}
-							height={String(inputImageRenderHeight)}
-						/>
-					)}
-				</div>
-			</div>
-			<div className='gap-3'></div>
+			{/* <div className='row'> */}
+			{/* <div className='mb-3'></div> */}
+			{vidFileName && (
+				<video
+					className='invisible'
+					autoPlay
+					playsInline
+					muted
+					ref={videoRef}
+					width={String(416)}
+					height={String(416)}
+					id='frame'
+					controls
+				/>
+			)}
+			{imageFileName && (
+				<img
+					className='invisible'
+					id='myimage'
+					src={imageUrl}
+					alt='image'
+					width={String(imageHeight)}
+					height={String(imageHeight)}
+				/>
+			)}
+			{/* </div> */}
+			{/* <div className='gap-3'></div> */}
 
 			<div className='row'>
-				<div className='col-6'>
+				<div>
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
 				</div>
-
-				<div className='col-6'>
+				<div>
 					<canvas className='image' ref={canvasRefImage} width='' height='' />
 				</div>
 			</div>

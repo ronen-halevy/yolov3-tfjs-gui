@@ -1,8 +1,28 @@
 /**
  * Contains methods to draw bounding boxes and text annotations on an image's (same as a single frame) detection.
  */ class Draw {
-	constructor(canvas) {
+	constructor(
+		canvas,
+		classNames,
+		font,
+		lineWidth,
+		lineColor,
+		textColor,
+		textBackgoundColor,
+		textAlpha,
+		textBackgroundAlpha,
+		lineAlpha
+	) {
 		this.canvas = canvas;
+		this.classNames = classNames;
+		this.font = font;
+		this.lineWidth = lineWidth;
+		this.lineColor = lineColor;
+		this.textColor = textColor;
+		this.textBackgoundColor = textBackgoundColor;
+		this.textAlpha = textAlpha;
+		this.textBackgroundAlpha = textBackgroundAlpha;
+		this.lineAlpha = lineAlpha;
 	}
 	/**
 	 * @summary Draws a bounding box and text annotations for a detection
@@ -14,35 +34,46 @@
 	 * @param {float} imageHeight - Input image's original height.
 	 */
 
-	drawBbox(context, bbox, score, classId, imageWidth, imageHeight) {
-		const font = '16px sans-serif';
+	drawBbox(context, bbox, score, className, imageWidth, imageHeight) {
 		context.beginPath();
+
+		// render bounding box
 		context.rect(
 			bbox[0] * imageWidth,
 			bbox[1] * imageHeight,
 			(bbox[2] - bbox[0]) * imageWidth,
 			(bbox[3] - bbox[1]) * imageHeight
 		);
-		context.fillStyle = 'yellow';
-		context.lineWidth = 1;
-		context.strokeStyle = 'yellow';
+		context.globalAlpha = this.lineAlpha;
+		context.fillStyle = this.lineColor;
+		context.lineWidth = this.lineWidth;
+		context.strokeStyle = this.lineColor;
 		context.stroke();
-		// label background.
-		context.fillStyle = 'white';
-		const textWidth = context.measureText(
-			classId + ' ' + (100 * score).toFixed(2) + '%'
-		).width;
 
-		const textHeight = parseInt(font, 10); // base 10
+		// render text background.
+		const annotationText = className + ' ' + (100 * score).toFixed(2) + '%';
+
+		context.fillStyle = this.textBackgoundColor;
+		const textHeight = parseInt(this.font, 10); // base 10
+		// console.log('bbox', className, bbox);
+		context.font = this.font;
+		const textWidth = context.measureText(annotationText).width;
+
+		context.globalAlpha = this.textAlpha;
+
 		context.fillRect(
 			bbox[0] * imageWidth,
-			bbox[1] * imageWidth - textHeight / 2,
+			bbox[1] * imageWidth - textHeight,
 			textWidth,
 			textHeight
 		);
-		context.fillStyle = '#000000';
+
+		// render text
+		context.fillStyle = this.textColor;
+		context.globalAlpha = this.textBackgroundAlpha;
+
 		context.fillText(
-			classId + ' ' + (100 * score).toFixed(2) + '%',
+			annotationText,
 			bbox[0] * imageWidth,
 			bbox[1] * imageWidth
 		);
@@ -72,7 +103,7 @@
 				context,
 				box,
 				scores[idx],
-				classIndices[idx],
+				this.classNames[classIndices[idx]],
 				imageWidth,
 				imageHeight
 			)
