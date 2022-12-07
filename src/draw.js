@@ -8,10 +8,7 @@
 		lineWidth,
 		lineColor,
 		textColor,
-		textBackgoundColor,
-		textAlpha,
-		textBackgroundAlpha,
-		lineAlpha
+		textBackgoundColor
 	) {
 		this.canvas = canvas;
 		this.classNames = classNames;
@@ -20,9 +17,6 @@
 		this.lineColor = lineColor;
 		this.textColor = textColor;
 		this.textBackgoundColor = textBackgoundColor;
-		this.textAlpha = textAlpha;
-		this.textBackgroundAlpha = textBackgroundAlpha;
-		this.lineAlpha = lineAlpha;
 	}
 	/**
 	 * @summary Draws a bounding box and text annotations for a detection
@@ -44,39 +38,34 @@
 			(bbox[2] - bbox[0]) * imageWidth,
 			(bbox[3] - bbox[1]) * imageHeight
 		);
-		context.globalAlpha = this.lineAlpha;
 		context.fillStyle = this.lineColor;
 		context.lineWidth = this.lineWidth;
 		context.strokeStyle = this.lineColor;
 		context.stroke();
 
-		// render text background.
 		const annotationText = className + ' ' + (100 * score).toFixed(2) + '%';
 
 		context.fillStyle = this.textBackgoundColor;
 		const textHeight = parseInt(this.font, 10); // base 10
-		// console.log('bbox', className, bbox);
 		context.font = this.font;
 		const textWidth = context.measureText(annotationText).width;
 
-		context.globalAlpha = this.textAlpha;
+		// render text background.
+		const textX =
+			bbox[0] * imageWidth + textWidth < imageWidth
+				? bbox[0] * imageWidth
+				: imageWidth - textWidth;
+		const textY =
+			bbox[1] * imageHeight - textHeight > 0
+				? bbox[1] * imageHeight
+				: bbox[1] * imageHeight + textHeight;
 
-		context.fillRect(
-			bbox[0] * imageWidth,
-			bbox[1] * imageWidth - textHeight,
-			textWidth,
-			textHeight
-		);
+		context.fillRect(textX, textY - textHeight, textWidth, textHeight);
 
 		// render text
 		context.fillStyle = this.textColor;
-		context.globalAlpha = this.textBackgroundAlpha;
 
-		context.fillText(
-			annotationText,
-			bbox[0] * imageWidth,
-			bbox[1] * imageWidth
-		);
+		context.fillText(annotationText, textX, textY);
 	}
 
 	/**

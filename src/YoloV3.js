@@ -11,6 +11,7 @@ import { image } from '@tensorflow/tfjs';
 import { loadGraphModel } from '@tensorflow/tfjs-converter';
 
 import configData from './config.json';
+import Input from './components/Input.js';
 
 export const YoloV3 = () => {
 	// Yolo input width:
@@ -29,9 +30,6 @@ export const YoloV3 = () => {
 	const lineColor = configData.lineColor;
 	const textColor = configData.textColor;
 	const textBackgoundColor = configData.textBackgoundColor;
-	const textAlpha = configData.textAlpha;
-	const textBackgroundAlpha = configData.textBackgroundAlpha;
-	const lineAlpha = configData.lineAlpha;
 
 	// Refs:
 	const videoRef = useRef(null);
@@ -94,9 +92,7 @@ export const YoloV3 = () => {
 				yoloMaxBoxes,
 				nmsIouThreshold,
 				nmsScoreThreshold
-			);
-
-			nmsResult.then((reasultArrays) => {
+			).then((reasultArrays) => {
 				let [selBboxes, scores, classIndices] = reasultArrays;
 				let canvas = isVideo ? canvasRefVideo.current : canvasRefImage.current;
 				var draw = new Draw(
@@ -106,10 +102,7 @@ export const YoloV3 = () => {
 					lineWidth,
 					lineColor,
 					textColor,
-					textBackgoundColor,
-					textAlpha,
-					textBackgroundAlpha,
-					lineAlpha
+					textBackgoundColor
 				);
 				draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
 				if (isVideo) {
@@ -240,62 +233,41 @@ export const YoloV3 = () => {
 			<h2 className='text-center'>Yolo TfJs Demo</h2>
 
 			{/* set invisible before model loaded - at start, practically not noticed */}
-			<div className={jsxVisibility}>
-				<div className='row'>
-					{/* Hack Explained: filename is changed to '' to let onChange event even for
-					same. To avoid "No file chosen" text by input, it is set
-					invisible+label */}
-
-					<input
-						className=' invisible'
-						id='files'
-						type='file'
-						onChange={onChangeFile}
-						accept='video/*, image/*'
-					/>
-
-					<div className='col-4'></div>
-					<label htmlFor='files' className='btn btn-success col-4'>
-						Select Image/Video File
-					</label>
-				</div>
-				<div className='row justify-content-center'>
-					<b className='col-4'>{vidFileName}</b>
-				</div>
-				<div className='row justify-content-center'>
-					<b className='col-4'>{imageFileName}</b>
-				</div>
-			</div>
+			<Input
+				jsxVisibility={jsxVisibility}
+				vidFileName={vidFileName}
+				imageFileName={imageFileName}
+				onChangeFile={onChangeFile}
+			/>
 
 			{/* <div className='row'> */}
 			{/* <div className='mb-3'></div> */}
-			{vidFileName && (
-				<video
-					className='invisible'
-					autoPlay
-					playsInline
-					muted
-					ref={videoRef}
-					width={String(416)}
-					height={String(416)}
-					id='frame'
-					controls
-				/>
-			)}
-			{imageFileName && (
-				<img
-					className='invisible'
-					id='myimage'
-					src={imageUrl}
-					alt='image'
-					width={String(imageHeight)}
-					height={String(imageHeight)}
-				/>
-			)}
-			{/* </div> */}
-			{/* <div className='gap-3'></div> */}
-
 			<div className='row'>
+				{imageFileName && (
+					<img
+						className='invisible'
+						id='myimage'
+						src={imageUrl}
+						alt='image'
+						width={String(imageHeight)}
+						height={String(imageHeight)}
+					/>
+				)}
+				<div>
+					{vidFileName && (
+						<video
+							className='iinvisible'
+							autoPlay
+							playsInline
+							muted
+							ref={videoRef}
+							width={String(416)}
+							height={String(416)}
+							id='frame'
+							controls
+						/>
+					)}
+				</div>
 				<div>
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
 				</div>
