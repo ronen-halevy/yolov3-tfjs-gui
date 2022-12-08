@@ -11,14 +11,15 @@ import { image } from '@tensorflow/tfjs';
 import { loadGraphModel } from '@tensorflow/tfjs-converter';
 
 import configData from './config.json';
-import Input from './components/Input.js';
+import SelectFile from './components/SelectFile.js';
 
 export const YoloV3 = () => {
 	// Yolo input width:
 	const imageHeight = 416;
 	const imageWidth = 416;
 
-	// Load Configs
+	// Load Configs // Todo check if called each invocation
+	console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1');
 	let yoloMaxBoxes = configData.yoloMaxBoxes;
 	let nmsIouThreshold = configData.nmsIouThreshold;
 	let nmsScoreThreshold = configData.nmsScoreThreshold;
@@ -124,14 +125,23 @@ export const YoloV3 = () => {
 		return tensor;
 	};
 
-	const playVideoFile = (file) => {
+	const playVideoFile = (file, enable) => {
 		var type = file.type;
 		let video = videoRef.current;
 		var URL = window.URL || window.webkitURL;
 		var fileURL = URL.createObjectURL(file);
 		video.src = fileURL;
-		video.play();
+		enable ? video.play() : video.pause();
 	};
+
+	// const stopPlayVideoFile = (file) => {
+	// 	var type = file.type;
+	// 	let video = videoRef.current;
+	// 	var URL = window.URL || window.webkitURL;
+	// 	var fileURL = URL.createObjectURL(file);
+	// 	video.src = fileURL;
+	// 	video.pause();
+	// };
 
 	// create image file read promise
 	function fileToDataUri(field) {
@@ -145,7 +155,7 @@ export const YoloV3 = () => {
 	}
 	/* Use Effect Hooks:*/
 
-	useEffect(() => {
+	const initModel = () => {
 		const modelPromise = tf.loadLayersModel(modelUrl);
 		const anchorsPromise = fetch(anchorsUrl).then((response) =>
 			response.json()
@@ -167,19 +177,22 @@ export const YoloV3 = () => {
 				setJsxVisibility('visible');
 			}
 		);
+	};
+	useEffect(() => {
+		initModel();
 	}, []);
 
 	// init video session when
 	useEffect(() => {
 		if (selectedVidFile) {
-			playVideoFile(selectedVidFile);
+			playVideoFile(selectedVidFile, true);
 			var isVideo = true;
 			var imageFrame = videoRef.current;
 
 			// const modelPromise = LoadModel();
 			const detectFrame = makeDetectFrame(isVideo);
 
-			let promiseVideoMetadata = new Promise((resolve, reject) => {
+			let promiseVideoMetadata = new Promise((resolve) => {
 				videoRef.current.onloadedmetadata = () => {
 					resolve();
 				};
@@ -193,14 +206,28 @@ export const YoloV3 = () => {
 	useEffect(() => {
 		if (selectedImageFile) {
 			var isVideo = false;
-			var imageFrame = new window.Image();
-			var promise = fileToDataUri(selectedImageFile);
-			promise.then((contents) => {
-				imageFrame.src = contents;
+			// patch - Aims to fix image selection while video is on. Sometimes fails
+			// So stop video and wait. Still dirty, TBD if patch improves
+			const stopVideoPromise = new Promise((resolve, reject) => {
+				setTimeout(() => {
+					if (selectedVidFile != '') {
+						playVideoFile(selectedVidFile, false);
+						setSelectedVidFile('');
+					}
+					resolve(); // Yay! Everything went well!
+				}, 200);
 			});
-			const detectFrame = makeDetectFrame(isVideo);
-			imageFrame.addEventListener('load', async () => {
-				detectFrame(model, imageFrame);
+
+			stopVideoPromise.then(() => {
+				var imageFrame = new window.Image();
+				var promise = fileToDataUri(selectedImageFile);
+				promise.then((contents) => {
+					imageFrame.src = contents;
+				});
+				const detectFrame = makeDetectFrame(isVideo);
+				imageFrame.addEventListener('load', async () => {
+					detectFrame(model, imageFrame);
+				});
 			});
 		}
 	}, [selectedImageFile]);
@@ -232,8 +259,32 @@ export const YoloV3 = () => {
 		<div className='container '>
 			<h2 className='text-center'>Yolo TfJs Demo</h2>
 
+			{/* <div class='form-check'>
+				<input
+					className='form-check-input'
+					type='radio'
+					name='flexRadioDefault'
+					id='flexRadioDefault1'
+				/>
+				<label className='form-check-label' for='flexRadioDefault1'>
+					Default radio
+				</label>
+			</div>
+			<div class='form-check '>
+				<input
+					className='form-check-input '
+					type='radio'
+					name='flexRadioDefault'
+					id='flexRadioDefault2'
+					checked
+				/>
+				<label className='form-check-label' for='flexRadioDefault2'>
+					Default checked radio
+				</label>
+			</div>
+ */}
 			{/* set invisible before model loaded - at start, practically not noticed */}
-			<Input
+			<SelectFile
 				jsxVisibility={jsxVisibility}
 				vidFileName={vidFileName}
 				imageFileName={imageFileName}
@@ -242,32 +293,8 @@ export const YoloV3 = () => {
 
 			{/* <div className='row'> */}
 			{/* <div className='mb-3'></div> */}
+
 			<div className='row'>
-				{imageFileName && (
-					<img
-						className='invisible'
-						id='myimage'
-						src={imageUrl}
-						alt='image'
-						width={String(imageHeight)}
-						height={String(imageHeight)}
-					/>
-				)}
-				<div>
-					{vidFileName && (
-						<video
-							className='iinvisible'
-							autoPlay
-							playsInline
-							muted
-							ref={videoRef}
-							width={String(416)}
-							height={String(416)}
-							id='frame'
-							controls
-						/>
-					)}
-				</div>
 				<div>
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
 				</div>
@@ -275,6 +302,30 @@ export const YoloV3 = () => {
 					<canvas className='image' ref={canvasRefImage} width='' height='' />
 				</div>
 			</div>
+			{/* Can remove  these: TODO */}
+			{imageFileName && (
+				<img
+					className='invisible'
+					id='myimage'
+					src={imageUrl}
+					alt='image'
+					width={String(imageHeight)}
+					height={String(imageHeight)}
+				/>
+			)}
+			{vidFileName && (
+				<video
+					className='invisible'
+					autoPlay
+					playsInline
+					muted
+					ref={videoRef}
+					width={String(416)}
+					height={String(416)}
+					id='frame'
+					controls
+				/>
+			)}
 		</div>
 	);
 };
