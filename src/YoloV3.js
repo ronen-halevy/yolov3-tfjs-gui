@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as tf from '@tensorflow/tfjs';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 tf.setBackend('webgl');
 
@@ -31,6 +32,9 @@ export const YoloV3 = () => {
 	const [classNames, setClassNames] = useState(null);
 	const [nclasses, setNclasses] = useState(null);
 	const [jsxVisibility, setJsxVisibility] = useState('invisible');
+	const [selectedModel, setSelectedModel] = useState(
+		'YoloV3 Lite with Coco Weights'
+	);
 
 	useEffect(() => {
 		getVideo();
@@ -112,7 +116,7 @@ export const YoloV3 = () => {
 	};
 
 	const playVideoFile = (file, enable) => {
-		var type = file.type;
+		// var type = file.type;
 		let video = videoRef.current;
 		var URL = window.URL || window.webkitURL;
 		var fileURL = URL.createObjectURL(file);
@@ -236,34 +240,95 @@ export const YoloV3 = () => {
 		}
 	};
 
+	const onChangeCocoLite = (event) => {
+		setSelectedModel(event.target.id);
+		if (event.target)
+			console.log('???!!!!!!!!!!!!!!!!!!!!!onChaneDropdown ', event);
+	};
+
+	const onChangeCoco = (event) => {
+		setSelectedModel(event.target.id);
+
+		if (event.target)
+			console.log('???!!!!!!!!!!!!!!!!!!!!!onChaneDropdown ', event);
+	};
+
+	const onChangeShapesLite = (event) => {
+		setSelectedModel(event.target.id);
+
+		if (event.target)
+			console.log('???!!!!!!!!!!!!!!!!!!!!!onChaneDropdown ', event);
+	};
+
+	const onChangeShapes = (event) => {
+		setSelectedModel(event.target.id);
+
+		if (event.target)
+			console.log('???!!!!!!!!!!!!!!!!!!!!!onChaneDropdown ', event);
+	};
 	return (
 		<div className='container '>
 			<h2 className='text-center'>Yolo TfJs Demo</h2>
+			<h2 className='text-center mt-5'>Select a Model</h2>
 
-			{/* <div class='form-check'>
-				<input
-					className='form-check-input'
-					type='radio'
-					name='flexRadioDefault'
-					id='flexRadioDefault1'
-				/>
-				<label className='form-check-label' for='flexRadioDefault1'>
-					Default radio
-				</label>
+			<div className='row'>
+				<div className='col-4'></div>
+
+				<button
+					className='btn btn-primary dropdown-toggle 	col-4 gap-30
+'
+					type='button'
+					data-bs-toggle='dropdown'
+					aria-expanded='false'
+				>
+					{selectedModel}
+				</button>
+				<div>
+					<ul className='dropdown-menu'>
+						<li>
+							<button
+								className='dropdown-item col-4'
+								type='button'
+								id='YoloV3 Lite with Coco Weights'
+								onClick={onChangeCocoLite}
+							>
+								YoloV3-Lite with Coco Weights
+							</button>
+						</li>
+						<li>
+							<button
+								className='dropdown-item col-4'
+								type='button'
+								id='YoloV3 Lite with Shapes Weights'
+								onClick={onChangeCocoLite}
+							>
+								YoloV3-Lite-with-Shapes-Weights
+							</button>
+						</li>
+						<li>
+							<button
+								className='dropdown-item'
+								type='button'
+								id='YoloV3 with Shapes Weights'
+								onClick={onChangeShapesLite}
+							>
+								YoloV3-with-Coco-Weights
+							</button>
+						</li>
+						<li>
+							<button
+								className='dropdown-item'
+								type='button'
+								id='YoloV3 with Shapes Weights'
+								onClick={onChangeShapes}
+							>
+								YoloV3-with-Shapes-Weights
+							</button>
+						</li>
+					</ul>
+				</div>
 			</div>
-			<div class='form-check '>
-				<input
-					className='form-check-input '
-					type='radio'
-					name='flexRadioDefault'
-					id='flexRadioDefault2'
-					checked
-				/>
-				<label className='form-check-label' for='flexRadioDefault2'>
-					Default checked radio
-				</label>
-			</div>
- */}
+
 			{/* set invisible before model loaded - at start, practically not noticed */}
 			<SelectFile
 				jsxVisibility={jsxVisibility}
@@ -275,7 +340,7 @@ export const YoloV3 = () => {
 			{/* <div className='row'> */}
 			{/* <div className='mb-3'></div> */}
 
-			<div className='row'>
+			<div className='row '>
 				<div>
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
 				</div>

@@ -7,7 +7,7 @@ const SelectFile = (props) => {
 				{/* Hack Explained: filename is changed to '' to let onChange event even for
 					same. To avoid "No file chosen" text by input, it is set
 					invisible+label */}
-
+				<h2 className='text-center mt-5'>Select Input Video or Image File</h2>
 				<input
 					className=' invisible'
 					id='files'
@@ -18,7 +18,7 @@ const SelectFile = (props) => {
 
 				<div className='col-4'></div>
 				<label htmlFor='files' className='btn btn-success col-4'>
-					Select Image/Video File
+					Select
 				</label>
 			</div>
 			<div className='row justify-content-center'>
