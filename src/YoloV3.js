@@ -14,24 +14,6 @@ import configData from './config.json';
 import SelectFile from './components/SelectFile.js';
 
 export const YoloV3 = () => {
-	// Yolo input width:
-	const imageHeight = 416;
-	const imageWidth = 416;
-
-	// Load Configs // Todo check if called each invocation
-	console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1');
-	let yoloMaxBoxes = configData.yoloMaxBoxes;
-	let nmsIouThreshold = configData.nmsIouThreshold;
-	let nmsScoreThreshold = configData.nmsScoreThreshold;
-	const modelUrl = configData.modelUrl;
-	const anchorsUrl = configData.anchorsUrl;
-	const cocoClassNamesUrl = configData.cocoClassNamesUrl;
-	const font = configData.font;
-	const lineWidth = configData.lineWidth;
-	const lineColor = configData.lineColor;
-	const textColor = configData.textColor;
-	const textBackgoundColor = configData.textBackgoundColor;
-
 	// Refs:
 	const videoRef = useRef(null);
 	const photoRef = useRef(null);
@@ -90,20 +72,21 @@ export const YoloV3 = () => {
 				scores,
 				classIndices,
 
-				yoloMaxBoxes,
-				nmsIouThreshold,
-				nmsScoreThreshold
+				configData.yoloMaxBoxes,
+				configData.nmsIouThreshold,
+				configData.nmsScoreThreshold
 			).then((reasultArrays) => {
 				let [selBboxes, scores, classIndices] = reasultArrays;
 				let canvas = isVideo ? canvasRefVideo.current : canvasRefImage.current;
+
 				var draw = new Draw(
 					canvas,
 					classNames,
-					font,
-					lineWidth,
-					lineColor,
-					textColor,
-					textBackgoundColor
+					configData.font,
+					configData.lineWidth,
+					configData.lineColor,
+					configData.textColor,
+					configData.textBackgoundColor
 				);
 				draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
 				if (isVideo) {
@@ -119,6 +102,9 @@ export const YoloV3 = () => {
 
 	const imagePreprocess = (image) => {
 		const imgTensor = tf.browser.fromPixels(image);
+		// Yolo input width:
+		const imageHeight = 416;
+		const imageWidth = 416;
 		var resized = tf.image.resizeBilinear(imgTensor, [imageHeight, imageWidth]);
 		var tensor = resized.expandDims(0).toFloat();
 		tensor = tensor.div(255);
@@ -134,15 +120,6 @@ export const YoloV3 = () => {
 		enable ? video.play() : video.pause();
 	};
 
-	// const stopPlayVideoFile = (file) => {
-	// 	var type = file.type;
-	// 	let video = videoRef.current;
-	// 	var URL = window.URL || window.webkitURL;
-	// 	var fileURL = URL.createObjectURL(file);
-	// 	video.src = fileURL;
-	// 	video.pause();
-	// };
-
 	// create image file read promise
 	function fileToDataUri(field) {
 		return new Promise((resolve) => {
@@ -156,6 +133,10 @@ export const YoloV3 = () => {
 	/* Use Effect Hooks:*/
 
 	const initModel = () => {
+		const modelUrl = configData.modelUrl;
+		const anchorsUrl = configData.anchorsUrl;
+		const cocoClassNamesUrl = configData.cocoClassNamesUrl;
+
 		const modelPromise = tf.loadLayersModel(modelUrl);
 		const anchorsPromise = fetch(anchorsUrl).then((response) =>
 			response.json()
@@ -309,8 +290,8 @@ export const YoloV3 = () => {
 					id='myimage'
 					src={imageUrl}
 					alt='image'
-					width={String(imageHeight)}
-					height={String(imageHeight)}
+					width={String('')}
+					height={String('')}
 				/>
 			)}
 			{vidFileName && (
