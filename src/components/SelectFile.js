@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Input = (props) => {
+const SelectFile = (props) => {
 	return (
 		<div className={props.jsxVisibility}>
 			<div className='row'>
@@ -30,4 +30,4 @@ const Input = (props) => {
 		</div>
 	);
 };
-export default Input;
+export default SelectFile;
