@@ -13,6 +13,7 @@ import { loadGraphModel } from '@tensorflow/tfjs-converter';
 
 import configData from './config.json';
 import SelectFile from './components/SelectFile.js';
+import SelectModel from './components/SelectModel.js';
 
 export const YoloV3 = () => {
 	// Refs:
@@ -270,65 +271,13 @@ export const YoloV3 = () => {
 		<div className='container '>
 			<h2 className='text-center'>Yolo TfJs Demo</h2>
 			<h2 className='text-center mt-5'>Select a Model</h2>
-
-			<div className='row'>
-				<div className='col-4'></div>
-
-				<button
-					className='btn btn-primary dropdown-toggle 	col-4 gap-30
-'
-					type='button'
-					data-bs-toggle='dropdown'
-					aria-expanded='false'
-				>
-					{selectedModel}
-				</button>
-				<div>
-					<ul className='dropdown-menu'>
-						<li>
-							<button
-								className='dropdown-item col-4'
-								type='button'
-								id='YoloV3 Lite with Coco Weights'
-								onClick={onChangeCocoLite}
-							>
-								YoloV3-Lite with Coco Weights
-							</button>
-						</li>
-						<li>
-							<button
-								className='dropdown-item col-4'
-								type='button'
-								id='YoloV3 Lite with Shapes Weights'
-								onClick={onChangeCocoLite}
-							>
-								YoloV3-Lite-with-Shapes-Weights
-							</button>
-						</li>
-						<li>
-							<button
-								className='dropdown-item'
-								type='button'
-								id='YoloV3 with Shapes Weights'
-								onClick={onChangeShapesLite}
-							>
-								YoloV3-with-Coco-Weights
-							</button>
-						</li>
-						<li>
-							<button
-								className='dropdown-item'
-								type='button'
-								id='YoloV3 with Shapes Weights'
-								onClick={onChangeShapes}
-							>
-								YoloV3-with-Shapes-Weights
-							</button>
-						</li>
-					</ul>
-				</div>
-			</div>
-
+			<SelectModel
+				selectedModel={selectedModel}
+				onChangeCocoLite={onChangeCocoLite}
+				onChangeCoco={onChangeCoco}
+				onChangeShapesLite={onChangeShapesLite}
+				onChangeShapes={onChangeShapes}
+			/>
 			{/* set invisible before model loaded - at start, practically not noticed */}
 			<SelectFile
 				jsxVisibility={jsxVisibility}
