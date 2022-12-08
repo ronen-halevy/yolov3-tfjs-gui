@@ -7,23 +7,28 @@
 
     "yoloMaxBoxes": 100,
     "nmsIouThreshold": 0.5,
-    "nmsScoreThreshold": 0.05,
+    "nmsScoreThreshold": 0.1,
 
     "font": "20px serif",
     "lineWidth": 3,
     "lineColor": "yellow",
     "textColor": "blue",
     "textBackgoundColor": "white",
-    "textAlpha": 1,
-    "textBackgroundAlpha": 0.5,
-    "lineAlpha": 1.0,
 
     "modelUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/coco/model.json",
+        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/shapes/model.json",
+
+    "cocoAnchorsUrl":
+        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoAnchors.json",
+
+
+    "shapesAnchorsUrl":
+        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesAnchors.json",
 
     "anchorsUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/anchors_coco.json",
+        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesAnchors.json",
+   
     
     "cocoClassNamesUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoClassNames.txt"
+        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesClassNames.txt"
 }
