@@ -23,11 +23,11 @@ export const YoloV3 = () => {
 	const canvasRefImage = useRef(null);
 
 	// States:
+	const [selectedFile, setSelectedFile] = useState('');
+
 	const [selectedVidFile, setSelectedVidFile] = useState('');
 	const [selectedImageFile, setSelectedImageFile] = useState('');
 	const [imageUrl, setImageUrl] = useState(null);
-	const [vidFileName, setVidFileName] = useState(null);
-	const [imageFileName, setImageFileName] = useState(null);
 	const [model, setModel] = useState(null);
 	const [anchors, setAnchors] = useState(null);
 	const [classNames, setClassNames] = useState(null);
@@ -36,6 +36,7 @@ export const YoloV3 = () => {
 	const [selectedModel, setSelectedModel] = useState(
 		'YoloV3 Lite with Coco Weights'
 	);
+	const [threshRange, setThreshRange] = useState(configData.nmsIouThreshold);
 
 	useEffect(() => {
 		getVideo();
@@ -72,7 +73,7 @@ export const YoloV3 = () => {
 			confidences = confidences.squeeze(axis);
 			let scores = confidences.mul(classProbs);
 
-			const nmsResult = yoloNms(
+			yoloNms(
 				bboxes,
 				scores,
 				classIndices,
@@ -137,21 +138,19 @@ export const YoloV3 = () => {
 	}
 	/* Use Effect Hooks:*/
 
-	const initModel = () => {
-		const modelUrl = configData.modelUrl;
-		const anchorsUrl = configData.anchorsUrl;
-		const cocoClassNamesUrl = configData.cocoClassNamesUrl;
+	const initModel = (modelData) => {
+		const modelUrl = modelData.modelUrl;
+		const anchorsUrl = modelData.anchorsUrl;
+		const classNamesUrl = modelData.classNamesUrl;
 
 		const modelPromise = tf.loadLayersModel(modelUrl);
 		const anchorsPromise = fetch(anchorsUrl).then((response) =>
 			response.json()
 		);
 
-		const cocoClassNamesPromise = fetch(cocoClassNamesUrl).then((x) =>
-			x.text()
-		);
+		const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
 
-		Promise.all([modelPromise, anchorsPromise, cocoClassNamesPromise]).then(
+		Promise.all([modelPromise, anchorsPromise, classNamesPromise]).then(
 			(values) => {
 				setModel(values[0]);
 				setAnchors(values[1].anchor);
@@ -165,7 +164,7 @@ export const YoloV3 = () => {
 		);
 	};
 	useEffect(() => {
-		initModel();
+		initModel(configData.yolov3TinyCoco);
 	}, []);
 
 	// init video session when
@@ -175,7 +174,6 @@ export const YoloV3 = () => {
 			var isVideo = true;
 			var imageFrame = videoRef.current;
 
-			// const modelPromise = LoadModel();
 			const detectFrame = makeDetectFrame(isVideo);
 
 			let promiseVideoMetadata = new Promise((resolve) => {
@@ -218,76 +216,87 @@ export const YoloV3 = () => {
 		}
 	}, [selectedImageFile]);
 
-	const onChangeImageFile = (event) => {
-		setImageUrl(URL.createObjectURL(event.target.files[0]));
-		setImageFileName(event.target.value);
-
-		setSelectedImageFile(event.target.files[0]);
-		event.target.value = ''; /* Forces onChange event if same file is uploaded*/
-	};
-
-	const onChangeVidFile = (event) => {
-		setSelectedVidFile(event.target.files[0]);
-		setVidFileName(event.target.value);
-		event.target.value = ''; /* Forces onChange event if same file is uploaded*/
-	};
-
-	const onChangeFile = (event) => {
-		const filename = event.target.value;
-		if (filename.match(/\.(jpg|jpeg|png|gif)$/i)) {
-			onChangeImageFile(event);
+	const onClickRun = (event) => {
+		console.log('selectedFile', selectedFile);
+		if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+			setImageUrl(URL.createObjectURL(selectedFile));
+			setSelectedImageFile(selectedFile);
 		} else {
-			onChangeVidFile(event);
+			setSelectedVidFile(selectedFile);
+		}
+	};
+	const onChangeFile = (event) => {
+		console.log('event.target', event.target);
+		console.log('event.target', event.target.files[0]);
+
+		setSelectedFile(event.target.files[0]);
+	};
+
+	const setTinyCoco = (event) => {
+		initModel(configData.yolov3TinyCoco);
+		console.log('setTinyCoco');
+	};
+	const setCoco = (event) => {
+		initModel(configData.yolov3TinyCoco);
+		console.log('setCoco');
+	};
+
+	const setTinyShapes = (event) => {
+		initModel(configData.yolov3TinyShapes);
+		console.log('setTinyShapes');
+	};
+	const setShapes = (event) => {
+		initModel(configData.yolov3TinyShapes);
+		console.log('setShapes');
+	};
+
+	const onChangeModel = (event) => {
+		console.log('onChangeModel', event.target.value, event);
+		switch (event.target.value) {
+			case 'tinyCocoVal':
+				initModel(configData.yolov3TinyCoco);
+			case 'cocoVal':
+				initModel(configData.yolov3TinyCoco);
+			case 'tinyShapesVal':
+				initModel(configData.yolov3TinyShapes);
+			case 'shapesVal':
+				initModel(configData.yolov3TinyShapes);
 		}
 	};
 
-	const onChangeCocoLite = (event) => {
-		setSelectedModel(event.target.id);
-		if (event.target)
-			console.log('???!!!!!!!!!!!!!!!!!!!!!onChaneDropdown ', event);
-	};
-
-	const onChangeCoco = (event) => {
-		setSelectedModel(event.target.id);
-
-		if (event.target)
-			console.log('???!!!!!!!!!!!!!!!!!!!!!onChaneDropdown ', event);
-	};
-
-	const onChangeShapesLite = (event) => {
-		setSelectedModel(event.target.id);
-
-		if (event.target)
-			console.log('???!!!!!!!!!!!!!!!!!!!!!onChaneDropdown ', event);
-	};
-
-	const onChangeShapes = (event) => {
-		setSelectedModel(event.target.id);
-
-		if (event.target)
-			console.log('???!!!!!!!!!!!!!!!!!!!!!onChaneDropdown ', event);
-	};
+	const handleChangeInpuThresh = (event) => {};
 	return (
 		<div className='container '>
 			<h2 className='text-center'>Yolo TfJs Demo</h2>
-			<h2 className='text-center mt-5'>Select a Model</h2>
+			<h2 className='text-center mt-3'>Select a Model</h2>
 			<SelectModel
-				selectedModel={selectedModel}
-				onChangeCocoLite={onChangeCocoLite}
-				onChangeCoco={onChangeCoco}
-				onChangeShapesLite={onChangeShapesLite}
-				onChangeShapes={onChangeShapes}
+				onChangeModel={onChangeModel}
+				tinyCocoVal='tinyCocoVal'
+				cocoVal='tinyCocoVal'
+				tinyShapesVal='tinyShapesVal'
+				shapesVal='shapesVal'
 			/>
+			<h2 className='text-center mt-3'>Select Input</h2>
 			{/* set invisible before model loaded - at start, practically not noticed */}
 			<SelectFile
 				jsxVisibility={jsxVisibility}
-				vidFileName={vidFileName}
-				imageFileName={imageFileName}
+				vidFileName={setSelectedImageFile.name}
+				imageFileName={setSelectedVidFile.name}
 				onChangeFile={onChangeFile}
+				onClickRun={onClickRun}
 			/>
-
-			{/* <div className='row'> */}
-			{/* <div className='mb-3'></div> */}
+			<div className='row'>
+				<label className=' text-center h5'>
+					Set NMS Threshold:
+					<input
+						type='number'
+						min='0'
+						max='1'
+						value={threshRange}
+						onChange={handleChangeInpuThresh}
+					/>
+				</label>
+			</div>
 
 			<div className='row '>
 				<div>
@@ -298,7 +307,7 @@ export const YoloV3 = () => {
 				</div>
 			</div>
 			{/* Can remove  these: TODO */}
-			{imageFileName && (
+			{
 				<img
 					className='invisible'
 					id='myimage'
@@ -307,8 +316,8 @@ export const YoloV3 = () => {
 					width={String('')}
 					height={String('')}
 				/>
-			)}
-			{vidFileName && (
+			}
+			{
 				<video
 					className='invisible'
 					autoPlay
@@ -320,7 +329,7 @@ export const YoloV3 = () => {
 					id='frame'
 					controls
 				/>
-			)}
+			}
 		</div>
 	);
 };
