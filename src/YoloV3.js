@@ -226,29 +226,26 @@ export const YoloV3 = () => {
 		}
 	};
 	const onChangeFile = (event) => {
-		console.log('event.target', event.target);
-		console.log('event.target', event.target.files[0]);
-
 		setSelectedFile(event.target.files[0]);
 	};
 
-	const setTinyCoco = (event) => {
-		initModel(configData.yolov3TinyCoco);
-		console.log('setTinyCoco');
-	};
-	const setCoco = (event) => {
-		initModel(configData.yolov3TinyCoco);
-		console.log('setCoco');
-	};
+	// const setTinyCoco = (event) => {
+	// 	initModel(configData.yolov3TinyCoco);
+	// 	console.log('setTinyCoco');
+	// };
+	// const setCoco = (event) => {
+	// 	initModel(configData.yolov3TinyCoco);
+	// 	console.log('setCoco');
+	// };
 
-	const setTinyShapes = (event) => {
-		initModel(configData.yolov3TinyShapes);
-		console.log('setTinyShapes');
-	};
-	const setShapes = (event) => {
-		initModel(configData.yolov3TinyShapes);
-		console.log('setShapes');
-	};
+	// const setTinyShapes = (event) => {
+	// 	initModel(configData.yolov3TinyShapes);
+	// 	console.log('setTinyShapes');
+	// };
+	// const setShapes = (event) => {
+	// 	initModel(configData.yolov3TinyShapes);
+	// 	console.log('setShapes');
+	// };
 
 	const onChangeModel = (event) => {
 		console.log('onChangeModel', event.target.value, event);
@@ -272,10 +269,15 @@ export const YoloV3 = () => {
 			<SelectModel
 				onChangeModel={onChangeModel}
 				tinyCocoVal='tinyCocoVal'
-				cocoVal='tinyCocoVal'
+				cocoVal='cocoVal'
 				tinyShapesVal='tinyShapesVal'
 				shapesVal='shapesVal'
-			/>
+				// tinyCocoVal={configData.yolov3TinyCoco}
+				// cocoVal={configData.yolov3TinyCoco}
+				// tinyShapesVal={configData.yolov3TinyShapes}
+				// shapesVal={configData.yolov3TinyShapes}
+			/>{' '}
+			// initModel(event.target.value);
 			<h2 className='text-center mt-3'>Select Input</h2>
 			{/* set invisible before model loaded - at start, practically not noticed */}
 			<SelectFile
@@ -297,7 +299,6 @@ export const YoloV3 = () => {
 					/>
 				</label>
 			</div>
-
 			<div className='row '>
 				<div>
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
