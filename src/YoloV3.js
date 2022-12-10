@@ -26,6 +26,8 @@ export const YoloV3 = () => {
 	const [selectedFile, setSelectedFile] = useState('');
 
 	const [selectedVidFile, setSelectedVidFile] = useState('');
+	const [prevSelectedFile, setPrevSelectedFile] = useState('');
+
 	const [selectedImageFile, setSelectedImageFile] = useState('');
 	const [imageUrl, setImageUrl] = useState(null);
 	const [model, setModel] = useState(null);
@@ -33,10 +35,11 @@ export const YoloV3 = () => {
 	const [classNames, setClassNames] = useState(null);
 	const [nclasses, setNclasses] = useState(null);
 	const [jsxVisibility, setJsxVisibility] = useState('invisible');
-	const [selectedModel, setSelectedModel] = useState(
+	const [selectedModelName, setSelectedModelName] = useState(
 		'YoloV3 Lite with Coco Weights'
 	);
 	const [nmsThresh, setNmsThresh] = useState(configData.nmsIouThreshold);
+	// const [missingFileNote, setMissingFileNote] = useState('');
 
 	useEffect(() => {
 		getVideo();
@@ -209,23 +212,39 @@ export const YoloV3 = () => {
 		});
 	};
 
+	// const onClickRun = () => {
+	// 	console.log('selectedFile', selectedFile);
+	// 	if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+	// 		setImageUrl(URL.createObjectURL(selectedFile));
+	// 		setSelectedImageFile(selectedFile);
+	// 		runImage(selectedFile);
+	// 	} else {
+	// 		setSelectedVidFile(selectedFile);
+	// 		runVideo(selectedFile);
+	// 	}
+	// };
+
 	const onClickRun = () => {
-		console.log('selectedFile', selectedFile);
-		if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-			setImageUrl(URL.createObjectURL(selectedFile));
-			setSelectedImageFile(selectedFile);
-			runImage(selectedFile);
-		} else {
-			setSelectedVidFile(selectedFile);
-			runVideo(selectedFile);
+		if (selectedFile != '') {
+			console.log('selectedFile', selectedFile);
+			if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+				setImageUrl(URL.createObjectURL(selectedFile));
+				setSelectedImageFile(selectedFile);
+				runImage(selectedFile);
+			} else {
+				setSelectedVidFile(selectedFile);
+				runVideo(selectedFile);
+			}
 		}
 	};
 	const onChangeFile = (event) => {
+		setPrevSelectedFile(selectedFile);
 		setSelectedFile(event.target.files[0]);
 	};
 
 	const onChangeModel = (event) => {
-		console.log('onChangeModel', event.target.value, event);
+		console.log('onChangeModel', event.target.value);
+		setSelectedModelName(event.target.value);
 		switch (event.target.value) {
 			case 'tinyCocoVal':
 				console.log('configData.yolov3TinyCoco');
@@ -254,14 +273,14 @@ export const YoloV3 = () => {
 		}
 	};
 	const Form = () => {};
-
+	const tt = false;
 	return (
 		<div className='container '>
-			<h2 className='text-center mb-5'>Yolo TfJs Demo</h2>
-
+			<div className='col-6'>
+				<h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
+			</div>
 			<div>
 				<div className='row'>
-					{/* <div className='col-4'></div> */}
 					<div className='col-2'>
 						<label htmlFor='selectModel' className=' h5 form-select-lg'>
 							Select a Model
@@ -269,7 +288,7 @@ export const YoloV3 = () => {
 					</div>
 					<div className='col-4'>
 						<select
-							className='form-select form-select-lg mb-3 '
+							className='form-select form-select-lg mb-3'
 							aria-label='.form-select-lg example'
 							id='selectModel'
 							onChange={onChangeModel}
@@ -283,12 +302,15 @@ export const YoloV3 = () => {
 						</select>
 					</div>
 				</div>
-				<div className='mb-3'>
-					<label htmlFor='selectFile' className='  h5  form-select-lg col-2'>
-						Video or Image File
-					</label>
+				<div className='row'>
+					<div className='col-2'>
+						<label htmlFor='selectFile' className='  h5  form-select-lg mb-3'>
+							Video or Image File
+						</label>
+					</div>
+
 					<input
-						className=' col-4 form-select-lg'
+						className=' col-4 form-select-lg mb-3'
 						id='selectFile'
 						type='file'
 						onChange={onChangeFile}
@@ -312,16 +334,21 @@ export const YoloV3 = () => {
 					</div>
 				</div>
 				<div className='col'>
-					<div className='col-4'></div>
-
 					<button
 						variant='primary'
 						// type='submit'
-						className='btn btn-primary col-8 mb-5'
+						className='btn btn btn-outline-dark col-6 mb-1'
 						onClick={onClickRun}
 					>
 						Run Detection
 					</button>
+					{/* ({selectedFile} =!'') && */}
+
+					{selectedFile == '' && (
+						<div className=' mb-5 col h5'>Please Select A File</div>
+					)}
+
+					{/* {<div className=' mb-5 col h5'>Please A Dile</div>} */}
 				</div>
 			</div>
 			<div className='row '>
