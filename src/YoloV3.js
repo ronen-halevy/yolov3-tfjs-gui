@@ -332,17 +332,6 @@ export const YoloV3 = () => {
 					<canvas className='image' ref={canvasRefImage} width='' height='' />
 				</div>
 			</div>
-			{/* Can remove  these: TODO */}
-			{
-				<img
-					className='invisible'
-					id='myimage'
-					src={imageUrl}
-					alt='image'
-					width={String('')}
-					height={String('')}
-				/>
-			}
 			{
 				<video
 					className='invisible'
