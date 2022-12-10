@@ -36,7 +36,7 @@ export const YoloV3 = () => {
 	const [selectedModel, setSelectedModel] = useState(
 		'YoloV3 Lite with Coco Weights'
 	);
-	const [threshRange, setThreshRange] = useState(configData.nmsIouThreshold);
+	const [nmsThresh, setNmsThresh] = useState(configData.nmsIouThreshold);
 
 	useEffect(() => {
 		getVideo();
@@ -124,6 +124,11 @@ export const YoloV3 = () => {
 		var fileURL = URL.createObjectURL(file);
 		video.src = fileURL;
 		enable ? video.play() : video.pause();
+		if (video.paused) {
+			console.log('paused');
+		} else {
+			console.log('vidfo not paused');
+		}
 	};
 
 	// create image file read promise
@@ -167,85 +172,57 @@ export const YoloV3 = () => {
 		initModel(configData.yolov3TinyCoco);
 	}, []);
 
-	// init video session when
-	useEffect(() => {
-		if (selectedVidFile) {
-			playVideoFile(selectedVidFile, true);
-			var isVideo = true;
-			var imageFrame = videoRef.current;
+	const runVideo = (selectedFile) => {
+		playVideoFile(selectedFile, true);
+		var isVideo = true;
+		var imageFrame = videoRef.current;
 
-			const detectFrame = makeDetectFrame(isVideo);
+		const detectFrame = makeDetectFrame(isVideo);
 
-			let promiseVideoMetadata = new Promise((resolve) => {
-				videoRef.current.onloadedmetadata = () => {
-					resolve();
-				};
-			});
-			promiseVideoMetadata.then(() => {
-				detectFrame(model, imageFrame);
-			});
+		let promiseVideoMetadata = new Promise((resolve) => {
+			videoRef.current.onloadedmetadata = () => {
+				resolve();
+			};
+		});
+		promiseVideoMetadata.then(() => {
+			detectFrame(model, imageFrame);
+		});
+	};
+
+	const runImage = (selectedFile) => {
+		if (selectedVidFile != '') {
+			setSelectedVidFile('');
+			playVideoFile(selectedVidFile, false);
 		}
-	}, [selectedVidFile]);
 
-	useEffect(() => {
-		if (selectedImageFile) {
-			var isVideo = false;
-			// patch - Aims to fix image selection while video is on. Sometimes fails
-			// So stop video and wait. Still dirty, TBD if patch improves
-			const stopVideoPromise = new Promise((resolve, reject) => {
-				setTimeout(() => {
-					if (selectedVidFile != '') {
-						playVideoFile(selectedVidFile, false);
-						setSelectedVidFile('');
-					}
-					resolve(); // Yay! Everything went well!
-				}, 200);
-			});
+		var imageFrame = new window.Image();
+		var promise = fileToDataUri(selectedFile);
+		promise.then((contents) => {
+			imageFrame.src = contents;
+		});
+		var isVideo = false;
+		const detectFrame = makeDetectFrame(isVideo);
+		imageFrame.addEventListener('load', async () => {
+			detectFrame(model, imageFrame);
+			// mother of patches - run twice...Reason: image after video execution fails probably due to disposal issues
+			detectFrame(model, imageFrame);
+		});
+	};
 
-			stopVideoPromise.then(() => {
-				var imageFrame = new window.Image();
-				var promise = fileToDataUri(selectedImageFile);
-				promise.then((contents) => {
-					imageFrame.src = contents;
-				});
-				const detectFrame = makeDetectFrame(isVideo);
-				imageFrame.addEventListener('load', async () => {
-					detectFrame(model, imageFrame);
-				});
-			});
-		}
-	}, [selectedImageFile]);
-
-	const onClickRun = (event) => {
+	const onClickRun = () => {
 		console.log('selectedFile', selectedFile);
 		if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
 			setImageUrl(URL.createObjectURL(selectedFile));
 			setSelectedImageFile(selectedFile);
+			runImage(selectedFile);
 		} else {
 			setSelectedVidFile(selectedFile);
+			runVideo(selectedFile);
 		}
 	};
 	const onChangeFile = (event) => {
 		setSelectedFile(event.target.files[0]);
 	};
-
-	// const setTinyCoco = (event) => {
-	// 	initModel(configData.yolov3TinyCoco);
-	// 	console.log('setTinyCoco');
-	// };
-	// const setCoco = (event) => {
-	// 	initModel(configData.yolov3TinyCoco);
-	// 	console.log('setCoco');
-	// };
-
-	// const setTinyShapes = (event) => {
-	// 	initModel(configData.yolov3TinyShapes);
-	// 	console.log('setTinyShapes');
-	// };
-	// const setShapes = (event) => {
-	// 	initModel(configData.yolov3TinyShapes);
-	// 	console.log('setShapes');
-	// };
 
 	const onChangeModel = (event) => {
 		console.log('onChangeModel', event.target.value, event);
@@ -261,7 +238,13 @@ export const YoloV3 = () => {
 		}
 	};
 
-	const handleChangeInpuThresh = (event) => {};
+	const handleChangeInpuThresh = (event) => {
+		console.log(event.target.value);
+		if ((event.target.value <= 1) & (event.target.value >= 0)) {
+			setNmsThresh(event.target.value);
+		}
+	};
+
 	return (
 		<div className='container '>
 			<h2 className='text-center'>Yolo TfJs Demo</h2>
@@ -272,21 +255,34 @@ export const YoloV3 = () => {
 				cocoVal='cocoVal'
 				tinyShapesVal='tinyShapesVal'
 				shapesVal='shapesVal'
-				// tinyCocoVal={configData.yolov3TinyCoco}
-				// cocoVal={configData.yolov3TinyCoco}
-				// tinyShapesVal={configData.yolov3TinyShapes}
-				// shapesVal={configData.yolov3TinyShapes}
-			/>{' '}
-			// initModel(event.target.value);
+			/>
 			<h2 className='text-center mt-3'>Select Input</h2>
 			{/* set invisible before model loaded - at start, practically not noticed */}
-			<SelectFile
-				jsxVisibility={jsxVisibility}
-				vidFileName={setSelectedImageFile.name}
-				imageFileName={setSelectedVidFile.name}
-				onChangeFile={onChangeFile}
-				onClickRun={onClickRun}
-			/>
+			<div>
+				<form>
+					<div className='mb-3'>
+						<label htmlFor='files' className=' col-4'>
+							Video or Image File
+						</label>
+						<input
+							className=' inviisible'
+							id='files'
+							type='file'
+							onChange={onChangeFile}
+							accept='video/*, image/*'
+						/>
+					</div>
+				</form>
+
+				<button
+					variant='primary'
+					// type='submit'
+					className='btn btn-primary'
+					onClick={onClickRun}
+				>
+					Submit
+				</button>
+			</div>
 			<div className='row'>
 				<label className=' text-center h5'>
 					Set NMS Threshold:
@@ -294,7 +290,8 @@ export const YoloV3 = () => {
 						type='number'
 						min='0'
 						max='1'
-						value={threshRange}
+						step='0.1'
+						value={nmsThresh}
 						onChange={handleChangeInpuThresh}
 					/>
 				</label>
