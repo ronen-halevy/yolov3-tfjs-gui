@@ -12,13 +12,10 @@ import { image } from '@tensorflow/tfjs';
 import { loadGraphModel } from '@tensorflow/tfjs-converter';
 
 import configData from './config.json';
-// import SelectFile from './components/SelectFile.js';
-import SelectModel from './components/SelectModel.js';
 
 export const YoloV3 = () => {
 	// Refs:
 	const videoRef = useRef(null);
-	const photoRef = useRef(null);
 	const canvasRefVideo = useRef(null);
 	const canvasRefImage = useRef(null);
 
@@ -28,18 +25,15 @@ export const YoloV3 = () => {
 	const [selectedVidFile, setSelectedVidFile] = useState('');
 	const [prevSelectedFile, setPrevSelectedFile] = useState('');
 
-	const [selectedImageFile, setSelectedImageFile] = useState('');
 	const [imageUrl, setImageUrl] = useState(null);
 	const [model, setModel] = useState(null);
 	const [anchors, setAnchors] = useState(null);
 	const [classNames, setClassNames] = useState(null);
 	const [nclasses, setNclasses] = useState(null);
-	const [jsxVisibility, setJsxVisibility] = useState('invisible');
-	const [selectedModelName, setSelectedModelName] = useState(
+	const [modelLoadedMessage, setModelLoadedMessage] = useState(
 		'YoloV3 Lite with Coco Weights'
 	);
 	const [nmsThresh, setNmsThresh] = useState(configData.nmsIouThreshold);
-	// const [missingFileNote, setMissingFileNote] = useState('');
 
 	useEffect(() => {
 		getVideo();
@@ -75,7 +69,6 @@ export const YoloV3 = () => {
 			classProbs = classProbs.max(axis);
 			confidences = confidences.squeeze(axis);
 			let scores = confidences.mul(classProbs);
-
 			yoloNms(
 				bboxes,
 				scores,
@@ -83,7 +76,7 @@ export const YoloV3 = () => {
 
 				configData.yoloMaxBoxes,
 				configData.nmsIouThreshold,
-				configData.nmsScoreThreshold
+				nmsThresh
 			).then((reasultArrays) => {
 				let [selBboxes, scores, classIndices] = reasultArrays;
 				let canvas = isVideo ? canvasRefVideo.current : canvasRefImage.current;
@@ -146,7 +139,7 @@ export const YoloV3 = () => {
 	}
 	/* Use Effect Hooks:*/
 
-	const initModel = (modelData) => {
+	const initModel = (modelData, modelName) => {
 		const modelUrl = modelData.modelUrl;
 		const anchorsUrl = modelData.anchorsUrl;
 		const classNamesUrl = modelData.classNamesUrl;
@@ -166,16 +159,17 @@ export const YoloV3 = () => {
 				const classNames = values[2].split(/\r?\n/);
 				setClassNames(classNames);
 				setNclasses(classNames.length);
-				// model and anchors ready. All ready to go - so unhide gui
-				setJsxVisibility('visible');
+				setModelLoadedMessage('Model ' + modelName + ' is ready');
 			}
 		);
 	};
 	useEffect(() => {
-		initModel(configData.yolov3TinyCoco);
+		initModel(configData.yolov3TinyCoco, 'yolov3TinyCoco');
 	}, []);
 
 	const runVideo = (selectedFile) => {
+		stopVideo();
+
 		playVideoFile(selectedFile, true);
 		var isVideo = true;
 		var imageFrame = videoRef.current;
@@ -192,11 +186,16 @@ export const YoloV3 = () => {
 		});
 	};
 
-	const runImage = (selectedFile) => {
+	const stopVideo = () => {
+		console.log('stopVideo');
 		if (selectedVidFile != '') {
+			makeDetectFrame(false);
 			setSelectedVidFile('');
 			playVideoFile(selectedVidFile, false);
 		}
+	};
+	const runImage = (selectedFile) => {
+		stopVideo();
 
 		var imageFrame = new window.Image();
 		var promise = fileToDataUri(selectedFile);
@@ -212,55 +211,51 @@ export const YoloV3 = () => {
 		});
 	};
 
-	// const onClickRun = () => {
-	// 	console.log('selectedFile', selectedFile);
-	// 	if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-	// 		setImageUrl(URL.createObjectURL(selectedFile));
-	// 		setSelectedImageFile(selectedFile);
-	// 		runImage(selectedFile);
-	// 	} else {
-	// 		setSelectedVidFile(selectedFile);
-	// 		runVideo(selectedFile);
-	// 	}
-	// };
+	const onClickStopVideo = () => {
+		stopVideo();
+	};
 
 	const onClickRun = () => {
 		if (selectedFile != '') {
 			console.log('selectedFile', selectedFile);
 			if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
 				setImageUrl(URL.createObjectURL(selectedFile));
-				setSelectedImageFile(selectedFile);
 				runImage(selectedFile);
 			} else {
+				console.log('setSelectedVidFile ' + selectedFile);
 				setSelectedVidFile(selectedFile);
 				runVideo(selectedFile);
 			}
 		}
 	};
 	const onChangeFile = (event) => {
+		stopVideo();
+
 		setPrevSelectedFile(selectedFile);
 		setSelectedFile(event.target.files[0]);
 	};
 
 	const onChangeModel = (event) => {
+		setModelLoadedMessage('Loading Model...');
+		stopVideo();
+
 		console.log('onChangeModel', event.target.value);
-		setSelectedModelName(event.target.value);
 		switch (event.target.value) {
 			case 'tinyCocoVal':
 				console.log('configData.yolov3TinyCoco');
-				initModel(configData.yolov3TinyCoco);
+				initModel(configData.yolov3TinyCoco, event.target.value);
 				break;
 			case 'cocoVal':
 				console.log('configData.yolov3TinyCoco');
 
-				initModel(configData.yolov3TinyCoco);
+				initModel(configData.yolov3TinyCoco, event.target.value);
 				break;
 			case 'tinyShapesVal':
-				initModel(configData.yolov3TinyShapes);
+				initModel(configData.yolov3TinyShapes, event.target.value);
 				console.log('configData.yolov3TinyShapes');
 				break;
 			case 'shapesVal':
-				initModel(configData.yolov3TinyShapes);
+				initModel(configData.yolov3TinyShapes, event.target.value);
 				console.log('configData.yolov3TinyShapes');
 				break;
 		}
@@ -272,8 +267,6 @@ export const YoloV3 = () => {
 			setNmsThresh(event.target.value);
 		}
 	};
-	const Form = () => {};
-	const tt = false;
 	return (
 		<div className='container '>
 			<div className='col-6'>
@@ -301,6 +294,10 @@ export const YoloV3 = () => {
 							<option value='shapesVal'>YoloV3-with-Shapes-Weights</option>
 						</select>
 					</div>
+				</div>
+				<div className='row'>
+					<div className='col-2'></div>
+					<div className='col-4 h5'>{modelLoadedMessage}</div>
 				</div>
 				<div className='row'>
 					<div className='col-2'>
@@ -334,21 +331,33 @@ export const YoloV3 = () => {
 					</div>
 				</div>
 				<div className='col'>
-					<button
-						variant='primary'
-						// type='submit'
-						className='btn btn btn-outline-dark col-6 mb-1'
-						onClick={onClickRun}
-					>
-						Run Detection
-					</button>
-					{/* ({selectedFile} =!'') && */}
+					<div className='row '>
+						<div>
+							<button
+								variant='primary'
+								// type='submit'
+								className='btn btn btn-outline-dark  btn-lg col-6 mb-1 mx-1'
+								onClick={onClickRun}
+							>
+								Run Detection
+							</button>
+
+							<button
+								variant='primary'
+								// type='submit'
+								className='btn btn btn-danger btn-lg col-2 mb-1 mx-1'
+								onClick={onClickStopVideo}
+							>
+								Stop Video
+							</button>
+						</div>
+					</div>
 
 					{selectedFile == '' && (
-						<div className=' mb-5 col h5'>Please Select A File</div>
+						<div className='  mb-5 col h5' id='liveAlertBtn'>
+							Please Select A File
+						</div>
 					)}
-
-					{/* {<div className=' mb-5 col h5'>Please A Dile</div>} */}
 				</div>
 			</div>
 			<div className='row '>
