@@ -30,8 +30,8 @@ function arrange_bbox(xy, wh) {
 }
 
 function yoloDecode(grids_outputs, nclasses, anchors) {
-	const nanchors_per_scale = 3;
-	const anchor_entry_size = 2;
+	const nanchors_per_scale = 3; // Large, Medium, Small
+	const anchor_entry_size = 2; // width, height
 	let anchors_table = tf.reshape(anchors, [
 		-1,
 		nanchors_per_scale,
