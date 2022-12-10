@@ -159,7 +159,7 @@ export const YoloV3 = () => {
 				const classNames = values[2].split(/\r?\n/);
 				setClassNames(classNames);
 				setNclasses(classNames.length);
-				setModelLoadedMessage('Model ' + modelName + ' is ready');
+				setModelLoadedMessage('Model ' + modelName + ' is ready!');
 			}
 		);
 	};
@@ -336,7 +336,7 @@ export const YoloV3 = () => {
 							<button
 								variant='primary'
 								// type='submit'
-								className='btn btn btn-outline-dark  btn-lg col-6 mb-1 mx-1'
+								className='btn btn btn-outline-dark  btn-lg col-4 mb-1 mx-1'
 								onClick={onClickRun}
 							>
 								Run Detection
@@ -355,7 +355,7 @@ export const YoloV3 = () => {
 
 					{selectedFile == '' && (
 						<div className='  mb-5 col h5' id='liveAlertBtn'>
-							Please Select A File
+							Please Select A File!
 						</div>
 					)}
 				</div>
