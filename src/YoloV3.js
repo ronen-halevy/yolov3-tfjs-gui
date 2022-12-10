@@ -241,20 +241,20 @@ export const YoloV3 = () => {
 
 		console.log('onChangeModel', event.target.value);
 		switch (event.target.value) {
-			case 'tinyCocoVal':
+			case 'yolov3TinyCoco':
 				console.log('configData.yolov3TinyCoco');
 				initModel(configData.yolov3TinyCoco, event.target.value);
 				break;
-			case 'cocoVal':
+			case 'yolov3Coco':
 				console.log('configData.yolov3Coco');
 
-				initModel(configData.yolov3TinyCoco, event.target.value);
+				initModel(configData.yolov3Coco, event.target.value);
 				break;
-			case 'tinyShapesVal':
+			case 'yolov3TinyShapes':
 				initModel(configData.yolov3TinyShapes, event.target.value);
 				console.log('configData.yolov3TinyShapes');
 				break;
-			case 'shapesVal':
+			case 'yolov3Shapes':
 				initModel(configData.yolov3TinyShapes, event.target.value);
 				console.log('configData.yolov3TinyShapes');
 				break;
@@ -286,12 +286,14 @@ export const YoloV3 = () => {
 							id='selectModel'
 							onChange={onChangeModel}
 						>
-							<option value='tinyCocoVal'>YoloV3-Lite with Coco Weights</option>
-							<option value='tinyShapesVal'>
+							<option value='yolov3TinyCoco'>
+								YoloV3-Lite with Coco Weights
+							</option>
+							<option value='yolov3TinyShapes'>
 								YoloV3-Lite-with-Shapes-Weights
 							</option>
-							<option value='cocoVal'>YoloV3-with-Coco-Weights</option>
-							<option value='shapesVal'>YoloV3-with-Shapes-Weights</option>
+							<option value='yolov3Coco'>YoloV3-with-Coco-Weights</option>
+							<option value='yolov3Shapes'>YoloV3-with-Shapes-Weights</option>
 						</select>
 					</div>
 				</div>
