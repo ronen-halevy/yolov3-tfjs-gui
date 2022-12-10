@@ -1,6 +1,7 @@
 {
   "name": "react",
   "version": "0.0.0",
+  "homepage": "https://ronen-halevy.github.io/yolov3-tfjs",
   "private": true,
   "dependencies": {
     "@tensorflow/tfjs": "^4.0.0",
@@ -10,12 +11,15 @@
     "react-dom": "^17.0.0"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "gh-pages": "^4.0.0",
     "react-scripts": "latest"
   },
   "browserslist": {
