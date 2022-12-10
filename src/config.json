@@ -31,6 +31,20 @@
 
     "yolov3TinyCoco": {
  "modelUrl":
+        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/coco-tiny/model.json",
+
+
+    "anchorsUrl":
+        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoTinyAnchors.json",
+
+
+    
+    "classNamesUrl":
+        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoClassNames.txt"
+
+    },
+"yolov3Coco": {
+          "modelUrl":
         "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/coco/model.json",
 
 

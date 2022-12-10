@@ -246,7 +246,7 @@ export const YoloV3 = () => {
 				initModel(configData.yolov3TinyCoco, event.target.value);
 				break;
 			case 'cocoVal':
-				console.log('configData.yolov3TinyCoco');
+				console.log('configData.yolov3Coco');
 
 				initModel(configData.yolov3TinyCoco, event.target.value);
 				break;
