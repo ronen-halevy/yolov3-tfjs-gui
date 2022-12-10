@@ -12,7 +12,7 @@ import { image } from '@tensorflow/tfjs';
 import { loadGraphModel } from '@tensorflow/tfjs-converter';
 
 import configData from './config.json';
-import SelectFile from './components/SelectFile.js';
+// import SelectFile from './components/SelectFile.js';
 import SelectModel from './components/SelectModel.js';
 
 export const YoloV3 = () => {
@@ -228,13 +228,22 @@ export const YoloV3 = () => {
 		console.log('onChangeModel', event.target.value, event);
 		switch (event.target.value) {
 			case 'tinyCocoVal':
+				console.log('configData.yolov3TinyCoco');
 				initModel(configData.yolov3TinyCoco);
+				break;
 			case 'cocoVal':
+				console.log('configData.yolov3TinyCoco');
+
 				initModel(configData.yolov3TinyCoco);
+				break;
 			case 'tinyShapesVal':
 				initModel(configData.yolov3TinyShapes);
+				console.log('configData.yolov3TinyShapes');
+				break;
 			case 'shapesVal':
 				initModel(configData.yolov3TinyShapes);
+				console.log('configData.yolov3TinyShapes');
+				break;
 		}
 	};
 
@@ -244,57 +253,76 @@ export const YoloV3 = () => {
 			setNmsThresh(event.target.value);
 		}
 	};
+	const Form = () => {};
 
 	return (
 		<div className='container '>
-			<h2 className='text-center'>Yolo TfJs Demo</h2>
-			<h2 className='text-center mt-3'>Select a Model</h2>
-			<SelectModel
-				onChangeModel={onChangeModel}
-				tinyCocoVal='tinyCocoVal'
-				cocoVal='cocoVal'
-				tinyShapesVal='tinyShapesVal'
-				shapesVal='shapesVal'
-			/>
-			<h2 className='text-center mt-3'>Select Input</h2>
-			{/* set invisible before model loaded - at start, practically not noticed */}
+			<h2 className='text-center mb-5'>Yolo TfJs Demo</h2>
+
 			<div>
-				<form>
-					<div className='mb-3'>
-						<label htmlFor='files' className=' col-4'>
-							Video or Image File
+				<div className='row'>
+					{/* <div className='col-4'></div> */}
+					<div className='col-2'>
+						<label htmlFor='selectModel' className=' h5 form-select-lg'>
+							Select a Model
+						</label>
+					</div>
+					<div className='col-4'>
+						<select
+							className='form-select form-select-lg mb-3 '
+							aria-label='.form-select-lg example'
+							id='selectModel'
+							onChange={onChangeModel}
+						>
+							<option value='tinyCocoVal'>YoloV3-Lite with Coco Weights</option>
+							<option value='tinyShapesVal'>
+								YoloV3-Lite-with-Shapes-Weights
+							</option>
+							<option value='cocoVal'>YoloV3-with-Coco-Weights</option>
+							<option value='shapesVal'>YoloV3-with-Shapes-Weights</option>
+						</select>
+					</div>
+				</div>
+				<div className='mb-3'>
+					<label htmlFor='selectFile' className='  h5  form-select-lg col-2'>
+						Video or Image File
+					</label>
+					<input
+						className=' col-4 form-select-lg'
+						id='selectFile'
+						type='file'
+						onChange={onChangeFile}
+						accept='video/*, image/*'
+					/>
+				</div>
+				<div className='mb-3'>
+					<div className='col'>
+						<label className=' h5 form-select-lg col-2'>
+							Set NMS Threshold:
 						</label>
 						<input
-							className=' inviisible'
-							id='files'
-							type='file'
-							onChange={onChangeFile}
-							accept='video/*, image/*'
+							className='form-select-lg col-4'
+							type='number'
+							min='0'
+							max='1'
+							step='0.1'
+							value={nmsThresh}
+							onChange={handleChangeInpuThresh}
 						/>
 					</div>
-				</form>
+				</div>
+				<div className='col'>
+					<div className='col-4'></div>
 
-				<button
-					variant='primary'
-					// type='submit'
-					className='btn btn-primary'
-					onClick={onClickRun}
-				>
-					Submit
-				</button>
-			</div>
-			<div className='row'>
-				<label className=' text-center h5'>
-					Set NMS Threshold:
-					<input
-						type='number'
-						min='0'
-						max='1'
-						step='0.1'
-						value={nmsThresh}
-						onChange={handleChangeInpuThresh}
-					/>
-				</label>
+					<button
+						variant='primary'
+						// type='submit'
+						className='btn btn-primary col-8 mb-5'
+						onClick={onClickRun}
+					>
+						Run Detection
+					</button>
+				</div>
 			</div>
 			<div className='row '>
 				<div>
