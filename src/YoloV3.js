@@ -23,17 +23,20 @@ export const YoloV3 = () => {
 	const [selectedFile, setSelectedFile] = useState('');
 
 	const [selectedVidFile, setSelectedVidFile] = useState('');
-	const [prevSelectedFile, setPrevSelectedFile] = useState('');
 
-	const [imageUrl, setImageUrl] = useState(null);
 	const [model, setModel] = useState(null);
 	const [anchors, setAnchors] = useState(null);
 	const [classNames, setClassNames] = useState(null);
 	const [nclasses, setNclasses] = useState(null);
-	const [modelLoadedMessage, setModelLoadedMessage] = useState(
-		'YoloV3 Lite with Coco Weights'
-	);
-	const [nmsThresh, setNmsThresh] = useState(configData.nmsIouThreshold);
+
+	const [listModels, setListModels] = useState(configData.models);
+	const [selectedModel, setSelectedModel] = useState('');
+	const [modelLoadedMessage, setModelLoadedMessage] =
+		useState('No Model Loaded!');
+	const [isModelLoaded, setIsModelLoaded] = useState(false);
+
+	const [nmsThresh, setNmsThresh] = useState(configData.nmsScoreThreshold);
+	const [showVideoControl, setShowVideoControl] = useState(false);
 
 	useEffect(() => {
 		getVideo();
@@ -139,8 +142,9 @@ export const YoloV3 = () => {
 	}
 	/* Use Effect Hooks:*/
 
-	const initModel = (modelData, modelName) => {
+	const initModel = (modelData) => {
 		const modelUrl = modelData.modelUrl;
+		console.log('modelUrl', modelUrl);
 		const anchorsUrl = modelData.anchorsUrl;
 		const classNamesUrl = modelData.classNamesUrl;
 
@@ -159,12 +163,13 @@ export const YoloV3 = () => {
 				const classNames = values[2].split(/\r?\n/);
 				setClassNames(classNames);
 				setNclasses(classNames.length);
-				setModelLoadedMessage('Model ' + modelName + ' is ready!');
+				setModelLoadedMessage('Model ' + modelData.name + ' is ready!');
+				setIsModelLoaded(true);
 			}
 		);
 	};
 	useEffect(() => {
-		initModel(configData.yolov3TinyCoco, 'yolov3TinyCoco');
+		setShowVideoControl(false);
 	}, []);
 
 	const runVideo = (selectedFile) => {
@@ -187,11 +192,13 @@ export const YoloV3 = () => {
 	};
 
 	const stopVideo = () => {
-		console.log('stopVideo');
 		if (selectedVidFile != '') {
-			makeDetectFrame(false);
+			videoRef.current.pause();
+
+			console.log('stopVideo');
+			// 	makeDetectFrame(false);
 			setSelectedVidFile('');
-			playVideoFile(selectedVidFile, false);
+			// 	playVideoFile(selectedVidFile, false);
 		}
 	};
 	const runImage = (selectedFile) => {
@@ -216,10 +223,10 @@ export const YoloV3 = () => {
 	};
 
 	const onClickRun = () => {
-		if (selectedFile != '') {
+		if ((selectedFile != '') & isModelLoaded) {
 			console.log('selectedFile', selectedFile);
 			if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-				setImageUrl(URL.createObjectURL(selectedFile));
+				URL.createObjectURL(selectedFile);
 				runImage(selectedFile);
 			} else {
 				console.log('setSelectedVidFile ' + selectedFile);
@@ -231,34 +238,22 @@ export const YoloV3 = () => {
 	const onChangeFile = (event) => {
 		stopVideo();
 
-		setPrevSelectedFile(selectedFile);
 		setSelectedFile(event.target.files[0]);
+		if (event.target.files[0].name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+			setShowVideoControl(false);
+		} else {
+			setShowVideoControl(true);
+		}
 	};
 
-	const onChangeModel = (event) => {
+	const onSelectModel = (event) => {
+		setSelectedModel(listModels[event.target.value]);
+	};
+	const onLoadModel = () => {
 		setModelLoadedMessage('Loading Model...');
 		stopVideo();
-
-		console.log('onChangeModel', event.target.value);
-		switch (event.target.value) {
-			case 'yolov3TinyCoco':
-				console.log('configData.yolov3TinyCoco');
-				initModel(configData.yolov3TinyCoco, event.target.value);
-				break;
-			case 'yolov3Coco':
-				console.log('configData.yolov3Coco');
-
-				initModel(configData.yolov3Coco, event.target.value);
-				break;
-			case 'yolov3TinyShapes':
-				initModel(configData.yolov3TinyShapes, event.target.value);
-				console.log('configData.yolov3TinyShapes');
-				break;
-			case 'yolov3Shapes':
-				initModel(configData.yolov3TinyShapes, event.target.value);
-				console.log('configData.yolov3TinyShapes');
-				break;
-		}
+		const model = selectedModel != '' ? selectedModel : listModels[0];
+		initModel(model);
 	};
 
 	const handleChangeInpuThresh = (event) => {
@@ -267,6 +262,7 @@ export const YoloV3 = () => {
 			setNmsThresh(event.target.value);
 		}
 	};
+
 	return (
 		<div className='container '>
 			<div className='col-6'>
@@ -281,29 +277,37 @@ export const YoloV3 = () => {
 					</div>
 					<div className='col-4'>
 						<select
-							className='form-select form-select-lg mb-3'
-							aria-label='.form-select-lg example'
-							id='selectModel'
-							onChange={onChangeModel}
+							className='form-select form-select-lg mb-1'
+							onChange={onSelectModel}
 						>
-							<option value='yolov3TinyCoco'>
-								YoloV3-Lite with Coco Weights
-							</option>
-							<option value='yolov3TinyShapes'>
-								YoloV3-Lite-with-Shapes-Weights
-							</option>
-							<option value='yolov3Coco'>YoloV3-with-Coco-Weights</option>
-							<option value='yolov3Shapes'>YoloV3-with-Shapes-Weights</option>
+							{listModels.map((option, index) => (
+								<option key={index} value={index}>
+									{option.name}
+								</option>
+							))}
 						</select>
 					</div>
 				</div>
 				<div className='row'>
 					<div className='col-2'></div>
-					<div className='col-4 h5'>{modelLoadedMessage}</div>
+
+					<button
+						variant='primary'
+						// type='submit'
+						className='btn btn btn-dark btn-lg col-4 mb-1 '
+						onClick={onLoadModel}
+					>
+						Load Model
+					</button>
+				</div>
+
+				<div className='row'>
+					<div className='col-2'></div>
+					<div className='col-4 h5 mb-3'>{modelLoadedMessage}</div>
 				</div>
 				<div className='row'>
 					<div className='col-2'>
-						<label htmlFor='selectFile' className='  h5  form-select-lg mb-3'>
+						<label htmlFor='selectFile' className='  h5  form-select-lg mb-1'>
 							Video or Image File
 						</label>
 					</div>
@@ -337,7 +341,7 @@ export const YoloV3 = () => {
 						<div>
 							<button
 								variant='primary'
-								// type='submit'
+								disabled={selectedFile == '' || !isModelLoaded}
 								className='btn btn btn-outline-dark  btn-lg col-4 mb-1 mx-1'
 								onClick={onClickRun}
 							>
@@ -346,7 +350,6 @@ export const YoloV3 = () => {
 
 							<button
 								variant='primary'
-								// type='submit'
 								className='btn btn btn-danger btn-lg col-2 mb-1 mx-1'
 								onClick={onClickStopVideo}
 							>
@@ -354,25 +357,24 @@ export const YoloV3 = () => {
 							</button>
 						</div>
 					</div>
+					<div className='row '>
+						{selectedFile == '' && (
+							<div className='  mb-5 col-2 h5' id='liveAlertBtn'>
+								Please Select A File!
+							</div>
+						)}
+						{!isModelLoaded && (
+							<div className='  mb-5 col-3 h5' id='liveAlertBtn'>
+								Please Load A Model!
+							</div>
+						)}
+					</div>
+				</div>
+			</div>
 
-					{selectedFile == '' && (
-						<div className='  mb-5 col h5' id='liveAlertBtn'>
-							Please Select A File!
-						</div>
-					)}
-				</div>
-			</div>
-			<div className='row '>
-				<div>
-					<canvas className='video' ref={canvasRefVideo} width='' height='' />
-				</div>
-				<div>
-					<canvas className='image' ref={canvasRefImage} width='' height='' />
-				</div>
-			</div>
-			{
+			{showVideoControl == true && (
 				<video
-					className='invisible'
+					className='mt-7 '
 					autoPlay
 					playsInline
 					muted
@@ -382,7 +384,16 @@ export const YoloV3 = () => {
 					id='frame'
 					controls
 				/>
-			}
+			)}
+
+			<div className='row '>
+				<div>
+					<canvas className='video' ref={canvasRefVideo} width='' height='' />
+				</div>
+				<div>
+					<canvas className='image' ref={canvasRefImage} width='' height='' />
+				</div>
+			</div>
 		</div>
 	);
 };
