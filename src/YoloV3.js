@@ -365,43 +365,43 @@ export const YoloV3 = () => {
 					/>
 				</div>
 				<div className='mb-3'>
-					<div className='col'>
-						<label className=' h5 form-select-lg col-2'>
-							Set NMS Threshold:
-						</label>
-						<input
-							className='form-select-lg col-4'
-							type='number'
-							min='0'
-							max='1'
-							step='0.1'
-							value={nmsThresh}
-							onChange={onChangeNmsThresh}
-						/>
-					</div>
-					<div className='col'>
-						<label className=' h5 form-select-lg col-2'>Set Video Width:</label>
-						<input
-							className='form-select-lg col-4'
-							type='number'
-							min='0'
-							max='1920'
-							step='1'
-							value={canvasWidth}
-							onChange={onChangeVideoWidth}
-						/>
-					</div>
-					<div className='col'>
-						<label className=' h5 form-select-lg col-2'>Set Video Width:</label>
-						<input
-							className='form-select-lg col-4'
-							type='number'
-							min='0'
-							max='1920'
-							step='1'
-							value={canvasHeight}
-							onChange={onChangeVideoHeight}
-						/>
+					<div className='row'>
+						<div className='col'>
+							<label className=' h5 form-select-lg'>NMS Threshold</label>
+							<input
+								className='form-select-lg'
+								type='number'
+								min='0'
+								max='1'
+								step='0.1'
+								value={nmsThresh}
+								onChange={onChangeNmsThresh}
+							/>
+						</div>
+						<div className='col'>
+							<label className=' h5 form-select-lg '>Video Width</label>
+							<input
+								className='form-select-lg '
+								type='number'
+								min='0'
+								max='1920'
+								step='1'
+								value={canvasWidth}
+								onChange={onChangeVideoWidth}
+							/>
+						</div>
+						<div className='col'>
+							<label className=' h5 form-select-lg '>Video Width</label>
+							<input
+								className='form-select-lg '
+								type='number'
+								min='0'
+								max='1920'
+								step='1'
+								value={canvasHeight}
+								onChange={onChangeVideoHeight}
+							/>
+						</div>
 					</div>
 				</div>
 				<div className='col'>
