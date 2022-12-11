@@ -130,27 +130,9 @@ export const YoloV3 = () => {
 			setSelectedVidFile('');
 			videoRef.current.pause();
 			// TODO - consider remove:
-			if (videoRef.current.paused) {
-				console.log('paused');
-			} else {
-				console.log('video not paused');
-			}
 		}
 	};
 
-	const playVideo = (file) => {
-		var URL = window.URL || window.webkitURL;
-		var fileURL = URL.createObjectURL(file);
-		videoRef.current.src = fileURL;
-		videoRef.current.play();
-
-		// TODO - consider remove:
-		if (videoRef.current.paused) {
-			console.log('paused');
-		} else {
-			console.log('video not paused');
-		}
-	};
 	const retrieveGetDurationOfVideo = (durationOfVideo1) => {
 		const getDurationOfVideo = () => {
 			const videoIntervalTime = setInterval(() => {
@@ -266,17 +248,16 @@ export const YoloV3 = () => {
 		});
 	};
 
-	const onClickStopVideo = () => {
-		stopVideo();
-	};
-
 	const onClickRun = () => {
 		if ((selectedFile != '') & isModelLoaded) {
 			console.log('selectedFile', selectedFile);
 			if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
 				URL.createObjectURL(selectedFile);
 				runImage(selectedFile);
+				setShowVideoControl(false);
 			} else {
+				setShowVideoControl(true);
+
 				console.log('setSelectedVidFile ' + selectedFile);
 				setSelectedVidFile(selectedFile);
 				runVideo(selectedFile);
@@ -456,16 +437,19 @@ export const YoloV3 = () => {
 					<button
 						variant='primary'
 						className='btn btn btn-danger btn-lg col-2 mb-1 mx-1'
-						onClick={onClickStopVideo}
+						onClick={stopVideo}
 					>
 						Stop Video
 					</button>
 					<div className='customVideoTagControlsClass'>
 						<label>playback speed</label>
-						<select onChange={setVideoSpeed}>
-							<option value={1.0}>normal speed</option>
-							<option value={0.5}>slower</option>
-							<option value={2.0}>faster speed</option>
+						<select
+							className='className=form-select form-select-lg mb-1 '
+							onChange={setVideoSpeed}
+						>
+							<option value={1.0}>Normal speed</option>
+							<option value={0.5}>Slow</option>
+							<option value={2.0}>Fast speed</option>
 						</select>
 
 						<div className='h1'>
