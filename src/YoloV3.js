@@ -33,12 +33,21 @@ export const YoloV3 = () => {
 	const [selectedModel, setSelectedModel] = useState('');
 	const [modelLoadedMessage, setModelLoadedMessage] =
 		useState('No Model Loaded!');
+	const [isModelLoadSpinner, setIsModelLoadSpinner] = useState(false);
+
 	const [isModelLoaded, setIsModelLoaded] = useState(false);
 
 	const [nmsThresh, setNmsThresh] = useState(configData.nmsScoreThreshold);
 	const [showVideoControl, setShowVideoControl] = useState(false);
 
+	const [canvasWidth, setCanvasWidth] = useState(416);
+	const [canvasHeight, setCanvasHeight] = useState(416);
+
+	const [durationOfVideo, setDurationOfVideo] = useState(0);
+	const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
+
 	useEffect(() => {
+		console.log('useEffect videoRef');
 		getVideo();
 	}, [videoRef]);
 
@@ -116,18 +125,59 @@ export const YoloV3 = () => {
 		return tensor;
 	};
 
-	const playVideoFile = (file, enable) => {
-		// var type = file.type;
-		let video = videoRef.current;
+	const stopVideo = () => {
+		if (selectedVidFile != '') {
+			setSelectedVidFile('');
+			videoRef.current.pause();
+			// TODO - consider remove:
+			if (videoRef.current.paused) {
+				console.log('paused');
+			} else {
+				console.log('video not paused');
+			}
+		}
+	};
+
+	const playVideo = (file) => {
 		var URL = window.URL || window.webkitURL;
 		var fileURL = URL.createObjectURL(file);
-		video.src = fileURL;
-		enable ? video.play() : video.pause();
-		if (video.paused) {
+		videoRef.current.src = fileURL;
+		videoRef.current.play();
+
+		// TODO - consider remove:
+		if (videoRef.current.paused) {
 			console.log('paused');
 		} else {
-			console.log('vidfo not paused');
+			console.log('video not paused');
 		}
+	};
+	const retrieveGetDurationOfVideo = (durationOfVideo1) => {
+		const getDurationOfVideo = () => {
+			const videoIntervalTime = setInterval(() => {
+				console.log('getDurationOfVideo!!!1');
+				setCurrentDurationOfVideo(
+					Math.trunc(parseFloat(videoRef.current.currentTime))
+				);
+
+				if (parseFloat(videoRef.current.currentTime) >= durationOfVideo1) {
+					clearVideoInterval();
+				}
+			}, 1000);
+
+			const clearVideoInterval = () => {
+				clearInterval(videoIntervalTime);
+			};
+		};
+		return getDurationOfVideo;
+	};
+	const setVideoSpeed = (e) => {
+		videoRef.current.playbackRate = parseFloat(e.target.value);
+	};
+
+	const videoDuration = (e) => {
+		console.log('videoDuration!!!!!!!!!!!!!!!!!!!!');
+		setCurrentDurationOfVideo(parseFloat(e.target.value));
+		videoRef.current.currentTime = parseFloat(e.target.value);
 	};
 
 	// create image file read promise
@@ -164,6 +214,7 @@ export const YoloV3 = () => {
 				setClassNames(classNames);
 				setNclasses(classNames.length);
 				setModelLoadedMessage('Model ' + modelData.name + ' is ready!');
+				setIsModelLoadSpinner(false);
 				setIsModelLoaded(true);
 			}
 		);
@@ -173,34 +224,31 @@ export const YoloV3 = () => {
 	}, []);
 
 	const runVideo = (selectedFile) => {
-		stopVideo();
-
-		playVideoFile(selectedFile, true);
+		stopVideo(); // TODO -  effective?
+		// playVideo(selectedFile);
+		var URL = window.URL || window.webkitURL;
+		var fileURL = URL.createObjectURL(selectedFile);
+		videoRef.current.src = fileURL;
+		videoRef.current.play();
 		var isVideo = true;
 		var imageFrame = videoRef.current;
 
 		const detectFrame = makeDetectFrame(isVideo);
 
-		let promiseVideoMetadata = new Promise((resolve) => {
+		new Promise((resolve) => {
 			videoRef.current.onloadedmetadata = () => {
 				resolve();
 			};
-		});
-		promiseVideoMetadata.then(() => {
+		}).then(() => {
+			console.log('videoRef.current.duration', videoRef.current.duration);
+			setDurationOfVideo(videoRef.current.duration);
+			retrieveGetDurationOfVideo(videoRef.current.duration)();
+			// getDurationOfVideo();
+
 			detectFrame(model, imageFrame);
 		});
 	};
 
-	const stopVideo = () => {
-		if (selectedVidFile != '') {
-			videoRef.current.pause();
-
-			console.log('stopVideo');
-			// 	makeDetectFrame(false);
-			setSelectedVidFile('');
-			// 	playVideoFile(selectedVidFile, false);
-		}
-	};
 	const runImage = (selectedFile) => {
 		stopVideo();
 
@@ -251,16 +299,24 @@ export const YoloV3 = () => {
 	};
 	const onLoadModel = () => {
 		setModelLoadedMessage('Loading Model...');
+		setIsModelLoadSpinner(true);
+
 		stopVideo();
 		const model = selectedModel != '' ? selectedModel : listModels[0];
 		initModel(model);
 	};
 
-	const handleChangeInpuThresh = (event) => {
+	const onChangeNmsThresh = (event) => {
 		console.log(event.target.value);
 		if ((event.target.value <= 1) & (event.target.value >= 0)) {
 			setNmsThresh(event.target.value);
 		}
+	};
+	const onChangeVideoWidth = (event) => {
+		setCanvasWidth(event.target.value);
+	};
+	const onChangeVideoHeight = (event) => {
+		setCanvasHeight(event.target.value);
 	};
 
 	return (
@@ -297,7 +353,14 @@ export const YoloV3 = () => {
 						className='btn btn btn-dark btn-lg col-4 mb-1 '
 						onClick={onLoadModel}
 					>
-						Load Model
+						{isModelLoadSpinner && (
+							<span
+								className='spinner-border spinner-border-sm'
+								role='status'
+								aria-hidden='true'
+							></span>
+						)}
+						{isModelLoadSpinner ? 'Loading' : 'Load Model'}
 					</button>
 				</div>
 
@@ -332,7 +395,31 @@ export const YoloV3 = () => {
 							max='1'
 							step='0.1'
 							value={nmsThresh}
-							onChange={handleChangeInpuThresh}
+							onChange={onChangeNmsThresh}
+						/>
+					</div>
+					<div className='col'>
+						<label className=' h5 form-select-lg col-2'>Set Video Width:</label>
+						<input
+							className='form-select-lg col-4'
+							type='number'
+							min='0'
+							max='1920'
+							step='1'
+							value={canvasWidth}
+							onChange={onChangeVideoWidth}
+						/>
+					</div>
+					<div className='col'>
+						<label className=' h5 form-select-lg col-2'>Set Video Width:</label>
+						<input
+							className='form-select-lg col-4'
+							type='number'
+							min='0'
+							max='1920'
+							step='1'
+							value={canvasHeight}
+							onChange={onChangeVideoHeight}
 						/>
 					</div>
 				</div>
@@ -342,18 +429,10 @@ export const YoloV3 = () => {
 							<button
 								variant='primary'
 								disabled={selectedFile == '' || !isModelLoaded}
-								className='btn btn btn-outline-dark  btn-lg col-4 mb-1 mx-1'
+								className='btn btn btn-dark  btn-lg col-4 mb-1 mx-1'
 								onClick={onClickRun}
 							>
 								Run Detection
-							</button>
-
-							<button
-								variant='primary'
-								className='btn btn btn-danger btn-lg col-2 mb-1 mx-1'
-								onClick={onClickStopVideo}
-							>
-								Stop Video
 							</button>
 						</div>
 					</div>
@@ -373,23 +452,59 @@ export const YoloV3 = () => {
 			</div>
 
 			{showVideoControl == true && (
-				<video
-					className='mt-7 '
-					autoPlay
-					playsInline
-					muted
-					ref={videoRef}
-					width={String(416)}
-					height={String(416)}
-					id='frame'
-					controls
-				/>
+				<div className='row '>
+					<button
+						variant='primary'
+						className='btn btn btn-danger btn-lg col-2 mb-1 mx-1'
+						onClick={onClickStopVideo}
+					>
+						Stop Video
+					</button>
+					<div className='customVideoTagControlsClass'>
+						<label>playback speed</label>
+						<select onChange={setVideoSpeed}>
+							<option value={1.0}>normal speed</option>
+							<option value={0.5}>slower</option>
+							<option value={2.0}>faster speed</option>
+						</select>
+
+						<div className='h1'>
+							<span className='badge bg-dark form-select-lg h3'>
+								{currentDurationOfVideo} /{durationOfVideo}
+							</span>
+						</div>
+					</div>
+
+					<label for='customRange3' class='form-label'></label>
+					<input
+						type='range'
+						class='form-range'
+						min='0'
+						max={durationOfVideo}
+						// step='0.5'
+						id='customRange3'
+						value={currentDurationOfVideo}
+						onChange={videoDuration}
+					></input>
+
+					<div className='mt-3'>
+						<canvas className='video' ref={canvasRefVideo} width='' height='' />
+					</div>
+					<video
+						className='mt-1 invisible'
+						autoPlay
+						playsInline
+						muted
+						ref={videoRef}
+						width={String(canvasWidth)}
+						height={String(canvasHeight)}
+						id='frame'
+						controls
+					/>
+				</div>
 			)}
 
 			<div className='row '>
-				<div>
-					<canvas className='video' ref={canvasRefVideo} width='' height='' />
-				</div>
 				<div>
 					<canvas className='image' ref={canvasRefImage} width='' height='' />
 				</div>
