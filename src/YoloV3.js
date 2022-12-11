@@ -157,7 +157,6 @@ export const YoloV3 = () => {
 	};
 
 	const videoDuration = (e) => {
-		console.log('videoDuration!!!!!!!!!!!!!!!!!!!!');
 		setCurrentDurationOfVideo(parseFloat(e.target.value));
 		videoRef.current.currentTime = parseFloat(e.target.value);
 	};
@@ -306,13 +305,13 @@ export const YoloV3 = () => {
 				<h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
 			</div>
 			<div>
-				<div className='row'>
-					<div className='col-2'>
+				<div className='col'>
+					<div className='col'>
 						<label htmlFor='selectModel' className=' h5 form-select-lg'>
 							Select a Model
 						</label>
 					</div>
-					<div className='col-4'>
+					<div className='col'>
 						<select
 							className='form-select form-select-lg mb-1'
 							onChange={onSelectModel}
@@ -324,83 +323,96 @@ export const YoloV3 = () => {
 							))}
 						</select>
 					</div>
-				</div>
-				<div className='row'>
-					<div className='col-2'></div>
-
-					<button
-						variant='primary'
-						// type='submit'
-						className='btn btn btn-dark btn-lg col-4 mb-1 '
-						onClick={onLoadModel}
-					>
-						{isModelLoadSpinner && (
-							<span
-								className='spinner-border spinner-border-sm'
-								role='status'
-								aria-hidden='true'
-							></span>
-						)}
-						{isModelLoadSpinner ? 'Loading' : 'Load Model'}
-					</button>
-				</div>
-
-				<div className='row'>
-					<div className='col-2'></div>
-					<div className='col-4 h5 mb-3'>{modelLoadedMessage}</div>
-				</div>
-				<div className='row'>
-					<div className='col-2'>
-						<label htmlFor='selectFile' className='  h5  form-select-lg mb-1'>
-							Video or Image File
-						</label>
+					<div className='row'>
+						<button
+							variant='primary'
+							// type='submit'
+							className='btn btn btn-dark btn-lg col-4 mb-1 mt-3'
+							onClick={onLoadModel}
+						>
+							{isModelLoadSpinner && (
+								<span
+									className='spinner-border spinner-border-sm'
+									role='status'
+									aria-hidden='true'
+								></span>
+							)}
+							{isModelLoadSpinner ? 'Loading' : 'Load Model'}
+						</button>
 					</div>
 
-					<input
-						className=' col-4 form-select-lg mb-3'
-						id='selectFile'
-						type='file'
-						onChange={onChangeFile}
-						accept='video/*, image/*'
-					/>
+					<div className='col'>
+						{/* <div className='coll-2'></div> */}
+						<div className='coll-4 h5 mb-3'>{modelLoadedMessage}</div>
+					</div>
+					<div className='col'>
+						<div className='col'>
+							<label htmlFor='selectFile' className='  h5  form-select-lg'>
+								Video or Image File
+							</label>
+						</div>
+						<div className='col-4'>
+							<input
+								className=' coll form-select-lg'
+								id='selectFile'
+								type='file'
+								onChange={onChangeFile}
+								accept='video/*, image/*'
+							/>
+						</div>
+					</div>
 				</div>
+
 				<div className='mb-3'>
 					<div className='row'>
 						<div className='col'>
-							<label className=' h5 form-select-lg'>NMS Threshold</label>
-							<input
-								className='form-select-lg'
-								type='number'
-								min='0'
-								max='1'
-								step='0.1'
-								value={nmsThresh}
-								onChange={onChangeNmsThresh}
-							/>
+							<div className='col'>
+								<label className=' h5 form-select-lg'>NMS Threshold</label>
+							</div>
+							<div className='col'>
+								<input
+									className='form-select-lg'
+									type='number'
+									min='0'
+									max='1'
+									step='0.1'
+									value={nmsThresh}
+									onChange={onChangeNmsThresh}
+								/>
+							</div>
 						</div>
 						<div className='col'>
-							<label className=' h5 form-select-lg '>Video Width</label>
-							<input
-								className='form-select-lg '
-								type='number'
-								min='0'
-								max='1920'
-								step='1'
-								value={canvasWidth}
-								onChange={onChangeVideoWidth}
-							/>
+							<div className='col'>
+								<label className=' h5 form-select-lg '>Video Width</label>
+							</div>
+							<div className='col'>
+								<input
+									className='form-select-lg '
+									type='number'
+									min='0'
+									max='1920'
+									step='1'
+									value={canvasWidth}
+									onChange={onChangeVideoWidth}
+								/>
+							</div>
 						</div>
 						<div className='col'>
-							<label className=' h5 form-select-lg '>Video Width</label>
-							<input
-								className='form-select-lg '
-								type='number'
-								min='0'
-								max='1920'
-								step='1'
-								value={canvasHeight}
-								onChange={onChangeVideoHeight}
-							/>
+							<div className='col'>
+								<label className=' h5 form-select-lg '>Video Width</label>
+							</div>
+
+							<div className='col'>
+								<input
+									className='form-select-lg '
+									type='number'
+									min='0'
+									max='1920'
+									step='1'
+									value={canvasHeight}
+									onChange={onChangeVideoHeight}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -410,7 +422,7 @@ export const YoloV3 = () => {
 							<button
 								variant='primary'
 								disabled={selectedFile == '' || !isModelLoaded}
-								className='btn btn btn-dark  btn-lg col-4 mb-1 mx-1'
+								className='btn btn btn-dark  btn-lg col-4 mb-1'
 								onClick={onClickRun}
 							>
 								Run Detection
@@ -433,58 +445,69 @@ export const YoloV3 = () => {
 			</div>
 
 			{showVideoControl == true && (
-				<div className='row '>
+				<div className='col'>
 					<button
 						variant='primary'
-						className='btn btn btn-danger btn-lg col-2 mb-1 mx-1'
+						className='btn btn btn-danger btn-lg col-4 mb-1'
 						onClick={stopVideo}
 					>
 						Stop Video
 					</button>
-					<div className='customVideoTagControlsClass'>
-						<label>playback speed</label>
-						<select
-							className='className=form-select form-select-lg mb-1 '
-							onChange={setVideoSpeed}
-						>
-							<option value={1.0}>Normal speed</option>
-							<option value={0.5}>Slow</option>
-							<option value={2.0}>Fast speed</option>
-						</select>
+					<div className='row '>
+						<div className='col'>
+							<div className='col'>
+								<label className=' form-select-lg'>Playback Speed</label>
+							</div>
+							<div className='col-4'>
+								<select
+									className='className= form-select form-select-lg mb- '
+									onChange={setVideoSpeed}
+								>
+									<option value={1.0}>Normal speed</option>
+									<option value={0.5}>Slow</option>
+									<option value={2.0}>Fast speed</option>
+								</select>
+							</div>
 
-						<div className='h1'>
-							<span className='badge bg-dark form-select-lg h3'>
-								{currentDurationOfVideo} /{durationOfVideo}
-							</span>
+							<div className='h1 col'>
+								<span className='badge bg-dark form-select-lg h3'>
+									{currentDurationOfVideo} /{durationOfVideo}
+								</span>
+							</div>
 						</div>
-					</div>
 
-					<label for='customRange3' class='form-label'></label>
-					<input
-						type='range'
-						class='form-range'
-						min='0'
-						max={durationOfVideo}
-						// step='0.5'
-						id='customRange3'
-						value={currentDurationOfVideo}
-						onChange={videoDuration}
-					></input>
+						<label htmlFor='customRange3' className='form-label'></label>
+						<input
+							type='range'
+							className='form-range'
+							min='0'
+							max={durationOfVideo}
+							// step='0.5'
+							id='customRange3'
+							value={currentDurationOfVideo}
+							onChange={videoDuration}
+						></input>
 
-					<div className='mt-3'>
-						<canvas className='video' ref={canvasRefVideo} width='' height='' />
+						<div className='mt-3'>
+							<canvas
+								className='video'
+								ref={canvasRefVideo}
+								width=''
+								height=''
+							/>
+						</div>
+						<video
+							className='mt-1 invisible'
+							autoPlay
+							playsInline
+							muted
+							ref={videoRef}
+							width={String(canvasWidth)}
+							height={String(canvasHeight)}
+							id='frame'
+							controls
+						/>
 					</div>
-					<video
-						className='mt-1 invisible'
-						autoPlay
-						playsInline
-						muted
-						ref={videoRef}
-						width={String(canvasWidth)}
-						height={String(canvasHeight)}
-						id='frame'
-						controls
-					/>
 				</div>
 			)}
 
