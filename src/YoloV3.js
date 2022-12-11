@@ -305,13 +305,13 @@ export const YoloV3 = () => {
 				<h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
 			</div>
 			<div>
-				<div className='col'>
+				<div className='col mb-3'>
 					<div className='col'>
-						<label htmlFor='selectModel' className=' h5 form-select-lg'>
+						<label htmlFor='selectModel' className=' h5 '>
 							Select a Model
 						</label>
 					</div>
-					<div className='col'>
+					<div className='col-4'>
 						<select
 							className='form-select form-select-lg mb-1'
 							onChange={onSelectModel}
@@ -323,37 +323,40 @@ export const YoloV3 = () => {
 							))}
 						</select>
 					</div>
-					<div className='row'>
-						<button
-							variant='primary'
-							// type='submit'
-							className='btn btn btn-dark btn-lg col-4 mb-1 mt-3'
-							onClick={onLoadModel}
-						>
-							{isModelLoadSpinner && (
-								<span
-									className='spinner-border spinner-border-sm'
-									role='status'
-									aria-hidden='true'
-								></span>
-							)}
-							{isModelLoadSpinner ? 'Loading' : 'Load Model'}
-						</button>
+					<div className='col mb-5'>
+						<div className='col'>
+							<button
+								variant='primary'
+								// type='submit'
+								className='btn btn btn-dark btn-lg col-4 mb-1 mt-3'
+								onClick={onLoadModel}
+							>
+								{isModelLoadSpinner && (
+									<span
+										className='spinner-border spinner-border-sm'
+										role='status'
+										aria-hidden='true'
+									></span>
+								)}
+								{isModelLoadSpinner ? 'Loading' : 'Load Model'}
+							</button>
+						</div>
+
+						<div className='col'>
+							{/* <div className='coll-2'></div> */}
+							<div className='coll-4 h5 mb-3'>{modelLoadedMessage}</div>
+						</div>
 					</div>
 
-					<div className='col'>
-						{/* <div className='coll-2'></div> */}
-						<div className='coll-4 h5 mb-3'>{modelLoadedMessage}</div>
-					</div>
-					<div className='col'>
+					<div className='col mb-5'>
 						<div className='col'>
-							<label htmlFor='selectFile' className='  h5  form-select-lg'>
-								Video or Image File
+							<label htmlFor='selectFile' className='  h5  '>
+								Select Video or Image File
 							</label>
 						</div>
-						<div className='col-4'>
+						<div className='col'>
 							<input
-								className=' coll form-select-lg'
+								className='col-6 form-select-lg'
 								id='selectFile'
 								type='file'
 								onChange={onChangeFile}
@@ -365,9 +368,9 @@ export const YoloV3 = () => {
 
 				<div className='mb-3'>
 					<div className='row'>
-						<div className='col'>
+						<div className='col-2'>
 							<div className='col'>
-								<label className=' h5 form-select-lg'>NMS Threshold</label>
+								<label className=' h5 '>NMS Threshold</label>
 							</div>
 							<div className='col'>
 								<input
@@ -381,9 +384,9 @@ export const YoloV3 = () => {
 								/>
 							</div>
 						</div>
-						<div className='col'>
+						<div className='col-2'>
 							<div className='col'>
-								<label className=' h5 form-select-lg '>Video Width</label>
+								<label className=' h5  '>Video Width</label>
 							</div>
 							<div className='col'>
 								<input
@@ -397,9 +400,9 @@ export const YoloV3 = () => {
 								/>
 							</div>
 						</div>
-						<div className='col'>
+						<div className='col-2'>
 							<div className='col'>
-								<label className=' h5 form-select-lg '>Video Width</label>
+								<label className=' h5  '>Video Width</label>
 							</div>
 
 							<div className='col'>
@@ -446,19 +449,12 @@ export const YoloV3 = () => {
 
 			{showVideoControl == true && (
 				<div className='col'>
-					<button
-						variant='primary'
-						className='btn btn btn-danger btn-lg col-4 mb-1'
-						onClick={stopVideo}
-					>
-						Stop Video
-					</button>
 					<div className='row '>
-						<div className='col'>
+						<div className='col mb-3'>
 							<div className='col'>
 								<label className=' form-select-lg'>Playback Speed</label>
 							</div>
-							<div className='col-4'>
+							<div className='col-4 mb-3'>
 								<select
 									className='className= form-select form-select-lg mb- '
 									onChange={setVideoSpeed}
@@ -470,7 +466,7 @@ export const YoloV3 = () => {
 							</div>
 
 							<div className='h1 col'>
-								<span className='badge bg-dark form-select-lg h3'>
+								<span className='badge text-bg-dark form-select-lg h3'>
 									{currentDurationOfVideo} /{durationOfVideo}
 								</span>
 							</div>
@@ -487,6 +483,14 @@ export const YoloV3 = () => {
 							value={currentDurationOfVideo}
 							onChange={videoDuration}
 						></input>
+
+						<button
+							variant='primary'
+							className='btn btn btn-danger btn-lg col-4 mb-1'
+							onClick={stopVideo}
+						>
+							Stop Video
+						</button>
 
 						<div className='mt-3'>
 							<canvas
