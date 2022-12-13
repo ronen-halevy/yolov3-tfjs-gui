@@ -8,7 +8,8 @@
 		lineWidth,
 		lineColor,
 		textColor,
-		textBackgoundColor
+		textBackgoundColor,
+		name
 	) {
 		this.canvas = canvas;
 		this.classNames = classNames;
@@ -17,6 +18,8 @@
 		this.lineColor = lineColor;
 		this.textColor = textColor;
 		this.textBackgoundColor = textBackgoundColor;
+		this.name = name;
+		this.count = 0;
 	}
 	/**
 	 * @summary Draws a bounding box and text annotations for a detection
@@ -27,6 +30,10 @@
 	 * @param {float} imageWidth - Input image's original width.
 	 * @param {float} imageHeight - Input image's original height.
 	 */
+
+	test() {
+		console.log('Draw!!!!!!', this.name);
+	}
 
 	drawBbox(context, bbox, score, className, imageWidth, imageHeight) {
 		context.beginPath();
@@ -77,6 +84,10 @@
 	 */
 
 	async drawOnImage(image, bboxes, scores, classIndices) {
+		console.log('name: ', this.name);
+		// console.log('drawOnImage: ', this.count);
+		this.count = this.count + 1;
+
 		const context = this.canvas.getContext('2d');
 
 		const imageWidth = image.width;
@@ -97,6 +108,19 @@
 				imageHeight
 			)
 		);
+	}
+	////
+	componentDidMount() {
+		console.log(componentDidMount);
+	}
+	shouldComponentUpdate() {
+		console.log(shouldComponentUpdate);
+	}
+	componentDidUpdate() {
+		console.log(componentDidUpdate);
+	}
+	componentWillUnmount() {
+		console.log(componentWillUnmount);
 	}
 }
 
