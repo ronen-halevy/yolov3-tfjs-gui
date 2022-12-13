@@ -1,61 +1,34 @@
-
-
 {
- 
-    "ImageRenderWidth": 10,
-    "inputImageRenderHeight": 10,
-
-    "yoloMaxBoxes": 100,
-    "nmsIouThreshold": 0.5,
-    "nmsScoreThreshold": 0.1,
-
-    "font": "20px serif",
-    "lineWidth": 3,
-    "lineColor": "yellow",
-    "textColor": "blue",
-    "textBackgoundColor": "white",
-
-    "yolov3TinyShapes": {
-"modelUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/shapes/model.json",
-
-        "anchorsUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesAnchors.json",
-
-
-    "classNamesUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesClassNames.txt"
-
-
-    },
-
-    "yolov3TinyCoco": {
- "modelUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/coco-tiny/model.json",
-
-
-    "anchorsUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoTinyAnchors.json",
-
-
-    
-    "classNamesUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoClassNames.txt"
-
-    },
-"yolov3Coco": {
-          "modelUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/coco/model.json",
-
-
-    "anchorsUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoAnchors.json",
-
-
-    
-    "classNamesUrl":
-        "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoClassNames.txt"
-
-    }
-
-   }
+   "ImageRenderWidth":10,
+   "inputImageRenderHeight":10,
+   "yoloMaxBoxes":100,
+   "nmsIouThreshold":0.5,
+   "nmsScoreThreshold":0.1,
+   "font":"20px serif",
+   "lineWidth":3,
+   "lineColor":"yellow",
+   "textColor":"blue",
+   "textBackgoundColor":"white",
+   "models":[
+      
+         {
+            "name":"yolov3TinyShapes",
+            "modelUrl":"https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/shapes/model.json",
+            "anchorsUrl":"https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesAnchors.json",
+            "classNamesUrl":"https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesClassNames.txt"
+         },
+         {
+            "name":"yolov3TinyCoco",
+            "modelUrl":"https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/coco-tiny/model.json",
+            "anchorsUrl":"https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoTinyAnchors.json",
+            "classNamesUrl":"https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoClassNames.txt"
+         },
+         {
+            "name":"yolov3Coco",
+            "modelUrl":"https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/coco/model.json",
+            "anchorsUrl":"https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoAnchors.json",
+            "classNamesUrl":"https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoClassNames.txt"
+         }
+      
+   ]
+}
