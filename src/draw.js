@@ -84,10 +84,6 @@
 	 */
 
 	async drawOnImage(image, bboxes, scores, classIndices) {
-		console.log('name: ', this.name);
-		// console.log('drawOnImage: ', this.count);
-		this.count = this.count + 1;
-
 		const context = this.canvas.getContext('2d');
 
 		const imageWidth = image.width;
@@ -108,19 +104,6 @@
 				imageHeight
 			)
 		);
-	}
-	////
-	componentDidMount() {
-		console.log(componentDidMount);
-	}
-	shouldComponentUpdate() {
-		console.log(shouldComponentUpdate);
-	}
-	componentDidUpdate() {
-		console.log(componentDidUpdate);
-	}
-	componentWillUnmount() {
-		console.log(componentWillUnmount);
 	}
 }
 
