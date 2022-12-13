@@ -5,13 +5,19 @@ import * as tf from '@tensorflow/tfjs';
 tf.setBackend('webgl');
 
 // import LoadModel from './LoadModel.js';
-import yoloDecode from './yoloDecode.js';
-import yoloNms from './yoloNms.js';
+
 import Draw from './draw.js';
 import { image } from '@tensorflow/tfjs';
-import { loadGraphModel } from '@tensorflow/tfjs-converter';
 
-import configData from './config.json';
+import configData from './configModel.json';
+import {
+	detectFrameVideo,
+	detectFrameImage,
+	initModel,
+	initVideoRender,
+	initImageRender,
+	initVideoObject,
+} from './DetectF.js';
 
 export const YoloV3 = () => {
 	// Refs:
@@ -49,29 +55,32 @@ export const YoloV3 = () => {
 	const [durationOfVideo, setDurationOfVideo] = useState(0);
 	const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
 
-	const drawVideoRef = new Draw(
-		canvasRefVideo.current,
-		classNames,
-		configData.font,
-		configData.lineWidth,
-		configData.lineColor,
-		configData.textColor,
-		configData.textBackgoundColor,
-		'video'
-	);
+	initVideoRender(canvasRefVideo.current);
+	initImageRender(canvasRefImage.current);
+	initVideoObject(videoRef);
+	// const drawVideoRef = new Draw(
+	// 	canvasRefVideo.current,
+	// 	classNames,
+	// 	configData.font,
+	// 	configData.lineWidth,
+	// 	configData.lineColor,
+	// 	configData.textColor,
+	// 	configData.textBackgoundColor,
+	// 	'video'
+	// );
 
-	const drawImageRef =
-		// useRef(
-		new Draw(
-			canvasRefImage.current,
-			classNames,
-			configData.font,
-			configData.lineWidth,
-			configData.lineColor,
-			configData.textColor,
-			configData.textBackgoundColor,
-			'image'
-		);
+	// const drawImageRef =
+	// 	// useRef(
+	// 	new Draw(
+	// 		canvasRefImage.current,
+	// 		classNames,
+	// 		configData.font,
+	// 		configData.lineWidth,
+	// 		configData.lineColor,
+	// 		configData.textColor,
+	// 		configData.textBackgoundColor,
+	// 		'image'
+	// 	);
 	// );
 
 	useEffect(() => {
@@ -92,91 +101,91 @@ export const YoloV3 = () => {
 			});
 	};
 
-	const detectFrameVideo = (imageFrame) => {
-		tf.engine().startScope();
-		const imageTensor = imagePreprocess(imageFrame);
-		const model_output_grids = model.predict(imageTensor);
+	// const detectFrameVideo = (imageFrame) => {
+	// 	tf.engine().startScope();
+	// 	const imageTensor = imagePreprocess(imageFrame);
+	// 	const model_output_grids = model.predict(imageTensor);
 
-		// Decode predictions: combines all grids detection results
-		let [bboxes, confidences, classProbs] = yoloDecode(
-			model_output_grids,
-			nclasses,
-			anchors
-		);
-		let axis = -1;
-		let classIndices = classProbs.argMax(axis);
-		classProbs = classProbs.max(axis);
-		confidences = confidences.squeeze(axis);
-		let scores = confidences.mul(classProbs);
-		yoloNms(
-			bboxes,
-			scores,
-			classIndices,
+	// 	// Decode predictions: combines all grids detection results
+	// 	let [bboxes, confidences, classProbs] = yoloDecode(
+	// 		model_output_grids,
+	// 		nclasses,
+	// 		anchors
+	// 	);
+	// 	let axis = -1;
+	// 	let classIndices = classProbs.argMax(axis);
+	// 	classProbs = classProbs.max(axis);
+	// 	confidences = confidences.squeeze(axis);
+	// 	let scores = confidences.mul(classProbs);
+	// 	yoloNms(
+	// 		bboxes,
+	// 		scores,
+	// 		classIndices,
 
-			configData.yoloMaxBoxes,
-			configData.nmsIouThreshold,
-			nmsThresh
-		).then((reasultArrays) => {
-			let [selBboxes, scores, classIndices] = reasultArrays;
+	// 		configData.yoloMaxBoxes,
+	// 		configData.nmsIouThreshold,
+	// 		nmsThresh
+	// 	).then((reasultArrays) => {
+	// 		let [selBboxes, scores, classIndices] = reasultArrays;
 
-			drawVideoRef.drawOnImage(imageFrame, selBboxes, scores, classIndices);
+	// 		drawVideoRef.drawOnImage(imageFrame, selBboxes, scores, classIndices);
 
-			if (imageFrame.tagName == 'VIDEO') {
-				var id = window.requestAnimationFrame(function () {
-					detectFrameVideo(imageFrame);
-				});
-				if (videoRef.current.currentTime >= videoRef.current.duration) {
-					cancelAnimationFrame(id);
-				}
-			}
-			tf.engine().endScope();
-		});
-	};
+	// 		if (imageFrame.tagName == 'VIDEO') {
+	// 			var id = window.requestAnimationFrame(function () {
+	// 				detectFrameVideo(imageFrame);
+	// 			});
+	// 			if (videoRef.current.currentTime >= videoRef.current.duration) {
+	// 				cancelAnimationFrame(id);
+	// 			}
+	// 		}
+	// 		tf.engine().endScope();
+	// 	});
+	// };
 
-	const detectFrameImage = (imageFrame) => {
-		tf.engine().startScope();
+	// const detectFrameImage = (imageFrame) => {
+	// 	tf.engine().startScope();
 
-		const imageTensor = imagePreprocess(imageFrame);
-		const model_output_grids = model.predict(imageTensor);
+	// 	const imageTensor = imagePreprocess(imageFrame);
+	// 	const model_output_grids = model.predict(imageTensor);
 
-		// Decode predictions: combines all grids detection results
-		let [bboxes, confidences, classProbs] = yoloDecode(
-			model_output_grids,
-			nclasses,
-			anchors
-		);
-		let axis = -1;
-		let classIndices = classProbs.argMax(axis);
-		classProbs = classProbs.max(axis);
-		confidences = confidences.squeeze(axis);
-		let scores = confidences.mul(classProbs);
-		yoloNms(
-			bboxes,
-			scores,
-			classIndices,
+	// 	// Decode predictions: combines all grids detection results
+	// 	let [bboxes, confidences, classProbs] = yoloDecode(
+	// 		model_output_grids,
+	// 		nclasses,
+	// 		anchors
+	// 	);
+	// 	let axis = -1;
+	// 	let classIndices = classProbs.argMax(axis);
+	// 	classProbs = classProbs.max(axis);
+	// 	confidences = confidences.squeeze(axis);
+	// 	let scores = confidences.mul(classProbs);
+	// 	yoloNms(
+	// 		bboxes,
+	// 		scores,
+	// 		classIndices,
 
-			configData.yoloMaxBoxes,
-			configData.nmsIouThreshold,
-			nmsThresh
-		).then((reasultArrays) => {
-			let [selBboxes, scores, classIndices] = reasultArrays;
+	// 		configData.yoloMaxBoxes,
+	// 		configData.nmsIouThreshold,
+	// 		nmsThresh
+	// 	).then((reasultArrays) => {
+	// 		let [selBboxes, scores, classIndices] = reasultArrays;
 
-			console.log('call draw.drawOnImage');
-			drawImageRef.drawOnImage(imageFrame, selBboxes, scores, classIndices);
-			tf.engine().endScope();
-		});
-	};
+	// 		console.log('call draw.drawOnImage');
+	// 		drawImageRef.drawOnImage(imageFrame, selBboxes, scores, classIndices);
+	// 		tf.engine().endScope();
+	// 	});
+	// };
 
-	const imagePreprocess = (image) => {
-		const imgTensor = tf.browser.fromPixels(image);
-		// Yolo input width:
-		const imageHeight = 416;
-		const imageWidth = 416;
-		var resized = tf.image.resizeBilinear(imgTensor, [imageHeight, imageWidth]);
-		var tensor = resized.expandDims(0).toFloat();
-		tensor = tensor.div(255);
-		return tensor;
-	};
+	// const imagePreprocess = (image) => {
+	// 	const imgTensor = tf.browser.fromPixels(image);
+	// 	// Yolo input width:
+	// 	const imageHeight = 416;
+	// 	const imageWidth = 416;
+	// 	var resized = tf.image.resizeBilinear(imgTensor, [imageHeight, imageWidth]);
+	// 	var tensor = resized.expandDims(0).toFloat();
+	// 	tensor = tensor.div(255);
+	// 	return tensor;
+	// };
 
 	const stopVideo = () => {
 		videoRef.current.pause();
@@ -231,33 +240,33 @@ export const YoloV3 = () => {
 	}
 	/* Use Effect Hooks:*/
 
-	const initModel = (modelData) => {
-		const modelUrl = modelData.modelUrl;
-		console.log('modelUrl', modelUrl);
-		const anchorsUrl = modelData.anchorsUrl;
-		const classNamesUrl = modelData.classNamesUrl;
+	// const initModel = (modelData) => {
+	// 	const modelUrl = modelData.modelUrl;
+	// 	console.log('modelUrl', modelUrl);
+	// 	const anchorsUrl = modelData.anchorsUrl;
+	// 	const classNamesUrl = modelData.classNamesUrl;
 
-		const modelPromise = tf.loadLayersModel(modelUrl);
-		const anchorsPromise = fetch(anchorsUrl).then((response) =>
-			response.json()
-		);
+	// 	const modelPromise = tf.loadLayersModel(modelUrl);
+	// 	const anchorsPromise = fetch(anchorsUrl).then((response) =>
+	// 		response.json()
+	// 	);
 
-		const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
+	// 	const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
 
-		Promise.all([modelPromise, anchorsPromise, classNamesPromise]).then(
-			(values) => {
-				setModel(values[0]);
-				setAnchors(values[1].anchor);
+	// 	Promise.all([modelPromise, anchorsPromise, classNamesPromise]).then(
+	// 		(values) => {
+	// 			setModel(values[0]);
+	// 			setAnchors(values[1].anchor);
 
-				const classNames = values[2].split(/\r?\n/);
-				setClassNames(classNames);
-				setNclasses(classNames.length);
-				setModelLoadedMessage('Model ' + modelData.name + ' is ready!');
-				setIsModelLoadSpinner(false);
-				setIsModelLoaded(true);
-			}
-		);
-	};
+	// 			const classNames = values[2].split(/\r?\n/);
+	// 			setClassNames(classNames);
+	// 			setNclasses(classNames.length);
+	// 			setModelLoadedMessage('Model ' + modelData.name + ' is ready!');
+	// 			setIsModelLoadSpinner(false);
+	// 			setIsModelLoaded(true);
+	// 		}
+	// 	);
+	// };
 	useEffect(() => {
 		// setShowVideoControl(false);
 		console.log('useEffect []!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -383,8 +392,11 @@ export const YoloV3 = () => {
 		setIsModelLoadSpinner(true);
 
 		// stopVideo();
-		const model = selectedModel != '' ? selectedModel : listModels[0];
-		initModel(model);
+		const modelConfig = selectedModel != '' ? selectedModel : listModels[0];
+		initModel(modelConfig);
+		setModelLoadedMessage('Model ' + modelConfig.name + ' is ready!');
+		setIsModelLoadSpinner(false);
+		setIsModelLoaded(true);
 	};
 
 	const onChangeNmsThresh = (event) => {

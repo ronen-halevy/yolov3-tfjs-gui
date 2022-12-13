@@ -1,25 +1,25 @@
+import configData from './configModel.json';
+import config from './configRender.json';
+
 /**
  * Contains methods to draw bounding boxes and text annotations on an image's (same as a single frame) detection.
  */ class Draw {
 	constructor(
 		canvas,
-		classNames,
-		font,
-		lineWidth,
-		lineColor,
-		textColor,
-		textBackgoundColor,
-		name
+		classNames
+		// font,
+		// lineWidth,
+		// lineColor,
+		// textColor,
+		// textBackgoundColor
 	) {
 		this.canvas = canvas;
 		this.classNames = classNames;
-		this.font = font;
-		this.lineWidth = lineWidth;
-		this.lineColor = lineColor;
-		this.textColor = textColor;
-		this.textBackgoundColor = textBackgoundColor;
-		this.name = name;
-		this.count = 0;
+		this.font = config.font;
+		this.lineWidth = config.lineWidth;
+		this.lineColor = config.lineColor;
+		this.textColor = config.textColor;
+		this.textBackgoundColor = config.textBackgoundColor;
 	}
 	/**
 	 * @summary Draws a bounding box and text annotations for a detection
@@ -30,10 +30,6 @@
 	 * @param {float} imageWidth - Input image's original width.
 	 * @param {float} imageHeight - Input image's original height.
 	 */
-
-	test() {
-		console.log('Draw!!!!!!', this.name);
-	}
 
 	drawBbox(context, bbox, score, className, imageWidth, imageHeight) {
 		context.beginPath();
@@ -49,7 +45,6 @@
 		context.lineWidth = this.lineWidth;
 		context.strokeStyle = this.lineColor;
 		context.stroke();
-
 		const annotationText = className + ' ' + (100 * score).toFixed(2) + '%';
 
 		context.fillStyle = this.textBackgoundColor;

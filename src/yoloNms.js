@@ -1,5 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 
+import config from './configNms.json';
+
 const yoloNms = (
 	bboxes,
 	scores,
