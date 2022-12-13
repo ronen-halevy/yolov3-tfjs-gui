@@ -19,6 +19,9 @@ export const YoloV3 = () => {
 	const canvasRefVideo = useRef(null);
 	const canvasRefImage = useRef(null);
 
+	// const drawImageRef = useRef(null);
+	// const drawVideoRef = useRef(null);
+
 	// States:
 	const [selectedFile, setSelectedFile] = useState('');
 
@@ -38,13 +41,41 @@ export const YoloV3 = () => {
 	const [isModelLoaded, setIsModelLoaded] = useState(false);
 
 	const [nmsThresh, setNmsThresh] = useState(configData.nmsScoreThreshold);
-	const [showVideoControl, setShowVideoControl] = useState(false);
+	const [showVideoControl, setShowVideoControl] = useState(true);
 
 	const [canvasWidth, setCanvasWidth] = useState(416);
 	const [canvasHeight, setCanvasHeight] = useState(416);
 
 	const [durationOfVideo, setDurationOfVideo] = useState(0);
 	const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
+	const [stopper, setStopper] = useState('');
+	var [dbgcount, setdbgcount] = useState('');
+
+	const drawVideoRef = new Draw(
+		canvasRefVideo.current,
+		classNames,
+		configData.font,
+		configData.lineWidth,
+		configData.lineColor,
+		configData.textColor,
+		configData.textBackgoundColor,
+		'video'
+	);
+	// );
+
+	const drawImageRef =
+		// useRef(
+		new Draw(
+			canvasRefImage.current,
+			classNames,
+			configData.font,
+			configData.lineWidth,
+			configData.lineColor,
+			configData.textColor,
+			configData.textBackgoundColor,
+			'image'
+		);
+	// );
 
 	useEffect(() => {
 		console.log('useEffect videoRef');
@@ -64,55 +95,177 @@ export const YoloV3 = () => {
 			});
 	};
 
-	const makeDetectFrame = (isVideo) => {
-		const detectFrame = (model, imageFrame) => {
-			tf.engine().startScope();
-			const imageTensor = imagePreprocess(imageFrame);
-			const model_output_grids = model.predict(imageTensor);
+	// const makeDetectFrame = (isVideo) => {
+	// 	const detectFrame = (model, imageFrame) => {
+	// 		tf.engine().startScope();
+	// 		const imageTensor = imagePreprocess(imageFrame);
+	// 		const model_output_grids = model.predict(imageTensor);
 
-			// Decode predictions: combines all grids detection results
-			let [bboxes, confidences, classProbs] = yoloDecode(
-				model_output_grids,
-				nclasses,
-				anchors
+	// 		// Decode predictions: combines all grids detection results
+	// 		let [bboxes, confidences, classProbs] = yoloDecode(
+	// 			model_output_grids,
+	// 			nclasses,
+	// 			anchors
+	// 		);
+	// 		let axis = -1;
+	// 		let classIndices = classProbs.argMax(axis);
+	// 		classProbs = classProbs.max(axis);
+	// 		confidences = confidences.squeeze(axis);
+	// 		let scores = confidences.mul(classProbs);
+	// 		yoloNms(
+	// 			bboxes,
+	// 			scores,
+	// 			classIndices,
+
+	// 			configData.yoloMaxBoxes,
+	// 			configData.nmsIouThreshold,
+	// 			nmsThresh
+	// 		).then((reasultArrays) => {
+	// 			let [selBboxes, scores, classIndices] = reasultArrays;
+	// 			let canvas = isVideo ? canvasRefVideo.current : canvasRefImage.current;
+
+	// 			var draw = new Draw(
+	// 				canvas,
+	// 				classNames,
+	// 				configData.font,
+	// 				configData.lineWidth,
+	// 				configData.lineColor,
+	// 				configData.textColor,
+	// 				configData.textBackgoundColor
+	// 			);
+	// 			draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
+	// 			requestAnimationFrame(() => {
+	// 				detectFrame(model, imageFrame);
+	// 			});
+	// 			tf.engine().endScope();
+	// 		});
+	// 	};
+	// 	return detectFrame;
+	// };
+
+	// const makeDetectFrame = (isVideo) => {
+	const detectFrameVideo = (model, imageFrame) => {
+		tf.engine().startScope();
+		const imageTensor = imagePreprocess(imageFrame);
+		const model_output_grids = model.predict(imageTensor);
+
+		// Decode predictions: combines all grids detection results
+		let [bboxes, confidences, classProbs] = yoloDecode(
+			model_output_grids,
+			nclasses,
+			anchors
+		);
+		let axis = -1;
+		let classIndices = classProbs.argMax(axis);
+		classProbs = classProbs.max(axis);
+		confidences = confidences.squeeze(axis);
+		let scores = confidences.mul(classProbs);
+		yoloNms(
+			bboxes,
+			scores,
+			classIndices,
+
+			configData.yoloMaxBoxes,
+			configData.nmsIouThreshold,
+			nmsThresh
+		).then((reasultArrays) => {
+			let [selBboxes, scores, classIndices] = reasultArrays;
+			// let canvas = canvasRefVideo.current;
+
+			var draw = new Draw(
+				canvasRefVideo.current,
+				classNames,
+				configData.font,
+				configData.lineWidth,
+				configData.lineColor,
+				configData.textColor,
+				configData.textBackgoundColor,
+				'video'
 			);
-			let axis = -1;
-			let classIndices = classProbs.argMax(axis);
-			classProbs = classProbs.max(axis);
-			confidences = confidences.squeeze(axis);
-			let scores = confidences.mul(classProbs);
-			yoloNms(
-				bboxes,
-				scores,
-				classIndices,
+			if (dbgcount > 10) {
+				cancelAnimationFrame(stopper);
+			}
+			// console.log('dbgcount!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1', dbgcount);
+			setdbgcount((prevActiveStep) => prevActiveStep + 1);
 
-				configData.yoloMaxBoxes,
-				configData.nmsIouThreshold,
-				nmsThresh
-			).then((reasultArrays) => {
-				let [selBboxes, scores, classIndices] = reasultArrays;
-				let canvas = isVideo ? canvasRefVideo.current : canvasRefImage.current;
+			drawVideoRef.drawOnImage(imageFrame, selBboxes, scores, classIndices);
 
-				var draw = new Draw(
-					canvas,
-					classNames,
-					configData.font,
-					configData.lineWidth,
-					configData.lineColor,
-					configData.textColor,
-					configData.textBackgoundColor
+			// var rr = window.requestAnimationFrame(function () {
+			// 	detectFrameVideo(model, imageFrame);
+			// });
+			if (imageFrame.src != 'http://localhost:3000/fffffff') {
+				console.log('not null!!!!!!!!!!!!!!!!!!!!!!!!!!', imageFrame.src);
+
+				var rr = window.requestAnimationFrame(function () {
+					detectFrameVideo(model, imageFrame);
+				});
+			} else {
+				console.log(
+					'nulll?????????????!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+					imageFrame.src
 				);
-				draw.drawOnImage(imageFrame, selBboxes, scores, classIndices);
-				if (isVideo) {
-					requestAnimationFrame(() => {
-						detectFrame(model, imageFrame);
-					});
-				}
-				tf.engine().endScope();
-			});
-		};
-		return detectFrame;
+
+				console.log(cancelAnimationFrame, rr);
+				cancelAnimationFrame(rr);
+			}
+			// setStopper(
+			// requestAnimationFrame(() => {
+			// 	detectFrameVideo(model, imageFrame);
+			// });
+			// );
+			tf.engine().endScope();
+		});
 	};
+	// return detectFrame;
+	// };
+
+	const detectFrameImage = (model, imageFrame) => {
+		tf.engine().startScope();
+		console.log('imageFrame null!!!!!!!!!!!!!!!!!!!!!!!!!!', imageFrame);
+
+		const imageTensor = imagePreprocess(imageFrame);
+		const model_output_grids = model.predict(imageTensor);
+
+		// Decode predictions: combines all grids detection results
+		let [bboxes, confidences, classProbs] = yoloDecode(
+			model_output_grids,
+			nclasses,
+			anchors
+		);
+		let axis = -1;
+		let classIndices = classProbs.argMax(axis);
+		classProbs = classProbs.max(axis);
+		confidences = confidences.squeeze(axis);
+		let scores = confidences.mul(classProbs);
+		yoloNms(
+			bboxes,
+			scores,
+			classIndices,
+
+			configData.yoloMaxBoxes,
+			configData.nmsIouThreshold,
+			nmsThresh
+		).then((reasultArrays) => {
+			let [selBboxes, scores, classIndices] = reasultArrays;
+			// let canvas = canvasRefImage.current;
+
+			// var draw = new Draw(
+			// 	canvas,
+			// 	classNames,
+			// 	configData.font,
+			// 	configData.lineWidth,
+			// 	configData.lineColor,
+			// 	configData.textColor,
+			// 	configData.textBackgoundColor,
+			// 	'image'
+			// );
+			console.log('call draw.drawOnImage');
+			drawImageRef.drawOnImage(imageFrame, selBboxes, scores, classIndices);
+			tf.engine().endScope();
+		});
+	};
+	// return detectFrame;
+	// };
 
 	const imagePreprocess = (image) => {
 		const imgTensor = tf.browser.fromPixels(image);
@@ -126,6 +279,11 @@ export const YoloV3 = () => {
 	};
 
 	const stopVideo = () => {
+		videoRef.current.pause();
+
+		videoRef.current.src = 'fffffff';
+		// setShowVideoControl(false);
+
 		if (selectedVidFile != '') {
 			setSelectedVidFile('');
 			videoRef.current.pause();
@@ -148,6 +306,8 @@ export const YoloV3 = () => {
 
 			const clearVideoInterval = () => {
 				clearInterval(videoIntervalTime);
+				console.log('cancelAnimationFrame');
+				cancelAnimationFrame(stopper);
 			};
 		};
 		return getDurationOfVideo;
@@ -201,10 +361,35 @@ export const YoloV3 = () => {
 		);
 	};
 	useEffect(() => {
-		setShowVideoControl(false);
+		// setShowVideoControl(false);
+		console.log('useEffect []!!!!!!!!!!!!!!!!!!!!!!!!');
+
+		// drawVideoRef.current.value = new Draw(
+		// 	canvasRefVideo.current,
+		// 	classNames,
+		// 	configData.font,
+		// 	configData.lineWidth,
+		// 	configData.lineColor,
+		// 	configData.textColor,
+		// 	configData.textBackgoundColor,
+		// 	'video'
+		// );
+
+		// drawImageRef.current.value = new Draw(
+		// 	canvasRefImage.current,
+		// 	classNames,
+		// 	configData.font,
+		// 	configData.lineWidth,
+		// 	configData.lineColor,
+		// 	configData.textColor,
+		// 	configData.textBackgoundColor,
+		// 	'video'
+		// );
 	}, []);
 
 	const runVideo = (selectedFile) => {
+		console.log('runVideo');
+
 		stopVideo(); // TODO -  effective?
 		// playVideo(selectedFile);
 		var URL = window.URL || window.webkitURL;
@@ -214,7 +399,7 @@ export const YoloV3 = () => {
 		var isVideo = true;
 		var imageFrame = videoRef.current;
 
-		const detectFrame = makeDetectFrame(isVideo);
+		// const detectFrame = makeDetectFrame(isVideo);
 
 		new Promise((resolve) => {
 			videoRef.current.onloadedmetadata = () => {
@@ -225,37 +410,43 @@ export const YoloV3 = () => {
 			setDurationOfVideo(videoRef.current.duration);
 			retrieveGetDurationOfVideo(videoRef.current.duration)();
 			// getDurationOfVideo();
+			// detectFrame(model, imageFrame);
 
-			detectFrame(model, imageFrame);
+			detectFrameVideo(model, imageFrame);
 		});
 	};
 
 	const runImage = (selectedFile) => {
-		stopVideo();
+		console.log('runImage');
+
+		// stopVideo();
 
 		var imageFrame = new window.Image();
+		imageFrame.width = String(canvasWidth);
 		var promise = fileToDataUri(selectedFile);
 		promise.then((contents) => {
 			imageFrame.src = contents;
 		});
 		var isVideo = false;
-		const detectFrame = makeDetectFrame(isVideo);
+		// const detectFrame = makeDetectFrame(isVideo);
 		imageFrame.addEventListener('load', async () => {
-			detectFrame(model, imageFrame);
+			// detectFrame(model, imageFrame);
 			// mother of patches - run twice...Reason: image after video execution fails probably due to disposal issues
-			detectFrame(model, imageFrame);
+			// detectFrame(model, imageFrame);
+			detectFrameImage(model, imageFrame);
 		});
 	};
 
 	const onClickRun = () => {
+		console.log('onClickRun');
 		if ((selectedFile != '') & isModelLoaded) {
 			console.log('selectedFile', selectedFile);
 			if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
 				URL.createObjectURL(selectedFile);
 				runImage(selectedFile);
-				setShowVideoControl(false);
+				// setShowVideoControl(false);
 			} else {
-				setShowVideoControl(true);
+				// setShowVideoControl(true);
 
 				console.log('setSelectedVidFile ' + selectedFile);
 				setSelectedVidFile(selectedFile);
@@ -264,13 +455,19 @@ export const YoloV3 = () => {
 		}
 	};
 	const onChangeFile = (event) => {
+		console.log('stopper!!!!!', stopper);
+		stopVideo();
+		// videoRef.current.src = null;
+		// videoRef.current.pause();
+
+		cancelAnimationFrame(stopper);
 		stopVideo();
 
 		setSelectedFile(event.target.files[0]);
 		if (event.target.files[0].name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-			setShowVideoControl(false);
+			// setShowVideoControl(false);
 		} else {
-			setShowVideoControl(true);
+			// setShowVideoControl(true);
 		}
 	};
 
@@ -281,7 +478,7 @@ export const YoloV3 = () => {
 		setModelLoadedMessage('Loading Model...');
 		setIsModelLoadSpinner(true);
 
-		stopVideo();
+		// stopVideo();
 		const model = selectedModel != '' ? selectedModel : listModels[0];
 		initModel(model);
 	};
@@ -446,10 +643,9 @@ export const YoloV3 = () => {
 					</div>
 				</div>
 			</div>
-
-			{showVideoControl == true && (
-				<div className='col'>
-					<div className='row '>
+			<div className='col'>
+				{showVideoControl == true && (
+					<div className='col '>
 						<div className='col mb-3'>
 							<div className='col'>
 								<label className=' form-select-lg'>Playback Speed</label>
@@ -491,30 +687,24 @@ export const YoloV3 = () => {
 						>
 							Stop Video
 						</button>
-
-						<div className='mt-3'>
-							<canvas
-								className='video'
-								ref={canvasRefVideo}
-								width=''
-								height=''
-							/>
-						</div>
-						<video
-							className='mt-1 invisible'
-							autoPlay
-							playsInline
-							muted
-							ref={videoRef}
-							width={String(canvasWidth)}
-							height={String(canvasHeight)}
-							id='frame'
-							controls
-						/>
 					</div>
+				)}
+				<div className='mt-3'>
+					<canvas className='video' ref={canvasRefVideo} width='' height='' />
 				</div>
-			)}
-
+				<video
+					className='mt-1 invisible'
+					autoPlay
+					playsInline
+					muted
+					ref={videoRef}
+					width={String(canvasWidth)}
+					height={String(canvasHeight)}
+					id='frame'
+					controls
+				/>
+			</div>
+			// }
 			<div className='row '>
 				<div>
 					<canvas className='image' ref={canvasRefImage} width='' height='' />
