@@ -68,6 +68,14 @@ export const YoloV3 = () => {
 		}
 	};
 
+	const pauseVideo = () => {
+		video.current.pause();
+	};
+
+	const resumeVideo = () => {
+		video.current.play();
+	};
+
 	const retrieveGetDurationOfVideo = () => {
 		const getDurationOfVideo = () => {
 			const videoIntervalTime = setInterval(() => {
@@ -423,14 +431,29 @@ export const YoloV3 = () => {
 							value={currentDurationOfVideo}
 							onChange={videoDuration}
 						></input>
-
-						<button
-							variant='primary'
-							className='btn btn btn-danger btn-lg col-4 mb-1'
-							onClick={stopVideo}
-						>
-							Stop Video
-						</button>
+						<div className='row '>
+							<button
+								variant='primary'
+								className='btn btn btn-success btn-lg col-1 mb-1 mx-2'
+								onClick={pauseVideo}
+							>
+								Pause Video
+							</button>
+							<button
+								variant='primary'
+								className='btn btn btn-primary btn-lg col-1 mb-1'
+								onClick={resumeVideo}
+							>
+								Resume Video
+							</button>
+							<button
+								variant='primary'
+								className='btn btn btn-danger btn-lg col-1 mb-1 mx-2'
+								onClick={stopVideo}
+							>
+								Stop Video
+							</button>
+						</div>
 					</div>
 				)}
 				<div className='mt-3'>
