@@ -62,6 +62,8 @@ export const YoloV3 = () => {
 	};
 
 	const stopVideo = () => {
+		setShowVideoControl(false);
+
 		if (video.current.src != '') {
 			video.current.pause();
 			video.current.currentTime = video.current.duration;
@@ -80,13 +82,13 @@ export const YoloV3 = () => {
 		const getDurationOfVideo = () => {
 			const videoIntervalTime = setInterval(() => {
 				setCurrentDurationOfVideo(
-					Math.trunc(parseFloat(video.current.currentTime))
+					parseFloat(video.current.currentTime).toFixed(1)
 				);
 
 				if (parseFloat(video.current.currentTime) >= video.current.duration) {
 					clearVideoInterval();
 				}
-			}, 1000);
+			}, 500);
 
 			const clearVideoInterval = () => {
 				clearInterval(videoIntervalTime);
@@ -163,7 +165,7 @@ export const YoloV3 = () => {
 		video.current.width = canvasWidth; // in px
 		getVideo();
 
-		// setShowVideoControl(false);
+		setShowVideoControl(false);
 
 		videoRender.current = new Draw(canvasRefVideo.current);
 		yoloPredictor.current = new YoloPredictor(renderCallback_);
@@ -215,8 +217,9 @@ export const YoloV3 = () => {
 
 		setSelectedFile(event.target.files[0]);
 		if (event.target.files[0].name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-			// setShowVideoControl(false);
+			setShowVideoControl(false);
 		} else {
+			setShowVideoControl(true);
 		}
 	};
 
