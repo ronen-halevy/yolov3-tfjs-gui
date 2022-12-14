@@ -62,20 +62,9 @@ export const YoloV3 = () => {
 	};
 
 	const stopVideo = () => {
-		video.current.pause();
-		console.log(video.current.currentTime);
-		console.log(video.current.duration);
-
-		if (video.current.duration != NaN) {
-			console.log(video.current.duration);
-
-			video.current.currentTime = video.current.duration;
-		}
-
-		if (selectedVidFile != '') {
-			setSelectedVidFile('');
+		if (video.current.src != '') {
 			video.current.pause();
-			// TODO - consider remove:
+			video.current.currentTime = video.current.duration;
 		}
 	};
 
@@ -175,14 +164,10 @@ export const YoloV3 = () => {
 	}, []);
 
 	const runVideo = (selectedFile) => {
-		// stopVideo(); // TODO -  effective?
-		// playVideo(selectedFile);
 		var URL = window.URL || window.webkitURL;
 		var fileURL = URL.createObjectURL(selectedFile);
 		video.current.src = fileURL;
 		video.current.play();
-		var isVideo = true;
-		var imageFrame = video.current;
 
 		new Promise((resolve) => {
 			video.current.onloadedmetadata = () => {
@@ -192,21 +177,13 @@ export const YoloV3 = () => {
 			setDurationOfVideo(video.current.duration);
 			retrieveGetDurationOfVideo()();
 			yoloPredictor.current.setAnimationCallback(animationControl);
-			yoloPredictor.current.detectFrameVideo(imageFrame);
+			yoloPredictor.current.detectFrameVideo(video.current);
 		});
 	};
 
 	const runImage = (selectedFile) => {
-		stopVideo();
-
 		var imageFrame = new window.Image();
 
-		// imageFrame.width = String(canvasWidth);
-		if ('HTMLImageElement' in imageFrame) {
-		}
-		if (imageFrame.HTMLImageElement != undefined) {
-		}
-		const a = imageFrame.tagName;
 		var promise = fileToDataUri(selectedFile);
 		promise.then((contents) => {
 			imageFrame.src = contents;
@@ -221,27 +198,20 @@ export const YoloV3 = () => {
 			if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
 				URL.createObjectURL(selectedFile);
 				runImage(selectedFile);
-				// setShowVideoControl(false);
 			} else {
-				// setShowVideoControl(true);
-
 				setSelectedVidFile(selectedFile);
 				runVideo(selectedFile);
 			}
 		}
 	};
 	const onChangeFile = (event) => {
-		// stopVideo();
-		// video.src = null;
-		// video.pause();
-
-		// stopVideo();
+		stopVideo();
 
 		setSelectedFile(event.target.files[0]);
 		if (event.target.files[0].name.match(/\.(jpg|jpeg|png|gif)$/i)) {
 			// setShowVideoControl(false);
 		} else {
-			// setShowVideoControl(true);
+			// stopVideo();
 		}
 	};
 
