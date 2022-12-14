@@ -10,19 +10,7 @@ import Draw from './draw.js';
 import { image } from '@tensorflow/tfjs';
 
 import configData from './configModel.json';
-// import {
-// 	detectFrameVideo,
-// 	detectFrameImage,
-// 	// initModel,
-// 	initVideoRender,
-// 	initImageRender,
-// 	initVideoObject,
-// 	setAnimationCallback,
-// 	initRenderCallback,
-// 	initModel1,
-// 	initAnchors,
-// 	initClassNames,
-// } from './DetectF.js';
+
 import YoloPredictor from './Detect.js';
 
 export const YoloV3 = () => {
@@ -31,8 +19,6 @@ export const YoloV3 = () => {
 	const canvasRefVideo = useRef(null);
 	const canvasRefImage = useRef(null);
 
-	// const drawImageRef = useRef(null);
-	// const drawVideoRef = useRef(null);
 	const classNames = useRef(null);
 
 	// States:
@@ -63,73 +49,8 @@ export const YoloV3 = () => {
 	const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
 	const [yoloPredictor, setYoloPredictor] = useState(0);
 	const [videoRender, setVideoRender] = useState(0);
-
-	// const [renderCallback, setRenderCallback] = useState(0);
-
 	const [video, setVideo] = useState(0);
-	// const [animationControl, setAnimationControl] = useState(0);
 
-	// initVideoRender(canvasRefVideo.current);
-
-	// const videoRender = new Draw(canvasRefVideo.current);
-	// const renderCallback = (imageFrame_, selBboxes, scores, classIndices) => {
-	// 	console.log(
-	// 		'!!!!!!!!!renderCallback',
-	// 		imageFrame_,
-	// 		selBboxes,
-	// 		scores,
-	// 		classIndices,
-	// 		classNames
-	// 	);
-	// 	videoRender.drawOnImage(
-	// 		imageFrame_,
-	// 		selBboxes,
-	// 		scores,
-	// 		classIndices,
-	// 		classNames
-	// 	);
-	// };
-	// initRenderCallback(renderCallback);
-
-	// initImageRender(canvasRefImage.current);
-
-	// const drawVideoRef = new Draw(
-	// 	canvasRefVideo.current,
-	// 	classNames,
-	// 	configData.font,
-	// 	configData.lineWidth,
-	// 	configData.lineColor,
-	// 	configData.textColor,
-	// 	configData.textBackgoundColor,
-	// 	'video'
-	// );
-
-	// const drawImageRef =
-	// 	// useRef(
-	// 	new Draw(
-	// 		canvasRefImage.current,
-	// 		classNames,
-	// 		configData.font,
-	// 		configData.lineWidth,
-	// 		configData.lineColor,
-	// 		configData.textColor,
-	// 		configData.textBackgoundColor,
-	// 		'image'
-	// 	);
-	// );
-
-	// const animationControl = () => {
-	// 	console.log('YYYYYYYYY', video.currentTime, video.duration);
-
-	// 	var id = window.requestAnimationFrame(function () {
-	// 		yoloPredictor.detectFrameVideo(video);
-	// 	});
-	// 	if (video.currentTime >= video.duration) {
-	// 		cancelAnimationFrame(id);
-	// 		console.log('cancelAnimationFrame');
-	// 	}
-	// };
-	// setAnimationCallback(animationControl);
 	const animationControl = () => {
 		var id = window.requestAnimationFrame(function () {
 			yoloPredictor.detectFrameVideo(video);
@@ -158,97 +79,8 @@ export const YoloV3 = () => {
 			});
 	};
 
-	// const detectFrameVideo = (imageFrame) => {
-	// 	tf.engine().startScope();
-	// 	const imageTensor = imagePreprocess(imageFrame);
-	// 	const model_output_grids = model.predict(imageTensor);
-
-	// 	// Decode predictions: combines all grids detection results
-	// 	let [bboxes, confidences, classProbs] = yoloDecode(
-	// 		model_output_grids,
-	// 		nclasses,
-	// 		anchors
-	// 	);
-	// 	let axis = -1;
-	// 	let classIndices = classProbs.argMax(axis);
-	// 	classProbs = classProbs.max(axis);
-	// 	confidences = confidences.squeeze(axis);
-	// 	let scores = confidences.mul(classProbs);
-	// 	yoloNms(
-	// 		bboxes,
-	// 		scores,
-	// 		classIndices,
-
-	// 		configData.yoloMaxBoxes,
-	// 		configData.nmsIouThreshold,
-	// 		nmsThresh
-	// 	).then((reasultArrays) => {
-	// 		let [selBboxes, scores, classIndices] = reasultArrays;
-
-	// 		drawVideoRef.drawOnImage(imageFrame, selBboxes, scores, classIndices);
-
-	// 		if (imageFrame.tagName == 'VIDEO') {
-	// 			var id = window.requestAnimationFrame(function () {
-	// 				detectFrameVideo(imageFrame);
-	// 			});
-	// 			if (video.currentTime >= video.duration) {
-	// 				cancelAnimationFrame(id);
-	// 			}
-	// 		}
-	// 		tf.engine().endScope();
-	// 	});
-	// };
-
-	// const detectFrameImage = (imageFrame) => {
-	// 	tf.engine().startScope();
-
-	// 	const imageTensor = imagePreprocess(imageFrame);
-	// 	const model_output_grids = model.predict(imageTensor);
-
-	// 	// Decode predictions: combines all grids detection results
-	// 	let [bboxes, confidences, classProbs] = yoloDecode(
-	// 		model_output_grids,
-	// 		nclasses,
-	// 		anchors
-	// 	);
-	// 	let axis = -1;
-	// 	let classIndices = classProbs.argMax(axis);
-	// 	classProbs = classProbs.max(axis);
-	// 	confidences = confidences.squeeze(axis);
-	// 	let scores = confidences.mul(classProbs);
-	// 	yoloNms(
-	// 		bboxes,
-	// 		scores,
-	// 		classIndices,
-
-	// 		configData.yoloMaxBoxes,
-	// 		configData.nmsIouThreshold,
-	// 		nmsThresh
-	// 	).then((reasultArrays) => {
-	// 		let [selBboxes, scores, classIndices] = reasultArrays;
-
-	// 		console.log('call draw.drawOnImage');
-	// 		drawImageRef.drawOnImage(imageFrame, selBboxes, scores, classIndices);
-	// 		tf.engine().endScope();
-	// 	});
-	// };
-
-	// const imagePreprocess = (image) => {
-	// 	const imgTensor = tf.browser.fromPixels(image);
-	// 	// Yolo input width:
-	// 	const imageHeight = 416;
-	// 	const imageWidth = 416;
-	// 	var resized = tf.image.resizeBilinear(imgTensor, [imageHeight, imageWidth]);
-	// 	var tensor = resized.expandDims(0).toFloat();
-	// 	tensor = tensor.div(255);
-	// 	return tensor;
-	// };
-
 	const stopVideo = () => {
 		video.pause();
-
-		// video.src = 'fffffff';
-		// setShowVideoControl(false);
 
 		if (selectedVidFile != '') {
 			setSelectedVidFile('');
@@ -348,8 +180,6 @@ export const YoloV3 = () => {
 	}, [videoRender]);
 	useEffect(() => {
 		const video_ = document.createElement('video');
-		// initVideoObject(video);
-
 		// video.src =
 		// 	'https://archive.org/download/C.E.PriceCatWalksTowardCamera/cat_walks_toward_camera_512kb.mp4';
 
@@ -376,8 +206,6 @@ export const YoloV3 = () => {
 		var isVideo = true;
 		var imageFrame = video;
 
-		// const detectFrame = makeDetectFrame(isVideo);
-
 		new Promise((resolve) => {
 			video.onloadedmetadata = () => {
 				resolve();
@@ -385,12 +213,7 @@ export const YoloV3 = () => {
 		}).then(() => {
 			setDurationOfVideo(video.duration);
 			retrieveGetDurationOfVideo(video.duration)();
-			// initVideoObject(video);
 			yoloPredictor.setAnimationCallback(animationControl);
-
-			// getDurationOfVideo();
-			// detectFrame(model, imageFrame);
-
 			yoloPredictor.detectFrameVideo(imageFrame);
 		});
 	};
@@ -400,7 +223,7 @@ export const YoloV3 = () => {
 
 		var imageFrame = new window.Image();
 
-		imageFrame.width = String(canvasWidth);
+		// imageFrame.width = String(canvasWidth);
 		if ('HTMLImageElement' in imageFrame) {
 		}
 		if (imageFrame.HTMLImageElement != undefined) {
@@ -411,12 +234,7 @@ export const YoloV3 = () => {
 			imageFrame.src = contents;
 		});
 		var isVideo = false;
-		// const detectFrame = makeDetectFrame(isVideo);
 		imageFrame.addEventListener('load', async () => {
-			// detectFrame(model, imageFrame);
-			// mother of patches - run twice...Reason: image after video execution fails probably due to disposal issues
-			// detectFrame(model, imageFrame);
-			// detectFrameImage(imageFrame);
 			yoloPredictor.detectFrameVideo(imageFrame);
 		});
 	};
