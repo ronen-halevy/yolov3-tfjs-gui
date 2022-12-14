@@ -155,8 +155,6 @@ export const YoloV3 = () => {
 		video.current.width = canvasWidth; // in px
 		getVideo();
 
-		// setVideo(video_);
-
 		// setShowVideoControl(false);
 
 		videoRender.current = new Draw(canvasRefVideo.current);
@@ -211,7 +209,6 @@ export const YoloV3 = () => {
 		if (event.target.files[0].name.match(/\.(jpg|jpeg|png|gif)$/i)) {
 			// setShowVideoControl(false);
 		} else {
-			// stopVideo();
 		}
 	};
 
@@ -222,10 +219,8 @@ export const YoloV3 = () => {
 		setModelLoadedMessage('Loading Model...');
 		setIsModelLoadSpinner(true);
 
-		// stopVideo();
 		const modelConfig = selectedModel != '' ? selectedModel : listModels[0];
 		createModel(modelConfig);
-		// initModel(modelConfig);
 
 		setModelLoadedMessage('Model ' + modelConfig.name + ' is ready!');
 		setIsModelLoadSpinner(false);
@@ -440,11 +435,6 @@ export const YoloV3 = () => {
 				)}
 				<div className='mt-3'>
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
-				</div>
-			</div>
-			<div className='row '>
-				<div>
-					<canvas className='image' ref={canvasRefImage} width='' height='' />
 				</div>
 			</div>
 		</div>
