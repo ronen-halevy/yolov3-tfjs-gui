@@ -22,18 +22,23 @@ export const YoloV3 = () => {
 	const yoloPredictor = useRef(null);
 	const videoRender = useRef(null);
 	const video = useRef(null);
+	// refs affect changes during animation:
+	const nmsScoreTHRRef = useRef(configData.nmsScoreThreshold);
+	const nmsIouTHRRef = useRef(configData.nmsIouThreshold);
 
 	const [listModels, setListModels] = useState(configData.models);
 
 	// States:
 	const [selectedFile, setSelectedFile] = useState('');
-	const [selectedVidFile, setSelectedVidFile] = useState('');
+	// const [selectedVidFile, setSelectedVidFile] = useState('');
 	const [selectedModel, setSelectedModel] = useState('');
 	const [modelLoadedMessage, setModelLoadedMessage] =
 		useState('No Model Loaded!');
 	const [isModelLoadSpinner, setIsModelLoadSpinner] = useState(false);
 	const [isModelLoaded, setIsModelLoaded] = useState(false);
-	const [nmsThresh, setNmsThresh] = useState(configData.nmsScoreThreshold);
+	const [nmsScoreTHR, setNmsScoreTHR] = useState(configData.nmsScoreThreshold);
+	const [nmsIouTHR, setNmsIouTHR] = useState(configData.nmsIouThreshold);
+
 	const [showVideoControl, setShowVideoControl] = useState(true);
 	const [canvasWidth, setCanvasWidth] = useState(416);
 	const [canvasHeight, setCanvasHeight] = useState(416);
@@ -42,7 +47,11 @@ export const YoloV3 = () => {
 
 	const animationControl = () => {
 		var id = window.requestAnimationFrame(function () {
-			yoloPredictor.current.detectFrameVideo(video.current);
+			yoloPredictor.current.detectFrameVideo(
+				video.current,
+				nmsIouTHRRef.current,
+				nmsScoreTHRRef.current
+			);
 		});
 		if (video.current.currentTime >= video.current.duration) {
 			cancelAnimationFrame(id);
@@ -172,6 +181,8 @@ export const YoloV3 = () => {
 	}, []);
 
 	const runVideo = (selectedFile) => {
+		setShowVideoControl(true);
+
 		var URL = window.URL || window.webkitURL;
 		var fileURL = URL.createObjectURL(selectedFile);
 		video.current.src = fileURL;
@@ -185,7 +196,11 @@ export const YoloV3 = () => {
 			setDurationOfVideo(video.current.duration);
 			retrieveGetDurationOfVideo()();
 			yoloPredictor.current.setAnimationCallback(animationControl);
-			yoloPredictor.current.detectFrameVideo(video.current);
+			yoloPredictor.current.detectFrameVideo(
+				video.current,
+				nmsIouTHR,
+				nmsScoreTHR
+			);
 		});
 	};
 
@@ -197,7 +212,11 @@ export const YoloV3 = () => {
 			imageFrame.src = contents;
 		});
 		imageFrame.addEventListener('load', async () => {
-			yoloPredictor.current.detectFrameVideo(imageFrame);
+			yoloPredictor.current.detectFrameVideo(
+				imageFrame,
+				nmsIouTHR,
+				nmsScoreTHR
+			);
 		});
 	};
 
@@ -207,7 +226,7 @@ export const YoloV3 = () => {
 				URL.createObjectURL(selectedFile);
 				runImage(selectedFile);
 			} else {
-				setSelectedVidFile(selectedFile);
+				// setSelectedVidFile(selectedFile);
 				runVideo(selectedFile);
 			}
 		}
@@ -238,12 +257,24 @@ export const YoloV3 = () => {
 		setIsModelLoaded(true);
 	};
 
-	const onChangeNmsThresh = (event) => {
+	const onChangeNmsScoreTHR = (event) => {
 		console.log(event.target.value);
 		if ((event.target.value <= 1) & (event.target.value >= 0)) {
-			setNmsThresh(event.target.value);
+			// refs affect changes during animation:
+			nmsScoreTHRRef.current = event.target.value;
+
+			setNmsScoreTHR(event.target.value);
 		}
 	};
+	const onChangeNmsIouTHR = (event) => {
+		console.log(event.target.value);
+		if ((event.target.value <= 1) & (event.target.value >= 0)) {
+			// refs affect changes during animation:
+			nmsIouTHRRef.current = event.target.value;
+			setNmsIouTHR(event.target.value);
+		}
+	};
+
 	const onChangeVideoWidth = (event) => {
 		setCanvasWidth(event.target.value);
 	};
@@ -322,7 +353,7 @@ export const YoloV3 = () => {
 					<div className='row'>
 						<div className='col-2'>
 							<div className='col'>
-								<label className=' h5 '>NMS Threshold</label>
+								<label className=' h5 '>NMS Score THLD</label>
 							</div>
 							<div className='col'>
 								<input
@@ -331,8 +362,24 @@ export const YoloV3 = () => {
 									min='0'
 									max='1'
 									step='0.1'
-									value={nmsThresh}
-									onChange={onChangeNmsThresh}
+									value={nmsScoreTHR}
+									onChange={onChangeNmsScoreTHR}
+								/>
+							</div>
+						</div>
+						<div className='col-2'>
+							<div className='col'>
+								<label className=' h5 '>NMS Iou THLD</label>
+							</div>
+							<div className='col'>
+								<input
+									className='form-select-lg'
+									type='number'
+									min='0'
+									max='1'
+									step='0.1'
+									value={nmsIouTHR}
+									onChange={onChangeNmsIouTHR}
 								/>
 							</div>
 						</div>
