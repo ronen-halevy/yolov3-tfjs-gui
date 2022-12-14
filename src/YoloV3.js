@@ -71,7 +71,6 @@ export const YoloV3 = () => {
 
 			video.current.currentTime = video.current.duration;
 		}
-		console.log('???????');
 
 		if (selectedVidFile != '') {
 			setSelectedVidFile('');
