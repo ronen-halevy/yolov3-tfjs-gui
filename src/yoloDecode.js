@@ -1,9 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
 
-// const {readFileSync, promises: fsPromises} = require('fs');
-
-// function fn1(){};
-
 function arrange_bbox(xy, wh) {
 	let grid_size = [xy.shape[1], xy.shape[1]];
 
