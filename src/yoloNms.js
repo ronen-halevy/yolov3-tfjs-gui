@@ -2,14 +2,14 @@ import * as tf from '@tensorflow/tfjs';
 
 import config from './configNms.json';
 
-const yoloNms = (bboxes, scores, classIndices) => {
+const yoloNms = (bboxes, scores, classIndices, nmsIouTHR, nmsScoreTHR) => {
 	const nms = new Promise((resolve) => {
 		const nmsResults = tf.image.nonMaxSuppressionAsync(
 			bboxes,
 			scores,
 			config.yoloMaxBoxes,
-			config.nmsIouThreshold,
-			config.nmsScoreThreshold
+			nmsIouTHR,
+			nmsScoreTHR
 		);
 		resolve(nmsResults);
 	}).then((nmsResults) => {

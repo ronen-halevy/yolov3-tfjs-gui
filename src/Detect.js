@@ -33,7 +33,7 @@ class YoloPredictor {
 		return tensor;
 	};
 
-	detectFrameVideo = (imageFrame) => {
+	detectFrameVideo = (imageFrame, nmsIouTHR, nmsScoreTHR) => {
 		tf.engine().startScope();
 		const imageTensor = this.imagePreprocess(imageFrame);
 		const model_output_grids = this.model.predict(imageTensor);
@@ -50,18 +50,19 @@ class YoloPredictor {
 		confidences = confidences.squeeze(axis);
 		let scores = confidences.mul(classProbs);
 
-		yoloNms(bboxes, scores, classIndices).then((reasultArrays) => {
-			let [selBboxes, scores, classIndices] = reasultArrays;
+		yoloNms(bboxes, scores, classIndices, nmsIouTHR, nmsScoreTHR).then(
+			(reasultArrays) => {
+				let [selBboxes, scores, classIndices] = reasultArrays;
 
-			this.renderCallback(imageFrame, selBboxes, scores, classIndices);
+				this.renderCallback(imageFrame, selBboxes, scores, classIndices);
 
-			if (imageFrame.tagName == 'VIDEO') {
-				// animationControl(imageFrame, videoRef.currentTime, videoRef.duration);
-				this.animationCallback(imageFrame);
+				if (imageFrame.tagName == 'VIDEO') {
+					this.animationCallback(imageFrame);
+				}
+
+				tf.engine().endScope();
 			}
-
-			tf.engine().endScope();
-		});
+		);
 	};
 }
 
