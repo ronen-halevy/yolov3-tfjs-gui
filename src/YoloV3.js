@@ -17,6 +17,8 @@ import {
 	initVideoRender,
 	initImageRender,
 	initVideoObject,
+	setAnimationCallback,
+	initRenderCallback,
 } from './DetectF.js';
 
 export const YoloV3 = () => {
@@ -56,8 +58,40 @@ export const YoloV3 = () => {
 	const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
 
 	initVideoRender(canvasRefVideo.current);
+
+	const videoRender = new Draw(canvasRefVideo.current);
+	const renderCallback = (imageFrame_, selBboxes, scores, classIndices) => {
+		console.log(
+			'!!!!!!!!!renderCallback',
+			imageFrame_,
+			selBboxes,
+			scores,
+			classIndices,
+			classNames
+		);
+		videoRender.drawOnImage(
+			imageFrame_,
+			selBboxes,
+			scores,
+			classIndices,
+			classNames
+		);
+	};
+	initRenderCallback(renderCallback);
+
 	initImageRender(canvasRefImage.current);
-	initVideoObject(videoRef);
+
+	const video = document.createElement('video');
+	// initVideoObject(video);
+
+	// video.src =
+	// 	'https://archive.org/download/C.E.PriceCatWalksTowardCamera/cat_walks_toward_camera_512kb.mp4';
+
+	video.controls = true;
+	video.muted = true;
+	video.height = canvasHeight; // in px
+	video.width = canvasWidth; // in px
+
 	// const drawVideoRef = new Draw(
 	// 	canvasRefVideo.current,
 	// 	classNames,
@@ -83,6 +117,19 @@ export const YoloV3 = () => {
 	// 	);
 	// );
 
+	const animationControl = (imageFrame) => {
+		console.log('YYYYYYYYY', video.currentTime, video.duration);
+
+		var id = window.requestAnimationFrame(function () {
+			detectFrameVideo(imageFrame);
+		});
+		if (video.currentTime >= video.duration) {
+			cancelAnimationFrame(id);
+			console.log('cancelAnimationFrame');
+		}
+	};
+	// setAnimationCallback(animationControl);
+
 	useEffect(() => {
 		console.log('useEffect videoRef');
 		getVideo();
@@ -92,7 +139,6 @@ export const YoloV3 = () => {
 		navigator.mediaDevices
 			.getUserMedia({ video: {} })
 			.then((stream) => {
-				let video = videoRef.current;
 				video.srcObject = stream;
 				video.play();
 			})
@@ -134,7 +180,7 @@ export const YoloV3 = () => {
 	// 			var id = window.requestAnimationFrame(function () {
 	// 				detectFrameVideo(imageFrame);
 	// 			});
-	// 			if (videoRef.current.currentTime >= videoRef.current.duration) {
+	// 			if (video.currentTime >= video.duration) {
 	// 				cancelAnimationFrame(id);
 	// 			}
 	// 		}
@@ -188,14 +234,14 @@ export const YoloV3 = () => {
 	// };
 
 	const stopVideo = () => {
-		videoRef.current.pause();
+		video.pause();
 
-		// videoRef.current.src = 'fffffff';
+		// video.src = 'fffffff';
 		// setShowVideoControl(false);
 
 		if (selectedVidFile != '') {
 			setSelectedVidFile('');
-			videoRef.current.pause();
+			video.pause();
 			// TODO - consider remove:
 		}
 	};
@@ -204,11 +250,9 @@ export const YoloV3 = () => {
 		const getDurationOfVideo = () => {
 			const videoIntervalTime = setInterval(() => {
 				console.log('getDurationOfVideo!!!1');
-				setCurrentDurationOfVideo(
-					Math.trunc(parseFloat(videoRef.current.currentTime))
-				);
+				setCurrentDurationOfVideo(Math.trunc(parseFloat(video.currentTime)));
 
-				if (parseFloat(videoRef.current.currentTime) >= durationOfVideo1) {
+				if (parseFloat(video.currentTime) >= durationOfVideo1) {
 					clearVideoInterval();
 				}
 			}, 1000);
@@ -220,12 +264,12 @@ export const YoloV3 = () => {
 		return getDurationOfVideo;
 	};
 	const setVideoSpeed = (e) => {
-		videoRef.current.playbackRate = parseFloat(e.target.value);
+		video.playbackRate = parseFloat(e.target.value);
 	};
 
 	const videoDuration = (e) => {
 		setCurrentDurationOfVideo(parseFloat(e.target.value));
-		videoRef.current.currentTime = parseFloat(e.target.value);
+		video.currentTime = parseFloat(e.target.value);
 	};
 
 	// create image file read promise
@@ -270,6 +314,7 @@ export const YoloV3 = () => {
 	useEffect(() => {
 		// setShowVideoControl(false);
 		console.log('useEffect []!!!!!!!!!!!!!!!!!!!!!!!!');
+		getVideo();
 
 		// drawVideoRef.current.value = new Draw(
 		// 	canvasRefVideo.current,
@@ -301,21 +346,24 @@ export const YoloV3 = () => {
 		// playVideo(selectedFile);
 		var URL = window.URL || window.webkitURL;
 		var fileURL = URL.createObjectURL(selectedFile);
-		videoRef.current.src = fileURL;
-		videoRef.current.play();
+		video.src = fileURL;
+		video.play();
 		var isVideo = true;
-		var imageFrame = videoRef.current;
+		var imageFrame = video;
 
 		// const detectFrame = makeDetectFrame(isVideo);
 
 		new Promise((resolve) => {
-			videoRef.current.onloadedmetadata = () => {
+			video.onloadedmetadata = () => {
 				resolve();
 			};
 		}).then(() => {
-			console.log('videoRef.current.duration', videoRef.current.duration);
-			setDurationOfVideo(videoRef.current.duration);
-			retrieveGetDurationOfVideo(videoRef.current.duration)();
+			console.log('video.duration', video.duration);
+			setDurationOfVideo(video.duration);
+			retrieveGetDurationOfVideo(video.duration)();
+			initVideoObject(video);
+			setAnimationCallback(animationControl);
+
 			// getDurationOfVideo();
 			// detectFrame(model, imageFrame);
 
@@ -371,8 +419,8 @@ export const YoloV3 = () => {
 	};
 	const onChangeFile = (event) => {
 		stopVideo();
-		// videoRef.current.src = null;
-		// videoRef.current.pause();
+		// video.src = null;
+		// video.pause();
 
 		stopVideo();
 
@@ -608,7 +656,7 @@ export const YoloV3 = () => {
 				<div className='mt-3'>
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
 				</div>
-				<video
+				{/* <video
 					className='mt-1 invisible'
 					autoPlay
 					playsInline
@@ -618,7 +666,7 @@ export const YoloV3 = () => {
 					height={String(canvasHeight)}
 					id='frame'
 					controls
-				/>
+				/> */}
 			</div>
 			<div className='row '>
 				<div>

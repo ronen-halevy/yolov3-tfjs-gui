@@ -5,8 +5,8 @@ import config from './configRender.json';
  * Contains methods to draw bounding boxes and text annotations on an image's (same as a single frame) detection.
  */ class Draw {
 	constructor(
-		canvas,
-		classNames
+		canvas
+		// classNames
 		// font,
 		// lineWidth,
 		// lineColor,
@@ -14,7 +14,7 @@ import config from './configRender.json';
 		// textBackgoundColor
 	) {
 		this.canvas = canvas;
-		this.classNames = classNames;
+		// this.classNames = classNames;
 		this.font = config.font;
 		this.lineWidth = config.lineWidth;
 		this.lineColor = config.lineColor;
@@ -78,7 +78,7 @@ import config from './configRender.json';
 	 * @param {Array<float>} classIndices - An array with a class index per a detectiono.
 	 */
 
-	async drawOnImage(image, bboxes, scores, classIndices) {
+	async drawOnImage(image, bboxes, scores, classIndices, classNames) {
 		const context = this.canvas.getContext('2d');
 
 		const imageWidth = image.width;
@@ -94,7 +94,7 @@ import config from './configRender.json';
 				context,
 				box,
 				scores[idx],
-				this.classNames[classIndices[idx]],
+				classNames[classIndices[idx]],
 				imageWidth,
 				imageHeight
 			)

@@ -46,14 +46,27 @@ const configData = {
 };
 const nmsThresh = 0.1;
 
+var renderCallback;
 const initVideoRender = (canvas) => {
 	videoCanvas = canvas;
+	// const image = document.createElement('video');
+	// console.log(image);
+};
+
+const initRenderCallback = (renderCallback_) => {
+	renderCallback = renderCallback_;
+	// const image = document.createElement('video');
+	// console.log(image);
 };
 const initImageRender = (canvas) => {
 	imageCanvas = canvas;
 };
 const initVideoObject = (videoRef_) => {
 	videoRef = videoRef_;
+};
+var animationCallback;
+const setAnimationCallback = (animationCallback_) => {
+	animationCallback = animationCallback_;
 };
 
 const initModel = (modelConfig) => {
@@ -80,9 +93,9 @@ const initModel = (modelConfig) => {
 			// setModelLoadedMessage('Model ' + modelConfig.name + ' is ready!');
 			// setIsModelLoadSpinner(false);
 			// setIsModelLoaded(true);
-			imageRender = new Draw(imageCanvas, classNames);
+			imageRender = new Draw(imageCanvas);
 
-			videoRender = new Draw(videoCanvas, classNames);
+			videoRender = new Draw(videoCanvas);
 		}
 	);
 };
@@ -101,11 +114,13 @@ const imagePreprocess = (image) => {
 };
 
 const animationControl = (imageFrame, currentTime, duration) => {
+	console.log('YYYYYYYYY', videoRef.currentTime, videoRef.duration);
 	var id = window.requestAnimationFrame(function () {
 		detectFrameVideo(imageFrame);
 	});
 	if (currentTime >= duration) {
 		cancelAnimationFrame(id);
+		console.log('XXXXXXXXXXXXXXXXXXXXXXXX cancelAnimationFrame 2');
 	}
 };
 
@@ -136,20 +151,28 @@ const detectFrameVideo = (imageFrame) => {
 	).then((reasultArrays) => {
 		let [selBboxes, scores, classIndices] = reasultArrays;
 
-		videoRender.drawOnImage(imageFrame, selBboxes, scores, classIndices);
+		console.log('??????!!!!!!!!!renderCallback');
+
+		// renderCallback(imageFrame, selBboxes, scores, classIndices);
+
+		videoRender.drawOnImage(
+			imageFrame,
+			selBboxes,
+			scores,
+			classIndices,
+			classNames
+		);
+
 		if (imageFrame.tagName == 'VIDEO') {
-			animationControl(
-				imageFrame,
-				videoRef.current.currentTime,
-				videoRef.current.duration
-			);
+			// animationControl(imageFrame, videoRef.currentTime, videoRef.duration);
+			animationCallback(imageFrame);
 		}
 
 		// if (imageFrame.tagName == 'VIDEO') {
 		// 	var id = window.requestAnimationFrame(function () {
 		// 		detectFrameVideo(imageFrame);
 		// 	});
-		// 	if (videoRef.current.currentTime >= videoRef.current.duration) {
+		// 	if (videoRef.currentTime >= videoRef.duration) {
 		// 		cancelAnimationFrame(id);
 		// 	}
 		// }
@@ -184,7 +207,13 @@ const detectFrameImage = (imageFrame) => {
 		nmsThresh
 	).then((reasultArrays) => {
 		let [selBboxes, scores, classIndices] = reasultArrays;
-		imageRender.drawOnImage(imageFrame, selBboxes, scores, classIndices);
+		imageRender.drawOnImage(
+			imageFrame,
+			selBboxes,
+			scores,
+			classIndices,
+			classNames
+		);
 		tf.engine().endScope();
 	});
 };
@@ -196,4 +225,6 @@ export {
 	initVideoRender,
 	initImageRender,
 	initVideoObject,
+	setAnimationCallback,
+	initRenderCallback,
 };
