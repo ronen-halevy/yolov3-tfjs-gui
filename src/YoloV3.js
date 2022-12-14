@@ -10,19 +10,20 @@ import Draw from './draw.js';
 import { image } from '@tensorflow/tfjs';
 
 import configData from './configModel.json';
-import {
-	detectFrameVideo,
-	detectFrameImage,
-	initModel,
-	initVideoRender,
-	initImageRender,
-	initVideoObject,
-	setAnimationCallback,
-	initRenderCallback,
-	initModel1,
-	initAnchors,
-	initClassNames,
-} from './DetectF.js';
+// import {
+// 	detectFrameVideo,
+// 	detectFrameImage,
+// 	// initModel,
+// 	initVideoRender,
+// 	initImageRender,
+// 	initVideoObject,
+// 	setAnimationCallback,
+// 	initRenderCallback,
+// 	initModel1,
+// 	initAnchors,
+// 	initClassNames,
+// } from './DetectF.js';
+import YoloPredictor from './Detect.js';
 
 export const YoloV3 = () => {
 	// Refs:
@@ -32,6 +33,7 @@ export const YoloV3 = () => {
 
 	// const drawImageRef = useRef(null);
 	// const drawVideoRef = useRef(null);
+	const classNames = useRef(null);
 
 	// States:
 	const [selectedFile, setSelectedFile] = useState('');
@@ -40,7 +42,7 @@ export const YoloV3 = () => {
 
 	const [model, setModel] = useState(null);
 	const [anchors, setAnchors] = useState(null);
-	const [classNames, setClassNames] = useState(null);
+	// const [classNames, setClassNames] = useState(null);
 	const [nclasses, setNclasses] = useState(null);
 
 	const [listModels, setListModels] = useState(configData.models);
@@ -59,41 +61,37 @@ export const YoloV3 = () => {
 
 	const [durationOfVideo, setDurationOfVideo] = useState(0);
 	const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
+	const [yoloPredictor, setYoloPredictor] = useState(0);
+	const [videoRender, setVideoRender] = useState(0);
 
-	initVideoRender(canvasRefVideo.current);
+	// const [renderCallback, setRenderCallback] = useState(0);
 
-	const videoRender = new Draw(canvasRefVideo.current);
-	const renderCallback = (imageFrame_, selBboxes, scores, classIndices) => {
-		console.log(
-			'!!!!!!!!!renderCallback',
-			imageFrame_,
-			selBboxes,
-			scores,
-			classIndices,
-			classNames
-		);
-		videoRender.drawOnImage(
-			imageFrame_,
-			selBboxes,
-			scores,
-			classIndices,
-			classNames
-		);
-	};
-	initRenderCallback(renderCallback);
+	const [video, setVideo] = useState(0);
+	// const [animationControl, setAnimationControl] = useState(0);
 
-	initImageRender(canvasRefImage.current);
+	// initVideoRender(canvasRefVideo.current);
 
-	const video = document.createElement('video');
-	// initVideoObject(video);
+	// const videoRender = new Draw(canvasRefVideo.current);
+	// const renderCallback = (imageFrame_, selBboxes, scores, classIndices) => {
+	// 	console.log(
+	// 		'!!!!!!!!!renderCallback',
+	// 		imageFrame_,
+	// 		selBboxes,
+	// 		scores,
+	// 		classIndices,
+	// 		classNames
+	// 	);
+	// 	videoRender.drawOnImage(
+	// 		imageFrame_,
+	// 		selBboxes,
+	// 		scores,
+	// 		classIndices,
+	// 		classNames
+	// 	);
+	// };
+	// initRenderCallback(renderCallback);
 
-	// video.src =
-	// 	'https://archive.org/download/C.E.PriceCatWalksTowardCamera/cat_walks_toward_camera_512kb.mp4';
-
-	video.controls = true;
-	video.muted = true;
-	video.height = canvasHeight; // in px
-	video.width = canvasWidth; // in px
+	// initImageRender(canvasRefImage.current);
 
 	// const drawVideoRef = new Draw(
 	// 	canvasRefVideo.current,
@@ -120,23 +118,33 @@ export const YoloV3 = () => {
 	// 	);
 	// );
 
-	const animationControl = (imageFrame) => {
-		console.log('YYYYYYYYY', video.currentTime, video.duration);
+	// const animationControl = () => {
+	// 	console.log('YYYYYYYYY', video.currentTime, video.duration);
 
+	// 	var id = window.requestAnimationFrame(function () {
+	// 		yoloPredictor.detectFrameVideo(video);
+	// 	});
+	// 	if (video.currentTime >= video.duration) {
+	// 		cancelAnimationFrame(id);
+	// 		console.log('cancelAnimationFrame');
+	// 	}
+	// };
+	// setAnimationCallback(animationControl);
+	const animationControl = () => {
 		var id = window.requestAnimationFrame(function () {
-			detectFrameVideo(imageFrame);
+			yoloPredictor.detectFrameVideo(video);
 		});
 		if (video.currentTime >= video.duration) {
 			cancelAnimationFrame(id);
-			console.log('cancelAnimationFrame');
 		}
 	};
-	// setAnimationCallback(animationControl);
-
 	useEffect(() => {
-		console.log('useEffect videoRef');
-		getVideo();
-	}, [videoRef]);
+		if (video) {
+			getVideo();
+
+			// setAnimationControl(animationControl);
+		}
+	}, [video]);
 
 	const getVideo = () => {
 		navigator.mediaDevices
@@ -252,7 +260,6 @@ export const YoloV3 = () => {
 	const retrieveGetDurationOfVideo = (durationOfVideo1) => {
 		const getDurationOfVideo = () => {
 			const videoIntervalTime = setInterval(() => {
-				console.log('getDurationOfVideo!!!1');
 				setCurrentDurationOfVideo(Math.trunc(parseFloat(video.currentTime)));
 
 				if (parseFloat(video.currentTime) >= durationOfVideo1) {
@@ -289,7 +296,6 @@ export const YoloV3 = () => {
 
 	const initModel2 = (modelData) => {
 		const modelUrl = modelData.modelUrl;
-		console.log('modelUrl', modelUrl);
 		const anchorsUrl = modelData.anchorsUrl;
 		const classNamesUrl = modelData.classNamesUrl;
 
@@ -306,11 +312,12 @@ export const YoloV3 = () => {
 				setAnchors(values[1].anchor);
 
 				const classNames_ = values[2].split(/\r?\n/);
-				initModel1(values[0]);
-				initAnchors(values[1].anchor);
-				initClassNames(classNames_);
+				yoloPredictor.initModel(values[0]);
+				yoloPredictor.initAnchors(values[1].anchor);
+				yoloPredictor.initNclasses(classNames_.length);
 
-				setClassNames(classNames_);
+				// setClassNames(classNames_);
+				classNames.current = classNames_;
 				setNclasses(classNames_.length);
 				setModelLoadedMessage('Model ' + modelData.name + ' is ready!');
 				setIsModelLoadSpinner(false);
@@ -318,37 +325,48 @@ export const YoloV3 = () => {
 			}
 		);
 	};
+	const renderCallback_ = (imageFrame, selBboxes, scores, classIndices) => {
+		videoRender.drawOnImage(
+			imageFrame,
+			selBboxes,
+			scores,
+			classIndices,
+			classNames.current
+		);
+	};
+
 	useEffect(() => {
+		if (classNames) {
+		}
+	}, [classNames]);
+
+	useEffect(() => {
+		if (videoRender) {
+			const yoloPredictor = new YoloPredictor(renderCallback_);
+			setYoloPredictor(yoloPredictor);
+		}
+	}, [videoRender]);
+	useEffect(() => {
+		const video_ = document.createElement('video');
+		// initVideoObject(video);
+
+		// video.src =
+		// 	'https://archive.org/download/C.E.PriceCatWalksTowardCamera/cat_walks_toward_camera_512kb.mp4';
+
+		video_.controls = true;
+		video_.muted = true;
+		video_.height = canvasHeight; // in px
+		video_.width = canvasWidth; // in px
+
+		setVideo(video_);
+
 		// setShowVideoControl(false);
-		console.log('useEffect []!!!!!!!!!!!!!!!!!!!!!!!!');
-		getVideo();
 
-		// drawVideoRef.current.value = new Draw(
-		// 	canvasRefVideo.current,
-		// 	classNames,
-		// 	configData.font,
-		// 	configData.lineWidth,
-		// 	configData.lineColor,
-		// 	configData.textColor,
-		// 	configData.textBackgoundColor,
-		// 	'video'
-		// );
-
-		// drawImageRef.current.value = new Draw(
-		// 	canvasRefImage.current,
-		// 	classNames,
-		// 	configData.font,
-		// 	configData.lineWidth,
-		// 	configData.lineColor,
-		// 	configData.textColor,
-		// 	configData.textBackgoundColor,
-		// 	'video'
-		// );
+		const videoRender = new Draw(canvasRefVideo.current);
+		setVideoRender(videoRender);
 	}, []);
 
 	const runVideo = (selectedFile) => {
-		console.log('runVideo');
-
 		stopVideo(); // TODO -  effective?
 		// playVideo(selectedFile);
 		var URL = window.URL || window.webkitURL;
@@ -365,32 +383,27 @@ export const YoloV3 = () => {
 				resolve();
 			};
 		}).then(() => {
-			console.log('video.duration', video.duration);
 			setDurationOfVideo(video.duration);
 			retrieveGetDurationOfVideo(video.duration)();
-			initVideoObject(video);
-			setAnimationCallback(animationControl);
+			// initVideoObject(video);
+			yoloPredictor.setAnimationCallback(animationControl);
 
 			// getDurationOfVideo();
 			// detectFrame(model, imageFrame);
 
-			detectFrameVideo(imageFrame);
+			yoloPredictor.detectFrameVideo(imageFrame);
 		});
 	};
 
 	const runImage = (selectedFile) => {
-		console.log('runImage');
-
 		// stopVideo();
 
 		var imageFrame = new window.Image();
 
 		imageFrame.width = String(canvasWidth);
 		if ('HTMLImageElement' in imageFrame) {
-			console.log(imageFrame.HTMLImageElement);
 		}
 		if (imageFrame.HTMLImageElement != undefined) {
-			console.log(imageFrame.HTMLImageElement);
 		}
 		const a = imageFrame.tagName;
 		var promise = fileToDataUri(selectedFile);
@@ -403,14 +416,13 @@ export const YoloV3 = () => {
 			// detectFrame(model, imageFrame);
 			// mother of patches - run twice...Reason: image after video execution fails probably due to disposal issues
 			// detectFrame(model, imageFrame);
-			detectFrameImage(imageFrame);
+			// detectFrameImage(imageFrame);
+			yoloPredictor.detectFrameVideo(imageFrame);
 		});
 	};
 
 	const onClickRun = () => {
-		console.log('onClickRun');
 		if ((selectedFile != '') & isModelLoaded) {
-			console.log('selectedFile', selectedFile);
 			if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
 				URL.createObjectURL(selectedFile);
 				runImage(selectedFile);
@@ -418,7 +430,6 @@ export const YoloV3 = () => {
 			} else {
 				// setShowVideoControl(true);
 
-				console.log('setSelectedVidFile ' + selectedFile);
 				setSelectedVidFile(selectedFile);
 				runVideo(selectedFile);
 			}

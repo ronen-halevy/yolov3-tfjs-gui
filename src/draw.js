@@ -4,17 +4,8 @@ import config from './configRender.json';
 /**
  * Contains methods to draw bounding boxes and text annotations on an image's (same as a single frame) detection.
  */ class Draw {
-	constructor(
-		canvas
-		// classNames
-		// font,
-		// lineWidth,
-		// lineColor,
-		// textColor,
-		// textBackgoundColor
-	) {
+	constructor(canvas) {
 		this.canvas = canvas;
-		// this.classNames = classNames;
 		this.font = config.font;
 		this.lineWidth = config.lineWidth;
 		this.lineColor = config.lineColor;
@@ -31,7 +22,7 @@ import config from './configRender.json';
 	 * @param {float} imageHeight - Input image's original height.
 	 */
 
-	drawBbox(context, bbox, score, className, imageWidth, imageHeight) {
+	drawBbox = (context, bbox, score, className, imageWidth, imageHeight) => {
 		context.beginPath();
 
 		// render bounding box
@@ -68,7 +59,7 @@ import config from './configRender.json';
 		context.fillStyle = this.textColor;
 
 		context.fillText(annotationText, textX, textY);
-	}
+	};
 
 	/**
 	 * @summary Draws a bounding box and text annotations for an array of detections
@@ -78,7 +69,7 @@ import config from './configRender.json';
 	 * @param {Array<float>} classIndices - An array with a class index per a detectiono.
 	 */
 
-	async drawOnImage(image, bboxes, scores, classIndices, classNames) {
+	drawOnImage = async (image, bboxes, scores, classIndices, classNames) => {
 		const context = this.canvas.getContext('2d');
 
 		const imageWidth = image.width;
@@ -88,7 +79,6 @@ import config from './configRender.json';
 		this.canvas.height = imageHeight;
 
 		context.drawImage(image, 0, 0, imageWidth, imageHeight);
-
 		bboxes.forEach((box, idx) =>
 			this.drawBbox(
 				context,
@@ -99,7 +89,7 @@ import config from './configRender.json';
 				imageHeight
 			)
 		);
-	}
+	};
 }
 
 export default Draw;
