@@ -15,45 +15,34 @@ import YoloPredictor from './Detect.js';
 
 export const YoloV3 = () => {
 	// Refs:
-	const videoRef = useRef(null);
 	const canvasRefVideo = useRef(null);
 	const canvasRefImage = useRef(null);
 
 	const classNames = useRef(null);
+	const yoloPredictor = useRef(null);
+	const videoRender = useRef(null);
+
+	const [listModels, setListModels] = useState(configData.models);
 
 	// States:
 	const [selectedFile, setSelectedFile] = useState('');
-
 	const [selectedVidFile, setSelectedVidFile] = useState('');
-
-	const [model, setModel] = useState(null);
-	const [anchors, setAnchors] = useState(null);
-	// const [classNames, setClassNames] = useState(null);
-	const [nclasses, setNclasses] = useState(null);
-
-	const [listModels, setListModels] = useState(configData.models);
 	const [selectedModel, setSelectedModel] = useState('');
 	const [modelLoadedMessage, setModelLoadedMessage] =
 		useState('No Model Loaded!');
 	const [isModelLoadSpinner, setIsModelLoadSpinner] = useState(false);
-
 	const [isModelLoaded, setIsModelLoaded] = useState(false);
-
 	const [nmsThresh, setNmsThresh] = useState(configData.nmsScoreThreshold);
 	const [showVideoControl, setShowVideoControl] = useState(true);
-
 	const [canvasWidth, setCanvasWidth] = useState(416);
 	const [canvasHeight, setCanvasHeight] = useState(416);
-
 	const [durationOfVideo, setDurationOfVideo] = useState(0);
 	const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
-	const [yoloPredictor, setYoloPredictor] = useState(0);
-	const [videoRender, setVideoRender] = useState(0);
 	const [video, setVideo] = useState(0);
 
 	const animationControl = () => {
 		var id = window.requestAnimationFrame(function () {
-			yoloPredictor.detectFrameVideo(video);
+			yoloPredictor.current.detectFrameVideo(video);
 		});
 		if (video.currentTime >= video.duration) {
 			cancelAnimationFrame(id);
@@ -140,17 +129,13 @@ export const YoloV3 = () => {
 
 		Promise.all([modelPromise, anchorsPromise, classNamesPromise]).then(
 			(values) => {
-				setModel(values[0]);
-				setAnchors(values[1].anchor);
-
 				const classNames_ = values[2].split(/\r?\n/);
-				yoloPredictor.initModel(values[0]);
-				yoloPredictor.initAnchors(values[1].anchor);
-				yoloPredictor.initNclasses(classNames_.length);
+				yoloPredictor.current.initModel(values[0]);
+				yoloPredictor.current.initAnchors(values[1].anchor);
+				yoloPredictor.current.initNclasses(classNames_.length);
 
 				// setClassNames(classNames_);
 				classNames.current = classNames_;
-				setNclasses(classNames_.length);
 				setModelLoadedMessage('Model ' + modelData.name + ' is ready!');
 				setIsModelLoadSpinner(false);
 				setIsModelLoaded(true);
@@ -158,7 +143,7 @@ export const YoloV3 = () => {
 		);
 	};
 	const renderCallback_ = (imageFrame, selBboxes, scores, classIndices) => {
-		videoRender.drawOnImage(
+		videoRender.current.drawOnImage(
 			imageFrame,
 			selBboxes,
 			scores,
@@ -167,17 +152,6 @@ export const YoloV3 = () => {
 		);
 	};
 
-	useEffect(() => {
-		if (classNames) {
-		}
-	}, [classNames]);
-
-	useEffect(() => {
-		if (videoRender) {
-			const yoloPredictor = new YoloPredictor(renderCallback_);
-			setYoloPredictor(yoloPredictor);
-		}
-	}, [videoRender]);
 	useEffect(() => {
 		const video_ = document.createElement('video');
 		// video.src =
@@ -192,8 +166,8 @@ export const YoloV3 = () => {
 
 		// setShowVideoControl(false);
 
-		const videoRender = new Draw(canvasRefVideo.current);
-		setVideoRender(videoRender);
+		videoRender.current = new Draw(canvasRefVideo.current);
+		yoloPredictor.current = new YoloPredictor(renderCallback_);
 	}, []);
 
 	const runVideo = (selectedFile) => {
@@ -213,8 +187,8 @@ export const YoloV3 = () => {
 		}).then(() => {
 			setDurationOfVideo(video.duration);
 			retrieveGetDurationOfVideo(video.duration)();
-			yoloPredictor.setAnimationCallback(animationControl);
-			yoloPredictor.detectFrameVideo(imageFrame);
+			yoloPredictor.current.setAnimationCallback(animationControl);
+			yoloPredictor.current.detectFrameVideo(imageFrame);
 		});
 	};
 
@@ -233,9 +207,8 @@ export const YoloV3 = () => {
 		promise.then((contents) => {
 			imageFrame.src = contents;
 		});
-		var isVideo = false;
 		imageFrame.addEventListener('load', async () => {
-			yoloPredictor.detectFrameVideo(imageFrame);
+			yoloPredictor.current.detectFrameVideo(imageFrame);
 		});
 	};
 
@@ -494,17 +467,6 @@ export const YoloV3 = () => {
 				<div className='mt-3'>
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
 				</div>
-				{/* <video
-					className='mt-1 invisible'
-					autoPlay
-					playsInline
-					muted
-					ref={videoRef}
-					width={String(canvasWidth)}
-					height={String(canvasHeight)}
-					id='frame'
-					controls
-				/> */}
 			</div>
 			<div className='row '>
 				<div>
