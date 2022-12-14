@@ -30,9 +30,23 @@ import Draw from './draw.js';
 // );
 
 var model;
+const initModel1 = (model_) => {
+	model = model_;
+	console.log('!!!!!!initModel1 model ', model);
+};
 var anchors;
+const initAnchors = (anchors_) => {
+	anchors = anchors_;
+	console.log('!!!!!!initModel1 anchors ', anchors);
+};
 var classNames;
 var nclasses;
+
+const initClassNames = (classNames_) => {
+	classNames = classNames_;
+	nclasses = classNames.length;
+	console.log('!!!!!!initModel1 classNames_ ', classNames_);
+};
 var videoCanvas;
 var imageCanvas;
 var imageRender;
@@ -93,9 +107,9 @@ const initModel = (modelConfig) => {
 			// setModelLoadedMessage('Model ' + modelConfig.name + ' is ready!');
 			// setIsModelLoadSpinner(false);
 			// setIsModelLoaded(true);
-			imageRender = new Draw(imageCanvas);
+			// imageRender = new Draw(imageCanvas);
 
-			videoRender = new Draw(videoCanvas);
+			// videoRender = new Draw(videoCanvas);
 		}
 	);
 };
@@ -153,15 +167,15 @@ const detectFrameVideo = (imageFrame) => {
 
 		console.log('??????!!!!!!!!!renderCallback');
 
-		// renderCallback(imageFrame, selBboxes, scores, classIndices);
+		renderCallback(imageFrame, selBboxes, scores, classIndices);
 
-		videoRender.drawOnImage(
-			imageFrame,
-			selBboxes,
-			scores,
-			classIndices,
-			classNames
-		);
+		// videoRender.drawOnImage(
+		// 	imageFrame,
+		// 	selBboxes,
+		// 	scores,
+		// 	classIndices,
+		// 	classNames
+		// );
 
 		if (imageFrame.tagName == 'VIDEO') {
 			// animationControl(imageFrame, videoRef.currentTime, videoRef.duration);
@@ -207,13 +221,15 @@ const detectFrameImage = (imageFrame) => {
 		nmsThresh
 	).then((reasultArrays) => {
 		let [selBboxes, scores, classIndices] = reasultArrays;
-		imageRender.drawOnImage(
-			imageFrame,
-			selBboxes,
-			scores,
-			classIndices,
-			classNames
-		);
+		renderCallback(imageFrame, selBboxes, scores, classIndices);
+
+		// imageRender.drawOnImage(
+		// 	imageFrame,
+		// 	selBboxes,
+		// 	scores,
+		// 	classIndices,
+		// 	classNames
+		// );
 		tf.engine().endScope();
 	});
 };
@@ -227,4 +243,7 @@ export {
 	initVideoObject,
 	setAnimationCallback,
 	initRenderCallback,
+	initModel1,
+	initAnchors,
+	initClassNames,
 };

@@ -19,6 +19,9 @@ import {
 	initVideoObject,
 	setAnimationCallback,
 	initRenderCallback,
+	initModel1,
+	initAnchors,
+	initClassNames,
 } from './DetectF.js';
 
 export const YoloV3 = () => {
@@ -284,33 +287,37 @@ export const YoloV3 = () => {
 	}
 	/* Use Effect Hooks:*/
 
-	// const initModel = (modelData) => {
-	// 	const modelUrl = modelData.modelUrl;
-	// 	console.log('modelUrl', modelUrl);
-	// 	const anchorsUrl = modelData.anchorsUrl;
-	// 	const classNamesUrl = modelData.classNamesUrl;
+	const initModel2 = (modelData) => {
+		const modelUrl = modelData.modelUrl;
+		console.log('modelUrl', modelUrl);
+		const anchorsUrl = modelData.anchorsUrl;
+		const classNamesUrl = modelData.classNamesUrl;
 
-	// 	const modelPromise = tf.loadLayersModel(modelUrl);
-	// 	const anchorsPromise = fetch(anchorsUrl).then((response) =>
-	// 		response.json()
-	// 	);
+		const modelPromise = tf.loadLayersModel(modelUrl);
+		const anchorsPromise = fetch(anchorsUrl).then((response) =>
+			response.json()
+		);
 
-	// 	const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
+		const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
 
-	// 	Promise.all([modelPromise, anchorsPromise, classNamesPromise]).then(
-	// 		(values) => {
-	// 			setModel(values[0]);
-	// 			setAnchors(values[1].anchor);
+		Promise.all([modelPromise, anchorsPromise, classNamesPromise]).then(
+			(values) => {
+				setModel(values[0]);
+				setAnchors(values[1].anchor);
 
-	// 			const classNames = values[2].split(/\r?\n/);
-	// 			setClassNames(classNames);
-	// 			setNclasses(classNames.length);
-	// 			setModelLoadedMessage('Model ' + modelData.name + ' is ready!');
-	// 			setIsModelLoadSpinner(false);
-	// 			setIsModelLoaded(true);
-	// 		}
-	// 	);
-	// };
+				const classNames_ = values[2].split(/\r?\n/);
+				initModel1(values[0]);
+				initAnchors(values[1].anchor);
+				initClassNames(classNames_);
+
+				setClassNames(classNames_);
+				setNclasses(classNames_.length);
+				setModelLoadedMessage('Model ' + modelData.name + ' is ready!');
+				setIsModelLoadSpinner(false);
+				setIsModelLoaded(true);
+			}
+		);
+	};
 	useEffect(() => {
 		// setShowVideoControl(false);
 		console.log('useEffect []!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -441,7 +448,9 @@ export const YoloV3 = () => {
 
 		// stopVideo();
 		const modelConfig = selectedModel != '' ? selectedModel : listModels[0];
-		initModel(modelConfig);
+		initModel2(modelConfig);
+		// initModel(modelConfig);
+
 		setModelLoadedMessage('Model ' + modelConfig.name + ' is ready!');
 		setIsModelLoadSpinner(false);
 		setIsModelLoaded(true);
