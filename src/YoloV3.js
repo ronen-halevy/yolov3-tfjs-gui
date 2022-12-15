@@ -170,6 +170,7 @@ export const YoloV3 = () => {
 		// video.src =
 		// 	'https://archive.org/download/C.E.PriceCatWalksTowardCamera/cat_walks_toward_camera_512kb.mp4';
 
+		videoRef.current.crossorigin = 'anonymous';
 		videoRef.current.controls = true;
 		videoRef.current.muted = true;
 		videoRef.current.height = canvasHeight; // in px
@@ -188,7 +189,7 @@ export const YoloV3 = () => {
 		var URL = window.URL || window.webkitURL;
 		var fileURL = URL.createObjectURL(selectedFile);
 		videoRef.current.preload = 'auto';
-		videoRef.current.crossorigin = 'anonymous';
+
 		videoRef.current.src = fileURL;
 
 		videoRef.current.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
@@ -353,7 +354,7 @@ export const YoloV3 = () => {
 									id='selectFile'
 									type='file'
 									onChange={onChangeFile}
-									accept='video/*, image/*'
+									accept='video/mp4'
 								/>
 							</div>
 						</div>
