@@ -457,8 +457,7 @@ export const YoloV3 = () => {
 				</div>
 			</div>
 			<div className='col'>
-				{
-					// showVideoControl == true &&
+				{showVideoControl == true && (
 					<div className='col bg-warning bg-gradient'>
 						<div className='col mb-3'>
 							<div className='col'>
@@ -519,7 +518,7 @@ export const YoloV3 = () => {
 							</button>
 						</div>
 					</div>
-				}
+				)}
 				<div className='mt-3 '>
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
 				</div>
