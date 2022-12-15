@@ -284,168 +284,172 @@ export const YoloV3 = () => {
 
 	return (
 		<div className='container '>
-			<div className='col'>
-				<h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
-			</div>
-			<div>
-				<div className='col mb-3'>
-					<div className='col'>
-						<label htmlFor='selectModel' className=' h5 '>
-							Select a Model
-						</label>
-					</div>
-					<div className='col'>
-						<select
-							className='form-select form-select-lg mb-1'
-							onChange={onSelectModel}
-						>
-							{listModels.map((option, index) => (
-								<option key={index} value={index}>
-									{option.name}
-								</option>
-							))}
-						</select>
-					</div>
-					<div className='col mb-5'>
+			<div className=' formExcludesVideo col bg-info bg-gradient'>
+				<div className='col'>
+					<h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
+				</div>
+				<div>
+					<div className='col mb-3'>
 						<div className='col'>
-							<button
-								variant='primary'
-								// type='submit'
-								className='btn btn btn-dark btn-lg  mb-1 mt-3 col-12'
-								onClick={onLoadModel}
-							>
-								{isModelLoadSpinner && (
-									<span
-										className='spinner-border spinner-border-sm'
-										role='status'
-										aria-hidden='true'
-									></span>
-								)}
-								{isModelLoadSpinner ? 'Loading' : 'Load Model'}
-							</button>
-						</div>
-
-						<div className='col'>
-							<div className='col-12 h5 mb-3'>{modelLoadedMessage}</div>
-						</div>
-					</div>
-
-					<div className='col mb-5'>
-						<div className='col'>
-							<label htmlFor='selectFile' className=' h5 '>
-								Select Video or Image File
+							<label htmlFor='selectModel' className=' h5 '>
+								Select a Model
 							</label>
 						</div>
 						<div className='col'>
-							<input
-								className='form-select-lg'
-								id='selectFile'
-								type='file'
-								onChange={onChangeFile}
-								accept='video/*, image/*'
-							/>
-						</div>
-					</div>
-				</div>
-
-				<div className='mb-3'>
-					<div className='row mb-2'>
-						<div className='col-6 '>
-							<div className='col'>
-								<label className=' h5 '>Score THLD</label>
-							</div>
-							<div className='col'>
-								<input
-									className='form-select-lg'
-									type='number'
-									min='0'
-									max='1'
-									step='0.1'
-									value={nmsScoreTHR}
-									onChange={onChangeNmsScoreTHR}
-								/>
-							</div>
-						</div>
-						<div className='col-6'>
-							<div className='col'>
-								<label className=' h5 '>Iou THLD</label>
-							</div>
-							<div className='col'>
-								<input
-									className='form-select-lg'
-									type='number'
-									min='0'
-									max='1'
-									step='0.1'
-									value={nmsIouTHR}
-									onChange={onChangeNmsIouTHR}
-								/>
-							</div>
-						</div>
-					</div>
-
-					<div className='row'>
-						<div className='col '>
-							<div className='col'>
-								<label className=' h5  '>Width</label>
-							</div>
-							<div className='col'>
-								<input
-									className='form-select-lg '
-									type='number'
-									min='0'
-									max='1920'
-									step='1'
-									value={canvasWidth}
-									onChange={onChangeVideoWidth}
-								/>
-							</div>
-						</div>
-						<div className='col'>
-							<div className='col'>
-								<label className=' h5 col '>Height</label>
-							</div>
-
-							<div className='col'>
-								<input
-									className='form-select-lg '
-									type='number'
-									min='0'
-									max='1920'
-									step='1'
-									value={canvasHeight}
-									onChange={onChangeVideoHeight}
-								/>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div className='col'>
-					<div className='row '>
-						<div>
-							<button
-								variant='primary'
-								disabled={selectedFile == '' || !isModelLoaded}
-								className='btn btn btn-dark  btn-lg col-12 mb-1'
-								onClick={onClickRun}
+							<select
+								className='form-select form-select-lg mb-1'
+								onChange={onSelectModel}
 							>
-								Run Detection
-							</button>
+								{listModels.map((option, index) => (
+									<option key={index} value={index}>
+										{option.name}
+									</option>
+								))}
+							</select>
+						</div>
+						<div className='col mb-5 '>
+							<div className='col'>
+								<button
+									variant='primary'
+									// type='submit'
+									className='btn btn btn-dark btn-lg  mb-1 mt-3 col-12'
+									onClick={onLoadModel}
+								>
+									{isModelLoadSpinner && (
+										<span
+											className='spinner-border spinner-border-sm'
+											role='status'
+											aria-hidden='true'
+										></span>
+									)}
+									{isModelLoadSpinner ? 'Loading' : 'Load Model'}
+								</button>
+							</div>
+
+							<div className='col'>
+								<div className='col-12 h5 mb-3'>{modelLoadedMessage}</div>
+							</div>
+						</div>
+
+						<div className='col mb-5'>
+							<div className='col'>
+								<label htmlFor='selectFile' className=' h5 '>
+									Select Video or Image File
+								</label>
+							</div>
+							<div className='col'>
+								<input
+									className='form-select-lg'
+									id='selectFile'
+									type='file'
+									onChange={onChangeFile}
+									accept='video/*, image/*'
+								/>
+							</div>
 						</div>
 					</div>
-					<div className='row '>
-						<div className='col-6 '>
+
+					<div className='mb-3'>
+						<div className='row mb-2'>
+							<div className='col-6 '>
+								<div className='col'>
+									<label className=' h5 '>Score THLD</label>
+								</div>
+								<div className='col'>
+									<input
+										className='form-select-lg'
+										type='number'
+										min='0'
+										max='1'
+										step='0.1'
+										value={nmsScoreTHR}
+										onChange={onChangeNmsScoreTHR}
+									/>
+								</div>
+							</div>
+							<div className='col-6'>
+								<div className='col'>
+									<label className=' h5 '>Iou THLD</label>
+								</div>
+								<div className='col'>
+									<input
+										className='form-select-lg'
+										type='number'
+										min='0'
+										max='1'
+										step='0.1'
+										value={nmsIouTHR}
+										onChange={onChangeNmsIouTHR}
+									/>
+								</div>
+							</div>
+						</div>
+
+						<div className='row'>
+							<div className='col '>
+								<div className='col'>
+									<label className=' h5  '>Width</label>
+								</div>
+								<div className='col'>
+									<input
+										className='form-select-lg '
+										type='number'
+										min='0'
+										max='1920'
+										step='1'
+										value={canvasWidth}
+										onChange={onChangeVideoWidth}
+									/>
+								</div>
+							</div>
+							<div className='col'>
+								<div className='col'>
+									<label className=' h5 col '>Height</label>
+								</div>
+
+								<div className='col'>
+									<input
+										className='form-select-lg '
+										type='number'
+										min='0'
+										max='1920'
+										step='1'
+										value={canvasHeight}
+										onChange={onChangeVideoHeight}
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className='col'>
+						<div className='row '>
+							<div>
+								<button
+									variant='primary'
+									disabled={selectedFile == '' || !isModelLoaded}
+									className='btn btn btn-dark  btn-lg col-12 mb-1'
+									onClick={onClickRun}
+								>
+									Run Detection
+								</button>
+							</div>
+						</div>
+						<div className='col '>
 							{selectedFile == '' && (
-								<div className='  mb-1 col h5' id='liveAlertBtn'>
-									Select A File!
+								<div className='col-6 '>
+									<div
+										className='  col h5 text-warning bg-dark'
+										id='liveAlertBtn'
+									>
+										Select A File!
+									</div>
 								</div>
 							)}
-						</div>
-
-						<div className='col-6 '>
 							{!isModelLoaded && (
-								<div className='  mb-1  h5' id='liveAlertBtn'>
-									Load A Model!
+								<div className='col-6 '>
+									<div className='   h5 text-warning bg-dark'>
+										Load A Model!
+									</div>
 								</div>
 							)}
 						</div>
@@ -453,11 +457,14 @@ export const YoloV3 = () => {
 				</div>
 			</div>
 			<div className='col'>
-				{showVideoControl == true && (
-					<div className='col '>
+				{
+					// showVideoControl == true &&
+					<div className='col bg-warning bg-gradient'>
 						<div className='col mb-3'>
 							<div className='col'>
-								<label className=' form-select-lg'>Playback Speed</label>
+								<label className=' form-select-lg text-center text-white bg-dark col-4'>
+									Select Playback Speed
+								</label>
 							</div>
 							<div className='col-4 mb-3'>
 								<select
@@ -512,8 +519,8 @@ export const YoloV3 = () => {
 							</button>
 						</div>
 					</div>
-				)}
-				<div className='mt-3'>
+				}
+				<div className='mt-3 '>
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
 				</div>
 			</div>
