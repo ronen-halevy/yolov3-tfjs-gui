@@ -21,7 +21,7 @@ export const YoloV3 = () => {
 	const classNames = useRef(null);
 	const yoloPredictor = useRef(null);
 	const videoRender = useRef(null);
-	const video = useRef(null);
+	const videoRef = useRef(null);
 	// refs affect changes during animation:
 	const nmsScoreTHRRef = useRef(configData.nmsScoreThreshold);
 	const nmsIouTHRRef = useRef(configData.nmsIouThreshold);
@@ -48,12 +48,12 @@ export const YoloV3 = () => {
 	const animationControl = () => {
 		var id = window.requestAnimationFrame(function () {
 			yoloPredictor.current.detectFrameVideo(
-				video.current,
+				videoRef.current,
 				nmsIouTHRRef.current,
 				nmsScoreTHRRef.current
 			);
 		});
-		if (video.current.currentTime >= video.current.duration) {
+		if (videoRef.current.currentTime >= videoRef.current.duration) {
 			cancelAnimationFrame(id);
 		}
 	};
@@ -62,8 +62,8 @@ export const YoloV3 = () => {
 		navigator.mediaDevices
 			.getUserMedia({ video: {} })
 			.then((stream) => {
-				video.current.srcObject = stream;
-				video.current.play();
+				videoRef.current.srcObject = stream;
+				videoRef.current.play();
 			})
 			.catch((err) => {
 				console.error('error:', err);
@@ -73,28 +73,30 @@ export const YoloV3 = () => {
 	const stopVideo = () => {
 		setShowVideoControl(false);
 
-		if (video.current.src != '') {
-			video.current.pause();
-			video.current.currentTime = video.current.duration;
+		if (videoRef.current.src != '') {
+			videoRef.current.pause();
+			videoRef.current.currentTime = videoRef.current.duration;
 		}
 	};
 
 	const pauseVideo = () => {
-		video.current.pause();
+		videoRef.current.pause();
 	};
 
 	const resumeVideo = () => {
-		video.current.play();
+		videoRef.current.play();
 	};
 
 	const retrieveGetDurationOfVideo = () => {
 		const getDurationOfVideo = () => {
 			const videoIntervalTime = setInterval(() => {
 				setCurrentDurationOfVideo(
-					parseFloat(video.current.currentTime).toFixed(1)
+					parseFloat(videoRef.current.currentTime).toFixed(1)
 				);
 
-				if (parseFloat(video.current.currentTime) >= video.current.duration) {
+				if (
+					parseFloat(videoRef.current.currentTime) >= videoRef.current.duration
+				) {
 					clearVideoInterval();
 				}
 			}, 500);
@@ -106,12 +108,12 @@ export const YoloV3 = () => {
 		return getDurationOfVideo;
 	};
 	const setVideoSpeed = (e) => {
-		video.current.playbackRate = parseFloat(e.target.value);
+		videoRef.current.playbackRate = parseFloat(e.target.value);
 	};
 
 	const videoDuration = (e) => {
 		setCurrentDurationOfVideo(parseFloat(e.target.value));
-		video.current.currentTime = parseFloat(e.target.value);
+		videoRef.current.currentTime = parseFloat(e.target.value);
 	};
 
 	// create image file read promise
@@ -164,14 +166,14 @@ export const YoloV3 = () => {
 	};
 
 	useEffect(() => {
-		video.current = document.createElement('video');
+		videoRef.current = document.createElement('video');
 		// video.src =
 		// 	'https://archive.org/download/C.E.PriceCatWalksTowardCamera/cat_walks_toward_camera_512kb.mp4';
 
-		video.current.controls = true;
-		video.current.muted = true;
-		video.current.height = canvasHeight; // in px
-		video.current.width = canvasWidth; // in px
+		videoRef.current.controls = true;
+		videoRef.current.muted = true;
+		videoRef.current.height = canvasHeight; // in px
+		videoRef.current.width = canvasWidth; // in px
 		getVideo();
 
 		setShowVideoControl(false);
@@ -185,19 +187,20 @@ export const YoloV3 = () => {
 
 		var URL = window.URL || window.webkitURL;
 		var fileURL = URL.createObjectURL(selectedFile);
-		video.current.src = fileURL;
-		video.current.play();
+		videoRef.current.preload = 'auto';
+		videoRef.current.src = fileURL;
+		videoRef.current.play();
 
 		new Promise((resolve) => {
-			video.current.onloadedmetadata = () => {
+			videoRef.current.onloadedmetadata = () => {
 				resolve();
 			};
 		}).then(() => {
-			setDurationOfVideo(video.current.duration);
+			setDurationOfVideo(videoRef.current.duration);
 			retrieveGetDurationOfVideo()();
 			yoloPredictor.current.setAnimationCallback(animationControl);
 			yoloPredictor.current.detectFrameVideo(
-				video.current,
+				videoRef.current,
 				nmsIouTHR,
 				nmsScoreTHR
 			);
@@ -235,11 +238,11 @@ export const YoloV3 = () => {
 		stopVideo();
 
 		setSelectedFile(event.target.files[0]);
-		if (event.target.files[0].name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-			setShowVideoControl(false);
-		} else {
-			// setShowVideoControl(true);
-		}
+		// if (event.target.files[0].name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+		// 	setShowVideoControl(false);
+		// } else {
+		// 	// setShowVideoControl(true);
+		// }
 	};
 
 	const onSelectModel = (event) => {
