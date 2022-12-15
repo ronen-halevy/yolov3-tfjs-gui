@@ -354,7 +354,7 @@ export const YoloV3 = () => {
 									id='selectFile'
 									type='file'
 									onChange={onChangeFile}
-									accept='video/mp4'
+									accept='image/*, video/*'
 								/>
 							</div>
 						</div>
