@@ -318,7 +318,7 @@ export const YoloV3 = () => {
 								<button
 									variant='primary'
 									// type='submit'
-									className='btn btn btn-dark btn-lg  mb-1 mt-3 col-12'
+									className='btn btn btn-primary btn-lg  mb-1 mt-3 col-12'
 									onClick={onLoadModel}
 								>
 									{isModelLoadSpinner && (
@@ -467,7 +467,7 @@ export const YoloV3 = () => {
 					<div className='col bg-warning bg-gradient'>
 						<div className='col mb-3'>
 							<div className='col'>
-								<label className=' form-select-lg text-center text-white bg-dark col-4'>
+								<label className=' form-select-lg text-center text-white bg-primary col-4'>
 									Select Playback Speed
 								</label>
 							</div>
