@@ -143,9 +143,9 @@ export const YoloV3 = () => {
 			}
 		);
 	};
-	const renderCallback_ = (imageFrame, selBboxes, scores, classIndices) => {
+	const renderCallback_ = (imageObject, selBboxes, scores, classIndices) => {
 		videoRender.current.drawOnImage(
-			imageFrame,
+			imageObject,
 			selBboxes,
 			scores,
 			classIndices,
@@ -197,16 +197,16 @@ export const YoloV3 = () => {
 	};
 
 	const runImage = (selectedFile) => {
-		var imageFrame = new window.Image();
+		var imageObject = new window.Image();
 
 		var promise = fileToDataUri(selectedFile);
 		promise.then((fileUrl) => {
-			imageFrame.crossorigin = 'anonymous';
-			imageFrame.src = fileUrl;
+			imageObject.crossorigin = 'anonymous';
+			imageObject.src = fileUrl;
 		});
-		imageFrame.addEventListener('load', async () => {
+		imageObject.addEventListener('load', async () => {
 			yoloPredictor.current.detectFrameVideo(
-				imageFrame,
+				imageObject,
 				nmsIouTHR,
 				nmsScoreTHR
 			);
