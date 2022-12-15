@@ -58,18 +58,6 @@ export const YoloV3 = () => {
 		}
 	};
 
-	const getVideo = () => {
-		navigator.mediaDevices
-			.getUserMedia({ video: {} })
-			.then((stream) => {
-				videoRef.current.srcObject = stream;
-				videoRef.current.play();
-			})
-			.catch((err) => {
-				console.error('error:', err);
-			});
-	};
-
 	const stopVideo = () => {
 		setShowVideoControl(false);
 
@@ -170,7 +158,6 @@ export const YoloV3 = () => {
 		// video.src =
 		// 	'https://archive.org/download/C.E.PriceCatWalksTowardCamera/cat_walks_toward_camera_512kb.mp4';
 
-		videoRef.current.crossorigin = 'anonymous';
 		videoRef.current.controls = true;
 		videoRef.current.muted = true;
 		videoRef.current.height = canvasHeight; // in px
@@ -333,14 +320,16 @@ export const YoloV3 = () => {
 							</div>
 
 							<div className='col'>
-								<div className='col-12 h5 mb-3'>{modelLoadedMessage}</div>
+								<div className='col-12 h5 mb-3 bg-warning'>
+									{modelLoadedMessage}
+								</div>
 							</div>
 						</div>
 
 						<div className='col mb-5'>
 							<div className='col'>
 								<label htmlFor='selectFile' className=' h5 '>
-									Select Video or Image File
+									Select Video or Image
 								</label>
 							</div>
 							<div className='col'>
@@ -529,6 +518,9 @@ export const YoloV3 = () => {
 					<canvas className='video' ref={canvasRefVideo} width='' height='' />
 				</div>
 			</div>
+			{/* <div className='customVideoTagClass '>
+				<video ref={videoRef} preload='auto'></video>
+			</div> */}
 		</div>
 	);
 };
