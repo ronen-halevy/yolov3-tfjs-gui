@@ -350,7 +350,7 @@ export const YoloV3 = () => {
 				</div>
 
 				<div className='mb-3'>
-					<div className='row'>
+					<div className='row mb-2'>
 						<div className='col-2'>
 							<div className='col'>
 								<label className=' h5 '>NMS Score THLD</label>
@@ -383,6 +383,9 @@ export const YoloV3 = () => {
 								/>
 							</div>
 						</div>
+					</div>
+
+					<div className='row'>
 						<div className='col-2'>
 							<div className='col'>
 								<label className=' h5  '>Video Width</label>
@@ -401,7 +404,7 @@ export const YoloV3 = () => {
 						</div>
 						<div className='col-2'>
 							<div className='col'>
-								<label className=' h5  '>Video Width</label>
+								<label className=' h5  '>Video Height</label>
 							</div>
 
 							<div className='col'>
