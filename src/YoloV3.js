@@ -188,7 +188,12 @@ export const YoloV3 = () => {
 		var URL = window.URL || window.webkitURL;
 		var fileURL = URL.createObjectURL(selectedFile);
 		videoRef.current.preload = 'auto';
+		videoRef.current.crossorigin = 'anonymous';
 		videoRef.current.src = fileURL;
+
+		videoRef.current.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
+		videoRef.current.src =
+			'https://archive.org/download/C.E.PriceCatWalksTowardCamera/cat_walks_toward_camera_512kb.mp4';
 		videoRef.current.play();
 
 		new Promise((resolve) => {
@@ -212,7 +217,9 @@ export const YoloV3 = () => {
 
 		var promise = fileToDataUri(selectedFile);
 		promise.then((contents) => {
-			imageFrame.src = contents;
+			imageFrame.crossorigin = 'anonymous';
+			imageFrame.src =
+				'https://res.cloudinary.com/demo/image/upload/sample.gif';
 		});
 		imageFrame.addEventListener('load', async () => {
 			yoloPredictor.current.detectFrameVideo(
