@@ -175,7 +175,6 @@ export const YoloV3 = () => {
 		videoRef.current.muted = true;
 		videoRef.current.height = canvasHeight; // in px
 		videoRef.current.width = canvasWidth; // in px
-		getVideo();
 
 		setShowVideoControl(false);
 
@@ -192,9 +191,6 @@ export const YoloV3 = () => {
 
 		videoRef.current.src = fileURL;
 
-		videoRef.current.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
-		videoRef.current.src =
-			'https://archive.org/download/C.E.PriceCatWalksTowardCamera/cat_walks_toward_camera_512kb.mp4';
 		videoRef.current.play();
 
 		new Promise((resolve) => {
@@ -217,10 +213,9 @@ export const YoloV3 = () => {
 		var imageFrame = new window.Image();
 
 		var promise = fileToDataUri(selectedFile);
-		promise.then((contents) => {
+		promise.then((fileUrl) => {
 			imageFrame.crossorigin = 'anonymous';
-			imageFrame.src =
-				'https://res.cloudinary.com/demo/image/upload/sample.gif';
+			imageFrame.src = fileUrl;
 		});
 		imageFrame.addEventListener('load', async () => {
 			yoloPredictor.current.detectFrameVideo(
