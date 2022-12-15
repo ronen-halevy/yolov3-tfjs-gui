@@ -175,9 +175,9 @@ export const YoloV3 = () => {
 		var URL = window.URL || window.webkitURL;
 		var fileURL = URL.createObjectURL(selectedFile);
 		videoRef.current.preload = 'auto';
+		videoRef.current.crossOrigin = 'anonymous';
 
 		videoRef.current.src = fileURL;
-
 		videoRef.current.play();
 
 		new Promise((resolve) => {
