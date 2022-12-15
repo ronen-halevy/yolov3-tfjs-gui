@@ -388,7 +388,7 @@ export const YoloV3 = () => {
 					<div className='row'>
 						<div className='col-2'>
 							<div className='col'>
-								<label className=' h5  '>Video Width</label>
+								<label className=' h5  '>Canvas Width</label>
 							</div>
 							<div className='col'>
 								<input
@@ -404,7 +404,7 @@ export const YoloV3 = () => {
 						</div>
 						<div className='col-2'>
 							<div className='col'>
-								<label className=' h5  '>Video Height</label>
+								<label className=' h5  '>Canvas Height</label>
 							</div>
 
 							<div className='col'>
@@ -434,17 +434,22 @@ export const YoloV3 = () => {
 							</button>
 						</div>
 					</div>
-					<div className='row '>
-						{selectedFile == '' && (
-							<div className='  mb-5 col-2 h5' id='liveAlertBtn'>
-								Please Select A File!
-							</div>
-						)}
-						{!isModelLoaded && (
-							<div className='  mb-5 col-3 h5' id='liveAlertBtn'>
-								Please Load A Model!
-							</div>
-						)}
+					<div className='col '>
+						<div className='col '>
+							{selectedFile == '' && (
+								<div className='  mb-1 col-2 h5' id='liveAlertBtn'>
+									Please Select A File!
+								</div>
+							)}
+						</div>
+
+						<div className='col '>
+							{!isModelLoaded && (
+								<div className='  mb-1 col-3 h5' id='liveAlertBtn'>
+									Please Load A Model!
+								</div>
+							)}
+						</div>
 					</div>
 				</div>
 			</div>
