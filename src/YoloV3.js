@@ -294,7 +294,7 @@ export const YoloV3 = () => {
 							Select a Model
 						</label>
 					</div>
-					<div className='col-4'>
+					<div className='col-8'>
 						<select
 							className='form-select form-select-lg mb-1'
 							onChange={onSelectModel}
@@ -311,7 +311,7 @@ export const YoloV3 = () => {
 							<button
 								variant='primary'
 								// type='submit'
-								className='btn btn btn-dark btn-lg col-4 mb-1 mt-3'
+								className='btn btn btn-dark btn-lg  mb-1 mt-3 col-8'
 								onClick={onLoadModel}
 							>
 								{isModelLoadSpinner && (
@@ -325,7 +325,7 @@ export const YoloV3 = () => {
 							</button>
 						</div>
 
-						<div className='col'>
+						<div className='col-8'>
 							{/* <div className='coll-2'></div> */}
 							<div className='coll-4 h5 mb-3'>{modelLoadedMessage}</div>
 						</div>
@@ -339,7 +339,7 @@ export const YoloV3 = () => {
 						</div>
 						<div className='col'>
 							<input
-								className='col-6 form-select-lg'
+								className='col form-select-lg'
 								id='selectFile'
 								type='file'
 								onChange={onChangeFile}
@@ -351,9 +351,9 @@ export const YoloV3 = () => {
 
 				<div className='mb-3'>
 					<div className='row mb-2'>
-						<div className='col-2 mx-2'>
+						<div className='col-4 mx-2'>
 							<div className='col'>
-								<label className=' h5 '>NMS Score THLD</label>
+								<label className=' h5 '>Score THLD</label>
 							</div>
 							<div className='col'>
 								<input
@@ -367,9 +367,9 @@ export const YoloV3 = () => {
 								/>
 							</div>
 						</div>
-						<div className='col-2'>
+						<div className='col-4'>
 							<div className='col'>
-								<label className=' h5 '>NMS Iou THLD</label>
+								<label className=' h5 '>Iou THLD</label>
 							</div>
 							<div className='col'>
 								<input
@@ -386,9 +386,9 @@ export const YoloV3 = () => {
 					</div>
 
 					<div className='row'>
-						<div className='col-2 mx-2'>
+						<div className='col-4 mx-2'>
 							<div className='col'>
-								<label className=' h5  '>Canvas Width</label>
+								<label className=' h5  '>Width</label>
 							</div>
 							<div className='col'>
 								<input
@@ -402,9 +402,9 @@ export const YoloV3 = () => {
 								/>
 							</div>
 						</div>
-						<div className='col-2'>
+						<div className='col-4'>
 							<div className='col'>
-								<label className=' h5  '>Canvas Height</label>
+								<label className=' h5  '>Height</label>
 							</div>
 
 							<div className='col'>
@@ -427,7 +427,7 @@ export const YoloV3 = () => {
 							<button
 								variant='primary'
 								disabled={selectedFile == '' || !isModelLoaded}
-								className='btn btn btn-dark  btn-lg col-4 mb-1'
+								className='btn btn btn-dark  btn-lg col-8 mb-1'
 								onClick={onClickRun}
 							>
 								Run Detection
@@ -438,7 +438,7 @@ export const YoloV3 = () => {
 						<div className='col '>
 							{selectedFile == '' && (
 								<div className='  mb-1 col-2 h5' id='liveAlertBtn'>
-									Please Select A File!
+									Select A File!
 								</div>
 							)}
 						</div>
@@ -446,7 +446,7 @@ export const YoloV3 = () => {
 						<div className='col '>
 							{!isModelLoaded && (
 								<div className='  mb-1 col-3 h5' id='liveAlertBtn'>
-									Please Load A Model!
+									Load A Model!
 								</div>
 							)}
 						</div>
