@@ -39,7 +39,7 @@ export const YoloV3 = () => {
   const [isModelLoaded, setIsModelLoaded] = useState(false);
   const [scoreTHR, setScoreTHR] = useState(configData.scoreThreshold);
   const [iouTHR, setIouTHR] = useState(configData.iouThreshold);
-  const [maxBoxes, setMaxBoxes] = useState(configData.iouThreshold);
+  const [maxBoxes, setMaxBoxes] = useState(configData.maxBoxes);
 
   const [showVideoControl, setShowVideoControl] = useState(true);
   const [canvasWidth, setCanvasWidth] = useState(416);
@@ -262,13 +262,12 @@ export const YoloV3 = () => {
   const onChangeNumber = (event, attrib) => {
     console.log(event);
 
-    const value =
-      ('min' in attrib) & ('max' in attrib)
-        ? Math.max(attrib.min, Math.min(attrib.max, Number(event.target.value)))
-        : event.target.value;
-    if ('stateSet' in attrib) {
-      eval(attrib.stateSet)(value);
-    }
+    let { value, min, max } = event.target;
+
+    value = Math.max(Number(min), Math.min(Number(max), Number(value)));
+
+    eval(attrib.stateSet)(value);
+    //use refs in addition to state to update vals during animation.
     if ('refName' in attrib) {
       eval[attrib.refName] = value;
     }
@@ -344,14 +343,14 @@ export const YoloV3 = () => {
           </div>
 
           <div className='mb-3'>
-            <div className='row mb-2'>
-              <div className='col-6 '>
+            <div className='row mb-2 nmsAttribs'>
+              <div className='col'>
                 <div className='col'>
                   <label className=' h5 '>Score THLD</label>
                 </div>
                 <div className='col'>
                   <input
-                    className='form-select-lg'
+                    className='form-select-lg col-4'
                     type='number'
                     min='0'
                     max='1'
@@ -359,22 +358,20 @@ export const YoloV3 = () => {
                     value={scoreTHR}
                     onChange={(event) =>
                       onChangeNumber(event, {
-                        min: 0,
-                        max: 1,
-                        stateSet: 'setScoreTHR',
-                        refName: 'scoreTHRRef',
+                        stateSet: setScoreTHR,
+                        refName: scoreTHRRef,
                       })
                     }
                   />
                 </div>
               </div>
-              <div className='col-6'>
+              <div className='col'>
                 <div className='col'>
                   <label className=' h5 '>Iou THLD</label>
                 </div>
                 <div className='col'>
                   <input
-                    className='form-select-lg'
+                    className='form-select-lg col-4'
                     type='number'
                     min='0'
                     max='1'
@@ -382,10 +379,30 @@ export const YoloV3 = () => {
                     value={iouTHR}
                     onChange={(event) =>
                       onChangeNumber(event, {
-                        min: 0,
-                        max: 1,
-                        stateSet: 'setIouTHR',
+                        stateSet: setIouTHR,
                         refName: iouTHRRef,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className='col'>
+                <div className='col'>
+                  <label className=' h5 '>Max Boxes</label>
+                </div>
+                <div className='col'>
+                  <input
+                    className='form-select-lg col-4'
+                    type='number'
+                    step='0.1'
+                    value={maxBoxes}
+                    min='0'
+                    max='1000'
+                    onChange={(event) =>
+                      onChangeNumber(event, {
+                        stateSet: setMaxBoxes,
+                        refName: maxBoxesRef,
                       })
                     }
                   />
@@ -407,7 +424,7 @@ export const YoloV3 = () => {
                     step='1'
                     value={canvasWidth}
                     onChange={(event) =>
-                      onChangeNumber(event, { stateSet: 'setCanvasWidth' })
+                      onChangeNumber(event, { stateSet: setCanvasWidth })
                     }
                   />
                 </div>
@@ -425,11 +442,9 @@ export const YoloV3 = () => {
                     max='1920'
                     step='1'
                     value={canvasHeight}
-                    // onChange={onChangeVideoHeight}
-
                     onChange={(event) =>
                       onChangeNumber(event, {
-                        stateSet: 'setCanvasHeight',
+                        stateSet: setCanvasHeight,
                       })
                     }
                   />

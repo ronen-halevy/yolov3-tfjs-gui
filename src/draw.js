@@ -1,5 +1,4 @@
-import configData from './configModel.json';
-import config from './configRender.json';
+import config from './config/configRender.json';
 
 /**
  * Contains methods to draw bounding boxes and text annotations on an image's (same as a single frame) detection.

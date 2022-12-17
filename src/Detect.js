@@ -33,7 +33,7 @@ class YoloPredictor {
 		return tensor;
 	};
 
-	detectFrameVideo = (imageFrame, nmsIouTHR, nmsScoreTHR) => {
+	detectFrameVideo = (imageFrame, iouTHR, scoreTHR, maxBoxes) => {
 		tf.engine().startScope();
 		const imageTensor = this.imagePreprocess(imageFrame);
 		const model_output_grids = this.model.predict(imageTensor);
@@ -50,7 +50,7 @@ class YoloPredictor {
 		confidences = confidences.squeeze(axis);
 		let scores = confidences.mul(classProbs);
 
-		yoloNms(bboxes, scores, classIndices, nmsIouTHR, nmsScoreTHR).then(
+		yoloNms(bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes).then(
 			(reasultArrays) => {
 				let [selBboxes, scores, classIndices] = reasultArrays;
 
