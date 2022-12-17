@@ -281,50 +281,53 @@ export const YoloV3 = () => {
         </div>
         <div>
           <div className='col mb-3'>
-            <div className='col'>
-              <label htmlFor='selectModel' className=' h5 '>
-                Select a Model
-              </label>
-            </div>
-            <div className='col'>
-              <select
-                className='form-select form-select-lg mb-1'
-                onChange={onSelectModel}
-              >
-                {listModels.map((option, index) => (
-                  <option key={index} value={index}>
-                    {option.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className='col mb-5 '>
+            <div className='col selectModel'>
               <div className='col'>
-                <button
-                  variant='primary'
-                  // type='submit'
-                  className='btn btn btn-primary btn-lg  mb-1 mt-3 col-12'
-                  onClick={onLoadModel}
+                <label htmlFor='selectModel' className=' h5 '>
+                  Select a Model
+                </label>
+              </div>
+              <div className='col'>
+                <select
+                  className='form-select form-select-lg mb-1'
+                  onChange={onSelectModel}
                 >
-                  {isModelLoadSpinner && (
-                    <span
-                      className='spinner-border spinner-border-sm'
-                      role='status'
-                      aria-hidden='true'
-                    ></span>
-                  )}
-                  {isModelLoadSpinner ? 'Loading' : 'Load Model'}
-                </button>
+                  {listModels.map((option, index) => (
+                    <option key={index} value={index}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <div className='col'>
-                <div className='col-12 h5 mb-3 bg-warning'>
-                  {modelLoadedMessage}
+              <div className='col mb-5 '>
+                <div className='col'>
+                  <button
+                    variant='primary'
+                    // type='submit'
+                    className='btn btn btn-primary btn-lg  mb-1 mt-3 col-12'
+                    onClick={onLoadModel}
+                  >
+                    {isModelLoadSpinner && (
+                      <span
+                        className='spinner-border spinner-border-sm'
+                        role='status'
+                        aria-hidden='true'
+                      ></span>
+                    )}
+                    {isModelLoadSpinner ? 'Loading' : 'Load Model'}
+                  </button>
+                </div>
+
+                <div className='col'>
+                  <div className='col-12 h5 mb-3 bg-warning'>
+                    {modelLoadedMessage}
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className='col mb-5'>
+            <div className='col mb-5 selectFile'>
               <div className='col'>
                 <label htmlFor='selectFile' className=' h5 '>
                   Select Video or Image
@@ -341,7 +344,6 @@ export const YoloV3 = () => {
               </div>
             </div>
           </div>
-
           <div className='mb-3'>
             <div className='row mb-2 nmsAttribs'>
               <div className='col'>
