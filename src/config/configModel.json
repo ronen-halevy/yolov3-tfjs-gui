@@ -2,33 +2,13 @@
   "maxBoxes": 100,
   "iouThreshold": 0.5,
   "scoreThreshold": 0.1,
-  "models": [
-    {
-      "name": "yolov3TinyShapes",
-      "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/shapes/model.json",
-      "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesAnchors.json",
-      "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesClassNames.txt"
-    },
-    {
-      "name": "yolov3TinyCoco",
-      "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/coco-tiny/model.json",
-      "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoTinyAnchors.json",
-      "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoClassNames.txt"
-    },
-    {
-      "name": "yolov3Coco",
-      "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/coco/model.json",
-      "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoAnchors.json",
-      "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoClassNames.txt"
-    }
-  ],
 
-  "modelsn": {
+  "models": {
     "YoloV3": {
       "coco": {
-        "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/shapes/model.json",
-        "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesAnchors.json",
-        "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesClassNames.txt"
+        "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/coco/model.json",
+        "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoAnchors.json",
+        "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoClassNames.txt"
       },
       "shapes": {
         "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/shapes/model.json",
@@ -41,11 +21,6 @@
         "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/coco-tiny/model.json",
         "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoTinyAnchors.json",
         "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/cocoClassNames.txt"
-      },
-      "shapes": {
-        "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/models/shapes/model.json",
-        "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesAnchors.json",
-        "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs/master/data/shapesClassNames.txt"
       }
     }
   }

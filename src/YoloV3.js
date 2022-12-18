@@ -28,7 +28,7 @@ export const YoloV3 = () => {
   const iouTHRRef = useRef(configData.iouThreshold);
   const maxBoxesRef = useRef(configData.maxBoxes);
 
-  const [modelsTable, setModelsTable] = useState(configData.modelsn);
+  const [modelsTable, setModelsTable] = useState(configData.models);
 
   const [listExamples, setListExamples] = useState(cocoVideos.cocoVideos);
 
@@ -46,7 +46,7 @@ export const YoloV3 = () => {
   const [iouTHR, setIouTHR] = useState(configData.iouThreshold);
   const [maxBoxes, setMaxBoxes] = useState(configData.maxBoxes);
 
-  const [selectedExample, setSelectedExample] = useState('');
+  const [selectedExample, setSelectedExample] = useState(listExamples[0].url);
 
   const [showVideoControl, setShowVideoControl] = useState(true);
   const [canvasWidth, setCanvasWidth] = useState(416);
@@ -274,6 +274,7 @@ export const YoloV3 = () => {
   };
 
   const onSelectExample = (event) => {
+    stopVideo();
     const selected = listExamples[event.target.value];
     setSelectedExample(selected.url);
   };
@@ -282,9 +283,7 @@ export const YoloV3 = () => {
     setModelLoadedMessage('Loading Model...');
     setIsModelLoadSpinner(true);
 
-    // if none selected - use the top of list
     const modelConfig = modelsTable[selectedModel][selectedDataset];
-    console.log(modelConfig);
     createModel(modelConfig);
 
     setModelLoadedMessage(
@@ -293,36 +292,7 @@ export const YoloV3 = () => {
     setIsModelLoadSpinner(false);
     setIsModelLoaded(true);
   };
-  const onLoadExample = () => {
-    stopVideo();
-    const example =
-      selectedExample != '' ? selectedExample : listExamples[0].url;
 
-    // setSelectedFile(example);
-    setSelectedExample(example);
-
-    // if none selected - use the top of list
-    // console.log('onLoadExample ', example);
-
-    // videoRef.current.preload = 'auto';
-    // videoRef.current.crossOrigin = 'anonymous';
-    // console.log('example', example);
-
-    // console.log('example', example);
-    // videoRef.current.src = example;
-    // runVideo(selectedFile);
-  };
-
-  const onChangeNumber1 = (event, attrib) => {
-    // console.log(event);
-    // let { value, min, max } = event.target;
-    // value = Math.max(Number(min), Math.min(Number(max), Number(value)));
-    // eval(attrib.stateSet)(value);
-    // //use refs in addition to state to update vals during animation.
-    // if ('refName' in attrib) {
-    //   eval(attrib.refName).current = value;
-    // }
-  };
   const onChangeNumber = (event, attrib) => {
     console.log(event);
     let { value, min, max } = event.target;
@@ -334,38 +304,12 @@ export const YoloV3 = () => {
     }
   };
 
-  //   const onSelectModel = (event) => {
-  //     console.log('onChangeDataSource ', event.target.value);
-
-  //     setSourceSelection(event.target.value);
-  //   };
-
   const onChangeDataSource = (event) => {
     console.log('onChangeDataSource ', event.target.value);
 
     setSourceSelection(event.target.value);
   };
 
-  const SelectFile = () => {
-    return (
-      <div className='col mb-5 selectFile'>
-        <div className='col'>
-          <label htmlFor='selectFile' className=' h5 '>
-            Select Video or Image
-          </label>
-        </div>
-        <div className='col'>
-          <input
-            className='form-select-lg'
-            id='selectFile'
-            type='file'
-            onChange={onChangeFile}
-            accept='image/*, video/*'
-          />
-        </div>
-      </div>
-    );
-  };
   const InputNumber = (props) => {
     return (
       <div>
@@ -395,7 +339,7 @@ export const YoloV3 = () => {
 
   const LoadModel = (props) => {
     return (
-      <div className='col mb-5 '>
+      <div className='col '>
         <div className='col'>
           <button
             variant='primary'
@@ -414,8 +358,10 @@ export const YoloV3 = () => {
           </button>
         </div>
 
-        <div className='col'>
-          <div className='col-12 h5 mb-3 bg-warning'>{props.doneMessage}</div>
+        <div className='col-6 mx-auto'>
+          <div className=' h5 mb-3 bg-warning text-center'>
+            {props.doneMessage}
+          </div>
         </div>
       </div>
     );
@@ -423,7 +369,7 @@ export const YoloV3 = () => {
 
   const RadioSelect = (props) => {
     return props.selections.map((selItem, index) => (
-      <div key={index} className='form-check-inline'>
+      <div key={index} className='form-check-inline col-5'>
         <div key={index} className='col'>
           <div key={index} className='col'>
             <label key={index} className='form-check-label'>
@@ -444,6 +390,50 @@ export const YoloV3 = () => {
     ));
   };
 
+  const noop = () => {};
+
+  //   const FileInput = ({ value, onChange = noop, ...rest }) => (
+  //     <div>
+  //       { {Boolean(value.length) && (
+  //         <div>Selected files: {value.map((f) => f.name).join(', ')}</div>
+  //       )} }
+  //       <label>
+  //         Click to select some files...
+  //         <input
+  //           {...rest}
+  //           style={{ display: 'none' }}
+  //           type='file'
+  //           onChange={(e) => {
+  //             onChange([...e.target.files]);
+  //           }}
+  //         />
+  //       </label>
+  //     </div>
+  //   );
+
+  const FileInput = ({ value, ...rest }) => {
+    const inputRef = useRef();
+
+    useEffect(() => {
+      if (value === '') {
+        inputRef.current.value = '';
+      } else {
+        inputRef.current.files = value;
+        console.log(inputRef.current.files);
+      }
+    }, [value]);
+
+    return (
+      <input
+        {...rest}
+        type='file'
+        accept='image/*, video/*'
+        onChange={onChangeFile}
+        ref={inputRef}
+      />
+    );
+  };
+
   return (
     <div className='container '>
       <div className=' formExcludesVideo col bg-info bg-gradient'>
@@ -451,23 +441,32 @@ export const YoloV3 = () => {
           <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
 
           <div className='col mb-3'>
-            <div className='col selectModel'>
-              <div className='col'>
+            <div className='col selectModel  '>
+              <div className='col-4 mx-auto'>
                 <label htmlFor='selectModel' className=' h5 '>
-                  Select a Model
+                  Select Model Architecture
                 </label>
               </div>
-              <RadioSelect
-                onChange={onSelectModel}
-                selections={Object.keys(modelsTable)}
-                selected={selectedModel}
-              />
+              <div className='col-3 mx-auto'>
+                <RadioSelect
+                  onChange={onSelectModel}
+                  selections={Object.keys(modelsTable)}
+                  selected={selectedModel}
+                />
+              </div>
+              <div className='col-4 mx-auto'>
+                <label htmlFor='selectWeightd' className=' h5 mt-3'>
+                  Select Trained Weights
+                </label>
+              </div>
 
-              <RadioSelect
-                onChange={onSelectDataset}
-                selections={Object.keys(modelsTable[selectedModel])}
-                selected={selectedDataset}
-              />
+              <div className='col-3 mx-auto'>
+                <RadioSelect
+                  onChange={onSelectDataset}
+                  selections={Object.keys(modelsTable[selectedModel])}
+                  selected={selectedDataset}
+                />
+              </div>
 
               <LoadModel
                 onClick={onLoadModel}
@@ -476,12 +475,12 @@ export const YoloV3 = () => {
               />
             </div>
             <div className='col mb-5 selectFile'>
-              <div className='col'>
+              <div className='col-3 mx-auto'>
                 <label htmlFor='selectFile' className=' h5 '>
-                  Select Video or Image
+                  Select Input
                 </label>
               </div>
-              <div className=' col SelectInputSource mb-5'>
+              <div className=' col SelectInputSource mb-2 col-3 mx-auto'>
                 <RadioSelect
                   onChange={onChangeDataSource}
                   selections={['local', 'remote']}
@@ -490,7 +489,7 @@ export const YoloV3 = () => {
               </div>
 
               {sourceSelection === 'local' && (
-                <div className='col'>
+                <div className='col-3 mx-auto '>
                   <input
                     className='form-select-lg'
                     id='selectFile'
@@ -519,32 +518,6 @@ export const YoloV3 = () => {
                         </option>
                       ))}
                     </select>
-                  </div>
-
-                  <div className='col mb-5 '>
-                    <div className='col'>
-                      <button
-                        variant='primary'
-                        // type='submit'
-                        className='btn btn btn-primary btn-lg  mb-1 mt-3 col-12'
-                        onClick={onLoadExample}
-                      >
-                        {isModelLoadSpinner && (
-                          <span
-                            className='spinner-border spinner-border-sm'
-                            role='status'
-                            aria-hidden='true'
-                          ></span>
-                        )}
-                        {isModelLoadSpinner ? 'Loading' : 'Load Example'}
-                      </button>
-                    </div>
-
-                    {/* <div className='col'>
-                      <div className='col-12 h5 mb-3 bg-warning'>
-                        {modelLoadedMessage}
-                      </div>
-                    </div> */}
                   </div>
                 </div>
               )}
