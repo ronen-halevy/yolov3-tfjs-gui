@@ -28,7 +28,6 @@ export const YoloV3 = () => {
   const iouTHRRef = useRef(configData.iouThreshold);
   const maxBoxesRef = useRef(configData.maxBoxes);
 
-  const [listModels, setListModels] = useState(configData.models);
   const [modelsTable, setModelsTable] = useState(configData.modelsn);
 
   const [listExamples, setListExamples] = useState(cocoVideos.cocoVideos);
@@ -149,11 +148,9 @@ export const YoloV3 = () => {
         yoloPredictor.current.initAnchors(values[1].anchor);
         yoloPredictor.current.initNclasses(classNames_.length);
 
-        // setClassNames(classNames_);
         classNames.current = classNames_;
-        setModelLoadedMessage('Model ' + modelData.name + ' is ready!');
-        setIsModelLoadSpinner(false);
         console.log('createModel done');
+
         setIsModelLoaded(true);
       }
     );
@@ -290,7 +287,9 @@ export const YoloV3 = () => {
     console.log(modelConfig);
     createModel(modelConfig);
 
-    setModelLoadedMessage('Model ' + modelConfig.name + ' is ready!');
+    setModelLoadedMessage(
+      selectedModel + ' ' + selectedDataset + ' is ready!!'
+    );
     setIsModelLoadSpinner(false);
     setIsModelLoaded(true);
   };
@@ -394,6 +393,34 @@ export const YoloV3 = () => {
     );
   };
 
+  const LoadModel = (props) => {
+    return (
+      <div className='col mb-5 '>
+        <div className='col'>
+          <button
+            variant='primary'
+            // type='submit'
+            className='btn btn btn-primary btn-lg  mb-1 mt-3 col-12'
+            onClick={props.onClick}
+          >
+            {props.isWaiting && (
+              <span
+                className='spinner-border spinner-border-sm'
+                role='status'
+                aria-hidden='true'
+              ></span>
+            )}
+            {props.isWaiting ? 'Loading' : 'Load Model'}
+          </button>
+        </div>
+
+        <div className='col'>
+          <div className='col-12 h5 mb-3 bg-warning'>{props.doneMessage}</div>
+        </div>
+      </div>
+    );
+  };
+
   const RadioSelect = (props) => {
     return props.selections.map((selItem, index) => (
       <div key={index} className='form-check-inline'>
@@ -441,45 +468,12 @@ export const YoloV3 = () => {
                 selections={Object.keys(modelsTable[selectedModel])}
                 selected={selectedDataset}
               />
-              <div className='col'>
-                {/* <Sel /> */}
-                <select
-                  className='form-select form-select-lg mb-1'
-                  onChange={onSelectModel}
-                >
-                  {listModels.map((option, index) => (
-                    <option key={index} value={index}>
-                      {option.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
 
-              <div className='col mb-5 '>
-                <div className='col'>
-                  <button
-                    variant='primary'
-                    // type='submit'
-                    className='btn btn btn-primary btn-lg  mb-1 mt-3 col-12'
-                    onClick={onLoadModel}
-                  >
-                    {isModelLoadSpinner && (
-                      <span
-                        className='spinner-border spinner-border-sm'
-                        role='status'
-                        aria-hidden='true'
-                      ></span>
-                    )}
-                    {isModelLoadSpinner ? 'Loading' : 'Load Model'}
-                  </button>
-                </div>
-
-                <div className='col'>
-                  <div className='col-12 h5 mb-3 bg-warning'>
-                    {modelLoadedMessage}
-                  </div>
-                </div>
-              </div>
+              <LoadModel
+                onClick={onLoadModel}
+                isWaiting={isModelLoadSpinner}
+                doneMessage={modelLoadedMessage}
+              />
             </div>
             <div className='col mb-5 selectFile'>
               <div className='col'>
@@ -493,43 +487,8 @@ export const YoloV3 = () => {
                   selections={['local', 'remote']}
                   selected={sourceSelection}
                 />
-                {/* <div className='form-check-inline'>
-                  <div className='col'>
-                    <div className='col'>
-                      <label className='form-check-label'>
-                        {sourceSelection}
-                      </label>
-                    </div>
-                    <div className='col'>
-                      <input
-                        className='form-check-input'
-                        type='radio'
-                        value='local'
-                        onChange={onChangeDataSource}
-                        checked={sourceSelection === 'local'}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className='form-check-inline'>
-                  <div className='col'>
-                    <div className='col'>
-                      <label className='form-check-label'>
-                        {sourceSelection}
-                      </label>
-                    </div>
-                    <div className='col'>
-                      <input
-                        className='form-check-input'
-                        type='radio'
-                        value='remote'
-                        onChange={onChangeDataSource}
-                        checked={sourceSelection === 'remote'}
-                      />
-                    </div>
-                  </div>
-                </div> */}
               </div>
+
               {sourceSelection === 'local' && (
                 <div className='col'>
                   <input
@@ -541,6 +500,7 @@ export const YoloV3 = () => {
                   />
                 </div>
               )}
+
               {sourceSelection === 'remote' && (
                 <div className='col selectEXamples'>
                   <div className='col'>
@@ -594,25 +554,6 @@ export const YoloV3 = () => {
             <div className='row mb-2 nmsAttribs'>
               ,
               <div className='col'>
-                {/* <div className='col'>
-                  <label className=' h5 '>Score THLD</label>
-                </div>
-                <div className='col'>
-                  <input
-                    className='form-select-lg col-4'
-                    type='number'
-                    min='0'
-                    max='1'
-                    step='0.1'
-                    value={scoreTHR}
-                    onChange={(event) =>
-                      onChangeNumber(event, {
-                        stateSet: setScoreTHR,
-                        refName: 'scoreTHRRef',
-                      })
-                    }
-                  />
-                </div> */}
                 <InputNumber
                   name='Score THLD'
                   min='0'
@@ -633,46 +574,8 @@ export const YoloV3 = () => {
                   stateSet={setIouTHR}
                   refName='iouTHRRef'
                 />
-                {/* <div className='col'>
-                  <label className=' h5 '>Iou THLD</label>
-                </div>
-                <div className='col'>
-                  <input
-                    className='form-select-lg col-4'
-                    type='number'
-                    min='0'
-                    max='1'
-                    step='0.1'
-                    value={iouTHR}
-                    onChange={(event) =>
-                      onChangeNumber(event, {
-                        stateSet: setIouTHR,
-                        refName: 'iouTHRRef',
-                      })
-                    }
-                  />
-                </div> */}
               </div>
               <div className='col'>
-                {/* <div className='col'>
-                  <label className=' h5 '>Max Boxes</label>
-                </div>
-                <div className='col'>
-                  <input
-                    className='form-select-lg col-4'
-                    type='number'
-                    step='1'
-                    value={maxBoxes}
-                    min='0'
-                    max='1000'
-                    onChange={(event) =>
-                      onChangeNumber(event, {
-                        stateSet: setMaxBoxes,
-                        refName: 'maxBoxesRef',
-                      })
-                    }
-                  />
-                </div> */}
                 <InputNumber
                   name='Max Boxes'
                   min='0'
@@ -687,22 +590,6 @@ export const YoloV3 = () => {
 
             <div className='row'>
               <div className='col '>
-                {/* <div className='col'>
-                  <label className=' h5  '>Width</label>
-                </div>
-                <div className='col'>
-                  <input
-                    className='form-select-lg '
-                    type='number'
-                    min='0'
-                    max='1920'
-                    step='1'
-                    value={canvasWidth}
-                    onChange={(event) =>
-                      onChangeNumber(event, { stateSet: setCanvasWidth })
-                    }
-                  />
-                </div> */}
                 <InputNumber
                   name='Width'
                   min='0'
@@ -714,25 +601,6 @@ export const YoloV3 = () => {
                 />
               </div>
               <div className='col'>
-                {/* <div className='col'>
-                  <label className=' h5 col '>Height</label>
-                </div>
-
-                <div className='col'>
-                  <input
-                    className='form-select-lg '
-                    type='number'
-                    min='0'
-                    max='1920'
-                    step='1'
-                    value={canvasHeight}
-                    onChange={(event) =>
-                      onChangeNumber(event, {
-                        stateSet: setCanvasHeight,
-                      })
-                    }
-                  />
-                </div> */}
                 <InputNumber
                   name='Height'
                   min='0'
