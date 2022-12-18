@@ -230,28 +230,34 @@ export const YoloV3 = () => {
     });
   };
 
-  const onClickRun = () => {
+  const onClickRunLocal = () => {
     if (!isModelLoaded) {
       return;
     }
+    stopVideo();
 
-    if (sourceSelection == 'local') {
-      if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-        URL.createObjectURL(selectedFile);
-        runImage(selectedFile);
-      } else {
-        // setSelectedVidFile(selectedFile);
-        runVideo();
-      }
+    if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+      URL.createObjectURL(selectedFile);
+      runImage(selectedFile);
     } else {
-      if (selectedExample.match(/\.(jpg|jpeg|png|gif)$/i)) {
-        // URL.createObjectURL(selectedFile);
-        // runImage(selectedFile);
-      } else {
-        runVideo();
-      }
+      // setSelectedVidFile(selectedFile);
+      runVideo();
     }
   };
+  const onClickRunRemote = () => {
+    if (!isModelLoaded) {
+      return;
+    }
+    stopVideo();
+
+    if (selectedExample.match(/\.(jpg|jpeg|png|gif)$/i)) {
+      // URL.createObjectURL(selectedFile);
+      // runImage(selectedFile);
+    } else {
+      runVideo();
+    }
+  };
+
   const onChangeFile = (event) => {
     stopVideo();
     // var URL = window.URL || window.webkitURL;
@@ -390,6 +396,103 @@ export const YoloV3 = () => {
     ));
   };
 
+  const DataInAccordeon = () => {
+    return (
+      <div className='accordion accordion-flush' id='accordionFlushExample'>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='flush-headingOne'>
+            <button
+              className='accordion-button collapsed'
+              type='button'
+              data-bs-toggle='collapse'
+              data-bs-target='#flush-collapseOne'
+              aria-expanded='false'
+              aria-controls='flush-collapseOne'
+              onChange={onChangeDataSource2}
+            >
+              Remote Data
+            </button>
+          </h2>
+          <div
+            id='flush-collapseOne'
+            className='accordion-collapse collapse'
+            aria-labelledby='flush-headingOne'
+            data-bs-parent='#accordionFlushExample'
+          >
+            <div className='accordion-body'>
+              <div className='col selectEXamples'>
+                <div className='col'>
+                  <label htmlFor='selectExample' className=' h5 '>
+                    Select an Example
+                  </label>
+                </div>
+                <div className='col'>
+                  <select
+                    className='form-select form-select-lg mb-1'
+                    onChange={onSelectExample}
+                  >
+                    {listExamples.map((option, index) => (
+                      <option key={index} value={index}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='flush-headingTwo'>
+            <button
+              className='accordion-button collapsed'
+              type='button'
+              data-bs-toggle='collapse'
+              data-bs-target='#flush-collapseTwo'
+              aria-expanded='false'
+              aria-controls='flush-collapseTwo'
+            >
+              Local File Uplad
+            </button>
+          </h2>
+          <div
+            id='flush-collapseTwo'
+            className='accordion-collapse collapse'
+            aria-labelledby='flush-headingTwo'
+            data-bs-parent='#accordionFlushExample'
+          >
+            <div className='accordion-body'>
+              <div className='col-3 mx-auto '>
+                <input
+                  className='form-select-lg'
+                  id='selectFile'
+                  type='file'
+                  onChange={onChangeFile}
+                  accept='image/*, video/*'
+                />
+              </div>
+              <div className='row '>
+                <div>
+                  <button
+                    variant='primary'
+                    disabled={selectedFile == '' || !isModelLoaded}
+                    className='btn btn btn-dark  btn-lg col-12 mb-1'
+                    onClick={onClickRunLocal}
+                  >
+                    Run Detection
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const onChangeDataSource2 = (event) => {
+    console.log('event', event);
+  };
   const noop = () => {};
 
   //   const FileInput = ({ value, onChange = noop, ...rest }) => (
@@ -474,12 +577,15 @@ export const YoloV3 = () => {
                 doneMessage={modelLoadedMessage}
               />
             </div>
+
             <div className='col mb-5 selectFile'>
               <div className='col-3 mx-auto'>
                 <label htmlFor='selectFile' className=' h5 '>
                   Select Input
                 </label>
               </div>
+              <DataInAccordeon />
+
               <div className=' col SelectInputSource mb-2 col-3 mx-auto'>
                 <RadioSelect
                   onChange={onChangeDataSource}
@@ -591,12 +697,9 @@ export const YoloV3 = () => {
               <div>
                 <button
                   variant='primary'
-                  disabled={
-                    (selectedFile == '' && selectedExample == '') ||
-                    !isModelLoaded
-                  }
+                  disabled={selectedFile == '' || !isModelLoaded}
                   className='btn btn btn-dark  btn-lg col-12 mb-1'
-                  onClick={onClickRun}
+                  onClick={onClickRunLocal}
                 >
                   Run Detection
                 </button>
