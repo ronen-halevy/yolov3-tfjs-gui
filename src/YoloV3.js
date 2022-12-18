@@ -140,6 +140,7 @@ export const YoloV3 = () => {
     );
 
     const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
+    console.log('createModel pre promise');
 
     Promise.all([modelPromise, anchorsPromise, classNamesPromise]).then(
       (values) => {
@@ -152,6 +153,7 @@ export const YoloV3 = () => {
         classNames.current = classNames_;
         setModelLoadedMessage('Model ' + modelData.name + ' is ready!');
         setIsModelLoadSpinner(false);
+        console.log('createModel done');
         setIsModelLoaded(true);
       }
     );
@@ -312,16 +314,23 @@ export const YoloV3 = () => {
     // runVideo(selectedFile);
   };
 
+  const onChangeNumber1 = (event, attrib) => {
+    // console.log(event);
+    // let { value, min, max } = event.target;
+    // value = Math.max(Number(min), Math.min(Number(max), Number(value)));
+    // eval(attrib.stateSet)(value);
+    // //use refs in addition to state to update vals during animation.
+    // if ('refName' in attrib) {
+    //   eval(attrib.refName).current = value;
+    // }
+  };
   const onChangeNumber = (event, attrib) => {
     console.log(event);
-
     let { value, min, max } = event.target;
-
     value = Math.max(Number(min), Math.min(Number(max), Number(value)));
-
     eval(attrib.stateSet)(value);
     //use refs in addition to state to update vals during animation.
-    if ('refName' in attrib) {
+    if (attrib.refName != '') {
       eval(attrib.refName).current = value;
     }
   };
@@ -353,6 +362,32 @@ export const YoloV3 = () => {
             type='file'
             onChange={onChangeFile}
             accept='image/*, video/*'
+          />
+        </div>
+      </div>
+    );
+  };
+  const InputNumber = (props) => {
+    return (
+      <div>
+        <div className='col'>
+          <label className=' h5 '>{props.name}</label>
+        </div>
+        <div className='col'>
+          <input
+            className='form-select-lg col-4'
+            type='number'
+            min={props.min}
+            max={props.max}
+            step={props.step}
+            id={props.attributes}
+            value={props.stateVal}
+            onChange={(event) =>
+              onChangeNumber(event, {
+                stateSet: props.stateSet,
+                refName: props.refName,
+              })
+            }
           />
         </div>
       </div>
@@ -456,6 +491,7 @@ export const YoloV3 = () => {
                 <RadioSelect
                   onChange={onChangeDataSource}
                   selections={['local', 'remote']}
+                  selected={sourceSelection}
                 />
                 {/* <div className='form-check-inline'>
                   <div className='col'>
@@ -556,8 +592,9 @@ export const YoloV3 = () => {
           </div>
           <div className='mb-3'>
             <div className='row mb-2 nmsAttribs'>
+              ,
               <div className='col'>
-                <div className='col'>
+                {/* <div className='col'>
                   <label className=' h5 '>Score THLD</label>
                 </div>
                 <div className='col'>
@@ -575,10 +612,28 @@ export const YoloV3 = () => {
                       })
                     }
                   />
-                </div>
+                </div> */}
+                <InputNumber
+                  name='Score THLD'
+                  min='0'
+                  max='1'
+                  step='0.1'
+                  stateVal={scoreTHR}
+                  stateSet={setScoreTHR}
+                  refName='scoreTHRRef'
+                />
               </div>
               <div className='col'>
-                <div className='col'>
+                <InputNumber
+                  name='Iou THLD'
+                  min='0'
+                  max='1'
+                  step='0.1'
+                  stateVal={iouTHR}
+                  stateSet={setIouTHR}
+                  refName='iouTHRRef'
+                />
+                {/* <div className='col'>
                   <label className=' h5 '>Iou THLD</label>
                 </div>
                 <div className='col'>
@@ -596,11 +651,10 @@ export const YoloV3 = () => {
                       })
                     }
                   />
-                </div>
+                </div> */}
               </div>
-
               <div className='col'>
-                <div className='col'>
+                {/* <div className='col'>
                   <label className=' h5 '>Max Boxes</label>
                 </div>
                 <div className='col'>
@@ -618,13 +672,22 @@ export const YoloV3 = () => {
                       })
                     }
                   />
-                </div>
+                </div> */}
+                <InputNumber
+                  name='Max Boxes'
+                  min='0'
+                  max='1000'
+                  step='1'
+                  stateVal={maxBoxes}
+                  stateSet={setMaxBoxes}
+                  refName='maxBoxesRef'
+                />
               </div>
             </div>
 
             <div className='row'>
               <div className='col '>
-                <div className='col'>
+                {/* <div className='col'>
                   <label className=' h5  '>Width</label>
                 </div>
                 <div className='col'>
@@ -639,10 +702,19 @@ export const YoloV3 = () => {
                       onChangeNumber(event, { stateSet: setCanvasWidth })
                     }
                   />
-                </div>
+                </div> */}
+                <InputNumber
+                  name='Width'
+                  min='0'
+                  max='1920'
+                  step='1'
+                  stateVal={canvasWidth}
+                  stateSet={setCanvasWidth}
+                  refName=''
+                />
               </div>
               <div className='col'>
-                <div className='col'>
+                {/* <div className='col'>
                   <label className=' h5 col '>Height</label>
                 </div>
 
@@ -660,7 +732,16 @@ export const YoloV3 = () => {
                       })
                     }
                   />
-                </div>
+                </div> */}
+                <InputNumber
+                  name='Height'
+                  min='0'
+                  max='1920'
+                  step='1'
+                  stateVal={canvasHeight}
+                  stateSet={setCanvasHeight}
+                  refName=''
+                />
               </div>
             </div>
           </div>
