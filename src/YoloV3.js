@@ -375,7 +375,7 @@ export const YoloV3 = () => {
 
   const RadioSelect = (props) => {
     return props.selections.map((selItem, index) => (
-      <div key={index} className='form-check-inline col-5'>
+      <div key={index} className='form-check-inline col-6 mx-auto'>
         <div key={index} className='col'>
           <div key={index} className='col'>
             <label key={index} className='form-check-label'>
@@ -539,31 +539,148 @@ export const YoloV3 = () => {
 
   return (
     <div className='container '>
+      <div className='accordion' id='accordionPanelsStayOpenExample'>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='panelsStayOpen-headingOne'>
+            <button
+              className='accordion-button'
+              type='button'
+              data-bs-toggle='collapse'
+              data-bs-target='#panelsStayOpen-collapseOne'
+              aria-expanded='true'
+              aria-controls='panelsStayOpen-collapseOne'
+            >
+              Accordion Item #1
+            </button>
+          </h2>
+          <div
+            id='panelsStayOpen-collapseOne'
+            className='accordion-collapse collapse show'
+            aria-labelledby='panelsStayOpen-headingOne'
+          >
+            <div className='accordion-body'>
+              <div className='col selectEXamples'>
+                <div className='col'>
+                  <label htmlFor='selectExample' className=' h5 '>
+                    Select an Example
+                  </label>
+                </div>
+                <div className='col'>
+                  <select
+                    className='form-select form-select-lg mb-1'
+                    onChange={onSelectExample}
+                  >
+                    {listExamples.map((option, index) => (
+                      <option key={index} value={index}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='panelsStayOpen-headingTwo'>
+            <button
+              className='accordion-button collapsed'
+              type='button'
+              data-bs-toggle='collapse'
+              data-bs-target='#panelsStayOpen-collapseTwo'
+              aria-expanded='false'
+              aria-controls='panelsStayOpen-collapseTwo'
+            >
+              Accordion Item #2
+            </button>
+          </h2>
+          <div
+            id='panelsStayOpen-collapseTwo'
+            className='accordion-collapse collapse'
+            aria-labelledby='panelsStayOpen-headingTwo'
+          >
+            <div className='accordion-body'>
+              <div className='col-3 mx-auto '>
+                <input
+                  className='form-select-lg'
+                  id='selectFile'
+                  type='file'
+                  onChange={onChangeFile}
+                  accept='image/*, video/*'
+                />
+              </div>
+              <div className='row '>
+                <div>
+                  <button
+                    variant='primary'
+                    disabled={selectedFile == '' || !isModelLoaded}
+                    className='btn btn btn-dark  btn-lg col-12 mb-1'
+                    onClick={onClickRunLocal}
+                  >
+                    Run Detection
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='panelsStayOpen-headingThree'>
+            <button
+              className='accordion-button collapsed'
+              type='button'
+              data-bs-toggle='collapse'
+              data-bs-target='#panelsStayOpen-collapseThree'
+              aria-expanded='false'
+              aria-controls='panelsStayOpen-collapseThree'
+            >
+              Accordion Item #3
+            </button>
+          </h2>
+          <div
+            id='panelsStayOpen-collapseThree'
+            className='accordion-collapse collapse'
+            aria-labelledby='panelsStayOpen-headingThree'
+          >
+            <div className='accordion-body'>
+              <strong>This is the third item's accordion body.</strong> It is
+              hidden by default, until the collapse plugin adds the appropriate
+              classes that we use to style each element. These classes control
+              the overall appearance, as well as the showing and hiding via CSS
+              transitions. You can modify any of this with custom CSS or
+              overriding our default variables. It's also worth noting that just
+              about any HTML can go within the <code>.accordion-body</code>,
+              though the transition does limit overflow.
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className=' formExcludesVideo col bg-info bg-gradient'>
         <div className='col'>
           <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
 
           <div className='col mb-3'>
             <div className='col selectModel  '>
-              <div className='col-4 mx-auto'>
+              <div className='col-2 mx-auto'>
                 <label htmlFor='selectModel' className=' h5 '>
-                  Select Model Architecture
+                  Model
                 </label>
               </div>
-              <div className='col-3 mx-auto'>
+              <div className='col-6 mx-auto'>
                 <RadioSelect
                   onChange={onSelectModel}
                   selections={Object.keys(modelsTable)}
                   selected={selectedModel}
                 />
               </div>
-              <div className='col-4 mx-auto'>
+              <div className='col-2 mx-auto'>
                 <label htmlFor='selectWeightd' className=' h5 mt-3'>
-                  Select Trained Weights
+                  Weights
                 </label>
               </div>
 
-              <div className='col-3 mx-auto'>
+              <div className='col-6 mx-auto '>
                 <RadioSelect
                   onChange={onSelectDataset}
                   selections={Object.keys(modelsTable[selectedModel])}
@@ -586,7 +703,7 @@ export const YoloV3 = () => {
               </div>
               <DataInAccordeon />
 
-              <div className=' col SelectInputSource mb-2 col-3 mx-auto'>
+              <div className=' col SelectInputSource mb-2 col-6 mx-auto'>
                 <RadioSelect
                   onChange={onChangeDataSource}
                   selections={['local', 'remote']}
