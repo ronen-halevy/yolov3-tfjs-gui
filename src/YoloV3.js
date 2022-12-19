@@ -406,7 +406,7 @@ export const YoloV3 = () => {
               type='button'
               data-bs-toggle='collapse'
               data-bs-target='#flush-collapseOne'
-              aria-expanded='true'
+              aria-expanded='false'
               aria-controls='flush-collapseOne'
               onChange={onChangeDataSource2}
 
@@ -453,7 +453,7 @@ export const YoloV3 = () => {
               type='button'
               data-bs-toggle='collapse'
               data-bs-target='#flush-collapseTwo'
-              aria-expanded='true'
+              aria-expanded='false'
               aria-controls='flush-collapseTwo'
             >
               Local File Uplad
@@ -763,8 +763,35 @@ export const YoloV3 = () => {
             </div>
           </div>
           <div className='mb-3'>
+            <div className='col-6 mx-auto'>
+              <label for='customRange3' className='form-label'>
+                Example range
+              </label>
+              <input
+                type='range'
+                className='form-range'
+                min='0'
+                max='1'
+                step='0.01'
+                // value='0'
+                id='customRange3'
+              />
+            </div>
+            <div className='col-6 mx-auto'>
+              <label for='customRange3' className='form-label'>
+                Example range
+              </label>
+              <input
+                type='range'
+                className='form-range'
+                min='0'
+                max='1'
+                step='0.01'
+                id='customRange3'
+              />
+            </div>
+
             <div className='row mb-2 nmsAttribs'>
-              ,
               <div className='col'>
                 <InputNumber
                   name='Score THLD'
