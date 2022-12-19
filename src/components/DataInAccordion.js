@@ -19,7 +19,6 @@ class DataInAccordion extends React.Component {
               data-bs-target='#flush-collapseOne'
               aria-expanded='false'
               aria-controls='flush-collapseOne'
-              onChange={this.props.sonChangeDataSource2}
             >
               Run With Remote Data
             </button>
