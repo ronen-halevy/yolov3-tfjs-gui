@@ -12,7 +12,7 @@ class InputNumber extends React.Component {
         </div>
         <div className='col'>
           <input
-            className='form-select-lg col'
+            className={this.props.className}
             type='number'
             min={this.props.min}
             max={this.props.max}
