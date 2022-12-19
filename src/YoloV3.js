@@ -35,7 +35,7 @@ export const YoloV3 = () => {
   // States:
   const [selectedFile, setSelectedFile] = useState('');
   // const [selectedVidFile, setSelectedVidFile] = useState('');
-  const [selectedModel, setSelectedModel] = useState('YoloV3');
+  const [selectedModel, setSelectedModel] = useState('YoloV3Tiny');
   const [selectedDataset, setSelectedDataset] = useState('coco');
 
   const [modelLoadedMessage, setModelLoadedMessage] =
@@ -324,7 +324,7 @@ export const YoloV3 = () => {
         </div>
         <div className='col'>
           <input
-            className='form-select-lg col-4'
+            className='form-select-lg col'
             type='number'
             min={props.min}
             max={props.max}
@@ -493,6 +493,108 @@ export const YoloV3 = () => {
       </div>
     );
   };
+  const DataInAccordeonOpen = (props) => {
+    return (
+      <div className='accordion' id='accordionPanelsStayOpenExample'>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='panelsStayOpen-headingOne'>
+            <button
+              className='accordion-button'
+              type='button'
+              data-bs-toggle='collapse'
+              data-bs-target='#panelsStayOpen-collapseOne'
+              aria-expanded='true'
+              aria-controls='panelsStayOpen-collapseOne'
+            >
+              Accordion Item #1
+            </button>
+          </h2>
+          <div
+            id='panelsStayOpen-collapseOne'
+            className='accordion-collapse collapse show'
+            aria-labelledby='panelsStayOpen-headingOne'
+          >
+            <div className='accordion-body'>
+              <div className='col selectEXamples'>
+                <div className='col'>
+                  <label htmlFor='selectExample' className=' h5 '>
+                    Select an Example
+                  </label>
+                </div>
+                <div className='col'>
+                  <select
+                    className='form-select form-select-lg mb-1'
+                    onChange={props.onSelectExample}
+                  >
+                    {props.listExamples.map((option, index) => (
+                      <option key={index} value={index}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className='row '>
+                <div>
+                  <button
+                    variant='primary'
+                    disabled={!props.isModelLoaded}
+                    className='btn btn btn-dark  btn-lg col-12 mb-1'
+                    onClick={props.onClickRunRemote}
+                  >
+                    Run Detection
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='panelsStayOpen-headingTwo'>
+            <button
+              className='accordion-button collapsed'
+              type='button'
+              data-bs-toggle='collapse'
+              data-bs-target='#panelsStayOpen-collapseTwo'
+              aria-expanded='false'
+              aria-controls='panelsStayOpen-collapseTwo'
+            >
+              Accordion Item #2
+            </button>
+          </h2>
+          <div
+            id='panelsStayOpen-collapseTwo'
+            className='accordion-collapse collapse'
+            aria-labelledby='panelsStayOpen-headingTwo'
+          >
+            <div className='accordion-body'>
+              <div className='col-3 mx-auto '>
+                <input
+                  className='form-select-lg'
+                  id='selectFile'
+                  type='file'
+                  onChange={props.onChangeFile}
+                  accept='image/*, video/*'
+                />
+              </div>
+              <div className='row '>
+                <div>
+                  <button
+                    variant='primary'
+                    disabled={selectedFile == '' || !props.isModelLoaded}
+                    className='btn btn btn-dark  btn-lg col-12 mb-1'
+                    onClick={props.onClickRunLocal}
+                  >
+                    Run Detection
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const onChangeDataSource2 = (event) => {
     console.log('event', event);
@@ -543,135 +645,6 @@ export const YoloV3 = () => {
 
   return (
     <div className='container '>
-      <div className='accordion' id='accordionPanelsStayOpenExample'>
-        <div className='accordion-item'>
-          <h2 className='accordion-header' id='panelsStayOpen-headingOne'>
-            <button
-              className='accordion-button'
-              type='button'
-              data-bs-toggle='collapse'
-              data-bs-target='#panelsStayOpen-collapseOne'
-              aria-expanded='true'
-              aria-controls='panelsStayOpen-collapseOne'
-            >
-              Accordion Item #1
-            </button>
-          </h2>
-          <div
-            id='panelsStayOpen-collapseOne'
-            className='accordion-collapse collapse show'
-            aria-labelledby='panelsStayOpen-headingOne'
-          >
-            <div className='accordion-body'>
-              <div className='col selectEXamples'>
-                <div className='col'>
-                  <label htmlFor='selectExample' className=' h5 '>
-                    Select an Example
-                  </label>
-                </div>
-                <div className='col'>
-                  <select
-                    className='form-select form-select-lg mb-1'
-                    onChange={onSelectExample}
-                  >
-                    {listExamples.map((option, index) => (
-                      <option key={index} value={index}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className='row '>
-                <div>
-                  <button
-                    variant='primary'
-                    disabled={!isModelLoaded}
-                    className='btn btn btn-dark  btn-lg col-12 mb-1'
-                    onClick={onClickRunRemote}
-                  >
-                    Run Detection
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='accordion-item'>
-          <h2 className='accordion-header' id='panelsStayOpen-headingTwo'>
-            <button
-              className='accordion-button collapsed'
-              type='button'
-              data-bs-toggle='collapse'
-              data-bs-target='#panelsStayOpen-collapseTwo'
-              aria-expanded='false'
-              aria-controls='panelsStayOpen-collapseTwo'
-            >
-              Accordion Item #2
-            </button>
-          </h2>
-          <div
-            id='panelsStayOpen-collapseTwo'
-            className='accordion-collapse collapse'
-            aria-labelledby='panelsStayOpen-headingTwo'
-          >
-            <div className='accordion-body'>
-              <div className='col-3 mx-auto '>
-                <input
-                  className='form-select-lg'
-                  id='selectFile'
-                  type='file'
-                  onChange={onChangeFile}
-                  accept='image/*, video/*'
-                />
-              </div>
-              <div className='row '>
-                <div>
-                  <button
-                    variant='primary'
-                    disabled={selectedFile == '' || !isModelLoaded}
-                    className='btn btn btn-dark  btn-lg col-12 mb-1'
-                    onClick={onClickRunLocal}
-                  >
-                    Run Detection
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='accordion-item'>
-          <h2 className='accordion-header' id='panelsStayOpen-headingThree'>
-            <button
-              className='accordion-button collapsed'
-              type='button'
-              data-bs-toggle='collapse'
-              data-bs-target='#panelsStayOpen-collapseThree'
-              aria-expanded='false'
-              aria-controls='panelsStayOpen-collapseThree'
-            >
-              Accordion Item #3
-            </button>
-          </h2>
-          <div
-            id='panelsStayOpen-collapseThree'
-            className='accordion-collapse collapse'
-            aria-labelledby='panelsStayOpen-headingThree'
-          >
-            <div className='accordion-body'>
-              <strong>This is the third item's accordion body.</strong> It is
-              hidden by default, until the collapse plugin adds the appropriate
-              classes that we use to style each element. These classes control
-              the overall appearance, as well as the showing and hiding via CSS
-              transitions. You can modify any of this with custom CSS or
-              overriding our default variables. It's also worth noting that just
-              about any HTML can go within the <code>.accordion-body</code>,
-              though the transition does limit overflow.
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className=' formExcludesVideo col bg-info bg-gradient'>
         <div className='col'>
           <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
@@ -717,17 +690,17 @@ export const YoloV3 = () => {
                   Select Input
                 </label>
               </div>
-              <DataInAccordeon />
+              {/* <DataInAccordeon /> */}
 
-              <div className=' col SelectInputSource mb-2 col-6 mx-auto'>
+              {/* <div className=' col SelectInputSource mb-2 col-6 mx-auto'>
                 <RadioSelect
                   onChange={onChangeDataSource}
                   selections={['local', 'remote']}
                   selected={sourceSelection}
                 />
-              </div>
+              </div> */}
 
-              {sourceSelection === 'local' && (
+              {/* {sourceSelection === 'local' && (
                 <div className='col-3 mx-auto '>
                   <input
                     className='form-select-lg'
@@ -737,9 +710,9 @@ export const YoloV3 = () => {
                     accept='image/*, video/*'
                   />
                 </div>
-              )}
+              )} */}
 
-              {sourceSelection === 'remote' && (
+              {/* {sourceSelection === 'remote' && (
                 <div className='col selectEXamples'>
                   <div className='col'>
                     <label htmlFor='selectExample' className=' h5 '>
@@ -759,39 +732,11 @@ export const YoloV3 = () => {
                     </select>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
           <div className='mb-3'>
-            <div className='col-6 mx-auto'>
-              <label for='customRange3' className='form-label'>
-                Example range
-              </label>
-              <input
-                type='range'
-                className='form-range'
-                min='0'
-                max='1'
-                step='0.01'
-                // value='0'
-                id='customRange3'
-              />
-            </div>
-            <div className='col-6 mx-auto'>
-              <label for='customRange3' className='form-label'>
-                Example range
-              </label>
-              <input
-                type='range'
-                className='form-range'
-                min='0'
-                max='1'
-                step='0.01'
-                id='customRange3'
-              />
-            </div>
-
-            <div className='row mb-2 nmsAttribs'>
+            <div className=' mb-2 nmsAttribs'>
               <div className='col'>
                 <InputNumber
                   name='Score THLD'
@@ -853,7 +798,7 @@ export const YoloV3 = () => {
             </div>
           </div>
           <div className='col'>
-            <div className='row '>
+            {/* <div className='row '>
               <div>
                 <button
                   variant='primary'
@@ -864,8 +809,8 @@ export const YoloV3 = () => {
                   Run Detection
                 </button>
               </div>
-            </div>
-            <div className='col '>
+            </div> */}
+            {/* <div className='col '>
               {selectedFile == '' && (
                 <div className='col-6 '>
                   <div
@@ -883,10 +828,18 @@ export const YoloV3 = () => {
                   </div>
                 </div>
               )}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
+      <DataInAccordeonOpen
+        onSelectExample={onSelectExample}
+        listExamples={listExamples}
+        isModelLoaded={isModelLoaded}
+        onClickRunRemote={onClickRunRemote}
+        onChangeFile={onChangeFile}
+        onClickRunLocal={onClickRunLocal}
+      />
       <div className='col'>
         {showVideoControl == true && (
           <div className='col bg-warning bg-gradient'>
@@ -954,6 +907,7 @@ export const YoloV3 = () => {
           <canvas className='video' ref={canvasRefVideo} width='' height='' />
         </div>
       </div>
+
       {/* <div className='customVideoTagClass '>
 				<video ref={videoRef} preload='auto'></video>
 			</div> */}
