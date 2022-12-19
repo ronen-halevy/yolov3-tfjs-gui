@@ -5,6 +5,7 @@ import * as tf from '@tensorflow/tfjs';
 tf.setBackend('webgl');
 
 // import LoadModel from './LoadModel.js';
+import InputNumber from './components/InputNumber.js';
 
 import Draw from './draw.js';
 import { image } from '@tensorflow/tfjs';
@@ -317,7 +318,34 @@ export const YoloV3 = () => {
     setSourceSelection(event.target.value);
   };
 
-  const InputNumber = (props) => {
+  const InputNumberTest = (props) => {
+    return (
+      <div>
+        <div className='col'>
+          <label className=' h5 '>{props.name}</label>
+        </div>
+        <div className='col'>
+          <input
+            className='form-select-lg col'
+            type='number'
+            min={props.min}
+            max={props.max}
+            step={props.step}
+            id={props.attributes}
+            value={props.stateVal}
+            onChange={(event) =>
+              onChangeNumber(event, {
+                stateSet: props.stateSet,
+                refName: props.refName,
+              })
+            }
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const InputNumberO = (props) => {
     return (
       <div>
         <div className='col'>
@@ -747,6 +775,7 @@ export const YoloV3 = () => {
                   stateVal={scoreTHR}
                   stateSet={setScoreTHR}
                   refName='scoreTHRRef'
+                  onChangeNumber={onChangeNumber}
                 />
               </div>
               <div className='col'>
@@ -758,6 +787,7 @@ export const YoloV3 = () => {
                   stateVal={iouTHR}
                   stateSet={setIouTHR}
                   refName='iouTHRRef'
+                  onChangeNumber={onChangeNumber}
                 />
               </div>
               <div className='col'>
@@ -769,10 +799,15 @@ export const YoloV3 = () => {
                   stateVal={maxBoxes}
                   stateSet={setMaxBoxes}
                   refName='maxBoxesRef'
+                  onChangeNumber={onChangeNumber}
                 />
               </div>
-
               <div className='col'>
+                <div className='col'>
+                  <label className=' h5 '>
+                    Use Plain Input Element no component + props{' '}
+                  </label>
+                </div>
                 <input
                   className='form-select-lg col'
                   type='number'
@@ -801,6 +836,7 @@ export const YoloV3 = () => {
                   stateVal={canvasWidth}
                   stateSet={setCanvasWidth}
                   refName=''
+                  onChangeNumber={onChangeNumber}
                 />
               </div>
               <div className='col'>
