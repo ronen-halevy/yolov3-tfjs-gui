@@ -9,6 +9,8 @@ import InputNumber from './components/InputNumber.js';
 
 import RadioSelect from './components/RadioSelect.js';
 import DataInAccordion from './components/DataInAccordion.js';
+import AccordionOpen from './components/AccordionOpen.js';
+
 import ListInputNumbers from './components/ListInputNumbers.js';
 
 import Draw from './draw.js';
@@ -447,6 +449,21 @@ export const YoloV3 = () => {
     },
   ];
 
+  const listModelSelectors = [
+    {
+      title: 'Model',
+      onChange: { onSelectModel },
+      selections: Object.keys({ modelsTable }),
+      selected: { selectedModel },
+    },
+    {
+      title: 'Weights',
+      onChange: { onSelectDataset },
+      selections: Object.keys(modelsTable[selectedModel]),
+      selected: { selectedDataset },
+    },
+  ];
+
   // const SetLinstNumbers = () => {
   //   return listInNumbers.map((params, index) => (
   //     <div key={index}>
@@ -566,7 +583,7 @@ export const YoloV3 = () => {
 
   return (
     <div className='container '>
-      {listInNumbers.map(
+      {/* {listInNumbers.map(
         ({ mname, min, max, step, stateVal, stateSet, refName, className }) => (
           <div className='col'>
             <label className=' h5 '>{mname}</label>
@@ -588,11 +605,8 @@ export const YoloV3 = () => {
             </div>
           </div>
         )
-      )}
-      <ListInputNumbers
-        listInNumbers={listInNumbers}
-        onChangeNumber={onChangeNumber}
-      />
+      )} */}
+
       <div className=' formExcludesVideo col bg-info bg-gradient'>
         <div className='col'>
           <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
@@ -640,82 +654,26 @@ export const YoloV3 = () => {
                 </option>
               ))} */}
 
-          <div className='col mb-3'>
-            <div className='col'>
-              <InputNumber
-                name='Score THLD'
-                min='0'
-                max='1'
-                step='0.1'
-                stateVal={scoreTHR}
-                stateSet={setScoreTHR}
-                refName='scoreTHRRef'
-                onChangeNumber={onChangeNumber}
-                className={'form-select-lg col-12'}
-              />
-            </div>
-            <div className=' col'>
-              <InputNumber
-                name='Iou THLD'
-                min='0'
-                max='1'
-                step='0.1'
-                stateVal={iouTHR}
-                stateSet={setIouTHR}
-                refName='iouTHRRef'
-                onChangeNumber={onChangeNumber}
-                className={'form-select-lg col-12'}
-              />
-            </div>
-
-            <div className=''>
-              <InputNumber
-                name='Max Boxes'
-                min='0'
-                max='1000'
-                step='1'
-                stateVal={maxBoxes}
-                stateSet={setMaxBoxes}
-                refName='maxBoxesRef'
-                onChangeNumber={onChangeNumber}
-                className={'form-select-lg col-12'}
-              />
-            </div>
-
-            {/* <div className='row'> */}
-            <div className='col '>
-              <InputNumber
-                name='Width'
-                min='0'
-                max='1920'
-                step='1'
-                stateVal={canvasWidth}
-                stateSet={setCanvasWidth}
-                refName=''
-                onChangeNumber={onChangeNumber}
-                className={'form-select-lg col-12'}
-              />
-            </div>
-            <div className='col'>
-              <InputNumber
-                name='Height'
-                min='0'
-                max='1920'
-                step='1'
-                stateVal={canvasHeight}
-                stateSet={setCanvasHeight}
-                refName=''
-                onChangeNumber={onChangeNumber}
-                className={'form-select-lg col-12'}
-              />
-              {/* </div> */}
-            </div>
-          </div>
           {/* <InputNumbers />
           <DataAccordionInputNumbers /> */}
         </div>
+        {/* <ListInputNumbers
+          listInNumbers={listInNumbers}
+          onChangeNumber={onChangeNumber}
+        /> */}
       </div>
+      <AccordionOpen
+        listModelSelectors={listModelSelectors}
+        onClick={onLoadModel}
+        isWaiting={isModelLoadSpinner}
+        doneMessage={modelLoadedMessage}
+        listInNumbers={listInNumbers}
+        onChangeNumber={onChangeNumber}
+      />
+
       <DataInAccordion
+        listInNumbers={listInNumbers}
+        onChangeNumber={onChangeNumber}
         listExamples={listExamples}
         onChange={onSelectExample}
         onClickRunRemote={onClickRunRemote}

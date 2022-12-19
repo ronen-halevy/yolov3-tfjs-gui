@@ -60,7 +60,6 @@ class DataInAccordion extends React.Component {
             <div className='accordion-body'>
               <div className='accordion-body'>
                 <RunLocalData
-                  //   isModelLoaded={this.props.isModelLoaded}
                   onChangeFile={this.props.onChangeFile}
                   onClickRunLocal={this.props.onClickRunLocal}
                 />
