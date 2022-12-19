@@ -1,4 +1,7 @@
 import React from 'react';
+import RunLocalData from './RunLocalData.js';
+import RunRemoteData from './RunRemoteData.js';
+
 class DataInAccordion extends React.Component {
   constructor(props) {
     super(props);
@@ -18,7 +21,7 @@ class DataInAccordion extends React.Component {
               aria-controls='flush-collapseOne'
               onChange={this.props.sonChangeDataSource2}
             >
-              Remote Data
+              Run With Remote Data
             </button>
           </h2>
           <div
@@ -28,34 +31,11 @@ class DataInAccordion extends React.Component {
             data-bs-parent='#accordionFlushExample'
           >
             <div className='accordion-body'>
-              <div className='col selectEXamples'>
-                <div className='col'>
-                  {/* <label htmlFor='selectExample' className=' h5 '>
-                    Select an Example
-                  </label> */}
-                </div>
-                <div className='col'>
-                  <select className='form-select form-select-lg mb-1'>
-                    {this.props.listExamples.map((option, index) => (
-                      <option key={index} value={index}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className='row '>
-                <div>
-                  <button
-                    variant='primary'
-                    disabled={!this.props.isModelLoaded}
-                    className='btn btn btn-dark  btn-lg col-12 mb-1'
-                    onClick={this.props.onClickRunRemote}
-                  >
-                    Run Detection
-                  </button>
-                </div>
-              </div>
+              <RunRemoteData
+                listExamples={this.props.listExamples}
+                isModelLoaded={this.props.isModelLoaded}
+                onClickRunRemote={this.props.onClickRunRemote}
+              />
             </div>
           </div>
         </div>
@@ -69,7 +49,7 @@ class DataInAccordion extends React.Component {
               aria-expanded='false'
               aria-controls='flush-collapseTwo'
             >
-              Local File Uplad
+              Run With Local Files
             </button>
           </h2>
           <div
@@ -79,28 +59,12 @@ class DataInAccordion extends React.Component {
             data-bs-parent='#accordionFlushExample'
           >
             <div className='accordion-body'>
-              <div className='col-3 mx-auto '>
-                <input
-                  className='form-select-lg'
-                  id='selectFile'
-                  type='file'
-                  onChange={this.props.onChangeFile}
-                  accept='image/*, video/*'
+              <div className='accordion-body'>
+                <RunLocalData
+                  isModelLoaded={this.props.isModelLoaded}
+                  onChangeFile={this.props.onChangeFile}
+                  onClickRunLocal={this.props.onClickRunLocal}
                 />
-              </div>
-              <div className='row '>
-                <div>
-                  <button
-                    variant='primary'
-                    disabled={
-                      this.props.selectedFile == '' || !this.props.isModelLoaded
-                    }
-                    className='btn btn btn-dark  btn-lg col-12 mb-1'
-                    onClick={this.props.onClickRunLocal}
-                  >
-                    Run Detection
-                  </button>
-                </div>
               </div>
             </div>
           </div>
