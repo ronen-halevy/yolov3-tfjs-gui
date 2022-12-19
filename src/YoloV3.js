@@ -58,8 +58,6 @@ export const YoloV3 = () => {
   const [durationOfVideo, setDurationOfVideo] = useState(0);
   const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
 
-  const [sourceSelection, setSourceSelection] = useState('local');
-
   const animationControl = () => {
     var id = window.requestAnimationFrame(function () {
       yoloPredictor.current.detectFrameVideo(
@@ -316,10 +314,249 @@ export const YoloV3 = () => {
     }
   };
 
-  const onChangeDataSource = (event) => {
-    console.log('onChangeDataSource ', event.target.value);
+  class DataAccordionInputNumbers extends React.Component {
+    render() {
+      return (
+        <div class='accordion' id='accordionPanelsStayOpenExample'>
+          <div class='accordion-item'>
+            <h2 class='accordion-header' id='panelsStayOpen-headingOne'>
+              <button
+                class='accordion-button'
+                type='button'
+                data-bs-toggle='collapse'
+                data-bs-target='#panelsStayOpen-collapseOne'
+                aria-expanded='true'
+                aria-controls='panelsStayOpen-collapseOne'
+              >
+                Configurations
+              </button>
+            </h2>
+            <div
+              id='panelsStayOpen-collapseOne'
+              class='accordion-collapse collapse '
+              aria-labelledby='panelsStayOpen-headingOne'
+            >
+              <div class='accordion-body'>
+                <InputNumbers />
+              </div>
+            </div>
+          </div>
+          <div class='accordion-item'>
+            <h2 class='accordion-header' id='panelsStayOpen-headingTwo'>
+              <button
+                class='accordion-button collapsed'
+                type='button'
+                data-bs-toggle='collapse'
+                data-bs-target='#panelsStayOpen-collapseTwo'
+                aria-expanded='false'
+                aria-controls='panelsStayOpen-collapseTwo'
+              >
+                Accordion Item #2
+              </button>
+            </h2>
+            <div
+              id='panelsStayOpen-collapseTwo'
+              class='accordion-collapse collapse'
+              aria-labelledby='panelsStayOpen-headingTwo'
+            >
+              <div class='accordion-body'>
+                <strong>This is the second item's accordion body.</strong> It is
+                hidden by default, until the collapse plugin adds the
+                appropriate classes that we use to style each element. These
+                classes control the overall appearance, as well as the showing
+                and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It's also worth
+                noting that just about any HTML can go within the{' '}
+                <code>.accordion-body</code>, though the transition does limit
+                overflow.
+              </div>
+            </div>
+          </div>
+          <div class='accordion-item'>
+            <h2 class='accordion-header' id='panelsStayOpen-headingThree'>
+              <button
+                class='accordion-button collapsed'
+                type='button'
+                data-bs-toggle='collapse'
+                data-bs-target='#panelsStayOpen-collapseThree'
+                aria-expanded='false'
+                aria-controls='panelsStayOpen-collapseThree'
+              >
+                Accordion Item #3
+              </button>
+            </h2>
+            <div
+              id='panelsStayOpen-collapseThree'
+              class='accordion-collapse collapse'
+              aria-labelledby='panelsStayOpen-headingThree'
+            >
+              <div class='accordion-body'>
+                <strong>This is the third item's accordion body.</strong> It is
+                hidden by default, until the collapse plugin adds the
+                appropriate classes that we use to style each element. These
+                classes control the overall appearance, as well as the showing
+                and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It's also worth
+                noting that just about any HTML can go within the{' '}
+                <code>.accordion-body</code>, though the transition does limit
+                overflow.
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+  class InputNumbers extends React.Component {
+    render() {
+      return (
+        <div className='row mb-3'>
+          <div className='col'>
+            <InputNumber
+              name='Score THLD'
+              min='0'
+              max='1'
+              step='0.1'
+              stateVal={scoreTHR}
+              stateSet={setScoreTHR}
+              refName='scoreTHRRef'
+              onChangeNumber={onChangeNumber}
+              className={'form-select-lg col-12'}
+            />
+          </div>
+          <div className=' col'>
+            <InputNumber
+              name='Iou THLD'
+              min='0'
+              max='1'
+              step='0.1'
+              stateVal={iouTHR}
+              stateSet={setIouTHR}
+              refName='iouTHRRef'
+              onChangeNumber={onChangeNumber}
+              className={'form-select-lg col-12'}
+            />
+          </div>
 
-    setSourceSelection(event.target.value);
+          <div className=''>
+            <InputNumber
+              name='Max Boxes'
+              min='0'
+              max='1000'
+              step='1'
+              stateVal={maxBoxes}
+              stateSet={setMaxBoxes}
+              refName='maxBoxesRef'
+              onChangeNumber={onChangeNumber}
+              className={'form-select-lg col-12'}
+            />
+          </div>
+
+          <div className='row'>
+            <div className='col '>
+              <InputNumber
+                name='Width'
+                min='0'
+                max='1920'
+                step='1'
+                stateVal={canvasWidth}
+                stateSet={setCanvasWidth}
+                refName=''
+                onChangeNumber={onChangeNumber}
+                className={'form-select-lg col-12'}
+              />
+            </div>
+            <div className='col'>
+              <InputNumber
+                name='Height'
+                min='0'
+                max='1920'
+                step='1'
+                stateVal={canvasHeight}
+                stateSet={setCanvasHeight}
+                refName=''
+                onChangeNumber={onChangeNumber}
+                className={'form-select-lg col-12'}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+  const listInNumbers = [
+    {
+      name: 'Score THLD',
+      min: '0',
+      max: '1',
+      step: '0.1',
+      statVal: { scoreTHR },
+      stateSet: { setScoreTHR },
+      refName: 'scoreTHRRef',
+      className: 'form-select-lg col-12',
+    },
+
+    {
+      name: 'Iou THLD',
+      min: '0',
+      max: '1',
+      step: '0.1',
+      statVal: { iouTHR },
+      stateSet: { setIouTHR },
+      refName: 'iouTHRRef',
+      className: 'form-select-lg col-12',
+    },
+
+    {
+      name: 'Max Boxes',
+      min: '0',
+      max: '1',
+      step: '0.1',
+      statVal: { maxBoxes },
+      stateSet: { setMaxBoxes },
+      refName: 'maxBoxesRef',
+      className: 'form-select-lg col-12',
+    },
+
+    {
+      name: 'Score THLD',
+      min: '0',
+      max: '1',
+      step: '0.1',
+      statVal: { scoreTHR },
+      stateSet: { setScoreTHR },
+      refName: 'scoreTHRRef',
+      className: 'form-select-lg col-12',
+    },
+
+    {
+      name: 'Score THLD',
+      min: '0',
+      max: '1',
+      step: '0.1',
+      statVal: { scoreTHR },
+      stateSet: { setScoreTHR },
+      refName: 'scoreTHRRef',
+      className: 'form-select-lg col-12',
+    },
+
+    {},
+  ];
+
+  const ListInputNumber = () => {
+    <div className='col'>
+      <InputNumber
+        name='Score THLD'
+        min='0'
+        max='1'
+        step='0.1'
+        stateVal={scoreTHR}
+        stateSet={setScoreTHR}
+        refName='scoreTHRRef'
+        onChangeNumber={onChangeNumber}
+        className={'form-select-lg col-12'}
+      />
+    </div>;
   };
 
   const noop = () => {};
@@ -406,44 +643,41 @@ export const YoloV3 = () => {
                 doneMessage={modelLoadedMessage}
               />
             </div>
-
-            <div className='col mb-5 selectFile'>
-              <div className='col-3 mx-auto'>
-                <label htmlFor='selectFile' className=' h5 '>
-                  Select Input
-                </label>
-              </div>
-            </div>
           </div>
 
-          <div className='mb-3'>
-            <div className=' col mb-2 nmsAttribs'>
-              <div className='col'>
-                <InputNumber
-                  name='Score THLD'
-                  min='0'
-                  max='1'
-                  step='0.1'
-                  stateVal={scoreTHR}
-                  stateSet={setScoreTHR}
-                  refName='scoreTHRRef'
-                  onChangeNumber={onChangeNumber}
-                  className={'form-select-lg col-12'}
-                />
-              </div>
-              <div className=' col'>
-                <InputNumber
-                  name='Iou THLD'
-                  min='0'
-                  max='1'
-                  step='0.1'
-                  stateVal={iouTHR}
-                  stateSet={setIouTHR}
-                  refName='iouTHRRef'
-                  onChangeNumber={onChangeNumber}
-                  className={'form-select-lg col-12'}
-                />
-              </div>
+          {/* listInputNumber = []
+          {listInputNumber.map((option, index) => (
+                <option key={index} value={index}>
+                  {option.name}
+                </option>
+              ))} */}
+
+          {/* <div className='row mb-3'>
+            <div className='col'>
+              <InputNumber
+                name='Score THLD'
+                min='0'
+                max='1'
+                step='0.1'
+                stateVal={scoreTHR}
+                stateSet={setScoreTHR}
+                refName='scoreTHRRef'
+                onChangeNumber={onChangeNumber}
+                className={'form-select-lg col-12'}
+              />
+            </div>
+            <div className=' col'>
+              <InputNumber
+                name='Iou THLD'
+                min='0'
+                max='1'
+                step='0.1'
+                stateVal={iouTHR}
+                stateSet={setIouTHR}
+                refName='iouTHRRef'
+                onChangeNumber={onChangeNumber}
+                className={'form-select-lg col-12'}
+              />
             </div>
 
             <div className=''>
@@ -488,7 +722,9 @@ export const YoloV3 = () => {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
+          <InputNumbers />
+          <DataAccordionInputNumbers />
         </div>
       </div>
       <DataInAccordion
@@ -505,7 +741,7 @@ export const YoloV3 = () => {
             <div className='col mb-3'>
               <div className='col'>
                 <label className=' form-select-lg text-center text-white bg-primary col-4'>
-                  Select Playback Speed
+                  Playback Speed
                 </label>
               </div>
               <div className='col-4 mb-3'>
