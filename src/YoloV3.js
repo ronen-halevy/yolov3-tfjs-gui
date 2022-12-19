@@ -408,139 +408,65 @@ export const YoloV3 = () => {
       );
     }
   }
-  class InputNumbers extends React.Component {
-    render() {
-      return (
-        <div className='row mb-3'>
-          <div className='col'>
-            <InputNumber
-              name='Score THLD'
-              min='0'
-              max='1'
-              step='0.1'
-              stateVal={scoreTHR}
-              stateSet={setScoreTHR}
-              refName='scoreTHRRef'
-              onChangeNumber={onChangeNumber}
-              className={'form-select-lg col-12'}
-            />
-          </div>
-          <div className=' col'>
-            <InputNumber
-              name='Iou THLD'
-              min='0'
-              max='1'
-              step='0.1'
-              stateVal={iouTHR}
-              stateSet={setIouTHR}
-              refName='iouTHRRef'
-              onChangeNumber={onChangeNumber}
-              className={'form-select-lg col-12'}
-            />
-          </div>
 
-          <div className=''>
-            <InputNumber
-              name='Max Boxes'
-              min='0'
-              max='1000'
-              step='1'
-              stateVal={maxBoxes}
-              stateSet={setMaxBoxes}
-              refName='maxBoxesRef'
-              onChangeNumber={onChangeNumber}
-              className={'form-select-lg col-12'}
-            />
-          </div>
-
-          <div className='row'>
-            <div className='col '>
-              <InputNumber
-                name='Width'
-                min='0'
-                max='1920'
-                step='1'
-                stateVal={canvasWidth}
-                stateSet={setCanvasWidth}
-                refName=''
-                onChangeNumber={onChangeNumber}
-                className={'form-select-lg col-12'}
-              />
-            </div>
-            <div className='col'>
-              <InputNumber
-                name='Height'
-                min='0'
-                max='1920'
-                step='1'
-                stateVal={canvasHeight}
-                stateSet={setCanvasHeight}
-                refName=''
-                onChangeNumber={onChangeNumber}
-                className={'form-select-lg col-12'}
-              />
-            </div>
-          </div>
-        </div>
-      );
-    }
-  }
-
+  const ttt = (event) => {
+    console.log('ttt test cb');
+  };
   const listInNumbers = [
     {
-      name: 'Score THLD',
+      mname: 'Score THLD',
       min: '0',
       max: '1',
       step: '0.1',
-      statVal: { scoreTHR },
-      stateSet: { setScoreTHR },
+      stateVal: scoreTHR,
+      stateSet: setScoreTHR,
       refName: 'scoreTHRRef',
       className: 'form-select-lg col-12',
     },
 
     {
-      name: 'Iou THLD',
+      mname: 'Iou THLD',
       min: '0',
       max: '1',
       step: '0.1',
-      statVal: { iouTHR },
-      stateSet: { setIouTHR },
+      stateVal: iouTHR,
+      stateSet: setIouTHR,
       refName: 'iouTHRRef',
       className: 'form-select-lg col-12',
     },
 
     {
-      name: 'Max Boxes',
+      mname: 'Max Boxes',
       min: '0',
-      max: '1',
-      step: '0.1',
-      statVal: { maxBoxes },
-      stateSet: { setMaxBoxes },
+      max: '100',
+      step: '1',
+      stateVal: maxBoxes,
+      stateSet: setMaxBoxes,
       refName: 'maxBoxesRef',
       className: 'form-select-lg col-12',
     },
   ];
 
-  const SetLinstNumbers = () => {
-    return listInNumbers.map((params, index) => (
-      <div key={index}>
-        <div className='col' key={index}>
-          <InputNumber
-            name={params.name}
-            min={params.min}
-            max={params.max}
-            step={params.step}
-            stateVal={params.stateVal}
-            stateSet={params.stateSet}
-            refName={params.refName}
-            onChangeNumber={params.onChangeNumber}
-            className={params.className}
-            key={index}
-          />
-        </div>
-      </div>
-    ));
-  };
+  // const SetLinstNumbers = () => {
+  //   return listInNumbers.map((params, index) => (
+  //     <div key={index}>
+  //       <div className='col' key={index}>
+  //         <InputNumber
+  //           name={params.name}
+  //           min={params.min}
+  //           max={params.max}
+  //           step={params.step}
+  //           stateVal={params.stateVal}
+  //           stateSet={params.stateSet}
+  //           refName={params.refName}
+  //           onChangeNumber={params.onChangeNumber}
+  //           className={params.className}
+  //           key={index}
+  //         />
+  //       </div>
+  //     </div>
+  //   ));
+  // };
 
   // const ListInputNumber = () => {
   //   <div className='col'>
@@ -579,6 +505,38 @@ export const YoloV3 = () => {
   //     </div>
   //   );
 
+  const rrr = () => {
+    console.log('ListInputNumbers', this.props.listInNumbers);
+    return;
+    listInNumbers.list.map(
+      ({ name, min, max, step, stateVal, stateSet, onChange, className }) => (
+        <div className='col' key={index}>
+          <label className=' h5 ' key={index}>
+            {name}
+          </label>
+          <div className='col' key={index + 1000}>
+            <input
+              key={index + 1}
+              className={className}
+              type='number'
+              min={min}
+              max={max}
+              step={step}
+              value={stateVal}
+              onChange={onChange}
+              // onChange={(event) => {
+              //   onChangeNumber(event, {
+              //     stateSet: stateSet,
+              //     refName: refName,
+              //   });
+              // }}
+            />
+          </div>
+        </div>
+      )
+    );
+  };
+
   const FileInput = ({ value, ...rest }) => {
     const inputRef = useRef();
 
@@ -601,10 +559,40 @@ export const YoloV3 = () => {
       />
     );
   };
+  const cc = [
+    { a: 'am', b: 'fdfd' },
+    { a: 'mb', b: 'erer' },
+  ];
 
   return (
     <div className='container '>
-      {/* <ListInputNumbers listInNumbers /> */}
+      {listInNumbers.map(
+        ({ mname, min, max, step, stateVal, stateSet, refName, className }) => (
+          <div className='col'>
+            <label className=' h5 '>{mname}</label>
+            <div className='col'>
+              <input
+                className={className}
+                type='number'
+                min={min}
+                max={max}
+                step={step}
+                value={stateVal}
+                onChange={(event) => {
+                  onChangeNumber(event, {
+                    stateSet: stateSet,
+                    refName: refName,
+                  });
+                }}
+              />
+            </div>
+          </div>
+        )
+      )}
+      <ListInputNumbers
+        listInNumbers={listInNumbers}
+        onChangeNumber={onChangeNumber}
+      />
       <div className=' formExcludesVideo col bg-info bg-gradient'>
         <div className='col'>
           <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
@@ -734,7 +722,6 @@ export const YoloV3 = () => {
         onChangeFile={onChangeFile}
         onClickRunLocal={onClickRunLocal}
       />
-
       <div className='col'>
         {showVideoControl == true && (
           <div className='col bg-warning bg-gradient'>
@@ -802,7 +789,6 @@ export const YoloV3 = () => {
           <canvas className='video' ref={canvasRefVideo} width='' height='' />
         </div>
       </div>
-
       {/* <div className='customVideoTagClass '>
 				<video ref={videoRef} preload='auto'></video>
 			</div> */}
