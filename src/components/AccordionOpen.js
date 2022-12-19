@@ -2,6 +2,7 @@ import React from 'react';
 // import RunLocalData from './RunLocalData.js';
 // import RunRemoteData from './RunRemoteData.js';
 import LoadModel from './LoadModel.js';
+import RadioSelect from './RadioSelect.js';
 
 class AccordionOpen extends React.Component {
   constructor(props) {
@@ -9,11 +10,11 @@ class AccordionOpen extends React.Component {
   }
   render() {
     return (
-      <div class='accordion' id='accordionPanelsStayOpenExample'>
-        <div class='accordion-item'>
-          <h2 class='accordion-header' id='panelsStayOpen-headingOne'>
+      <div className='accordion' id='accordionPanelsStayOpenExample'>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='panelsStayOpen-headingOne'>
             <button
-              class='accordion-button'
+              className='accordion-button'
               type='button'
               data-bs-toggle='collapse'
               data-bs-target='#panelsStayOpen-collapseOne'
@@ -25,10 +26,10 @@ class AccordionOpen extends React.Component {
           </h2>
           <div
             id='panelsStayOpen-collapseOne'
-            class='accordion-collapse collapse show'
+            className='accordion-collapse collapse show'
             aria-labelledby='panelsStayOpen-headingOne'
           >
-            <div class='accordion-body'>
+            <div className='accordion-body'>
               <strong>This is the first item's accordion body.</strong> It is
               shown by default, until the collapse plugin adds the appropriate
               classes that we use to style each element. These classes control
@@ -40,25 +41,53 @@ class AccordionOpen extends React.Component {
             </div>
           </div>
         </div>
-        <div class='accordion-item'>
-          <h2 class='accordion-header' id='panelsStayOpen-headingTwo'>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='panelsStayOpen-headingTwo'>
             <button
-              class='accordion-button collapsed'
+              className='accordion-button collapsed'
               type='button'
               data-bs-toggle='collapse'
               data-bs-target='#panelsStayOpen-collapseTwo'
               aria-expanded='false'
               aria-controls='panelsStayOpen-collapseTwo'
             >
-              Accordion Item #2
+              Model Setup
             </button>
           </h2>
           <div
             id='panelsStayOpen-collapseTwo'
-            class='accordion-collapse collapse'
+            className='accordion-collapse collapse'
             aria-labelledby='panelsStayOpen-headingTwo'
           >
-            <div class='accordion-body'>
+            <div className='accordion-body'>
+              <div className='col-2 mx-auto'>
+                <label htmlFor='selectModel' className=' h5 '>
+                  Model
+                </label>
+              </div>
+              <div className='col-6 mx-auto'>
+                <RadioSelect
+                  onChange={this.props.onSelectModel}
+                  selections={Object.keys(this.props.modelsTable)}
+                  selected={this.props.selectedModel}
+                />
+              </div>
+              <div className='col-2 mx-auto'>
+                <label htmlFor='selectWeightd' className=' h5 mt-3'>
+                  Weights
+                </label>
+              </div>
+
+              <div className='col-6 mx-auto '>
+                <RadioSelect
+                  onChange={this.props.onSelectDataset}
+                  selections={Object.keys(
+                    this.props.modelsTable[this.props.selectedModel]
+                  )}
+                  selected={this.props.selectedDataset}
+                />
+              </div>
+
               <LoadModel
                 onClick={this.props.onLoadModel}
                 isWaiting={this.props.isModelLoadSpinner}
@@ -67,10 +96,10 @@ class AccordionOpen extends React.Component {
             </div>
           </div>
         </div>
-        <div class='accordion-item'>
-          <h2 class='accordion-header' id='panelsStayOpen-headingThree'>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='panelsStayOpen-headingThree'>
             <button
-              class='accordion-button collapsed'
+              className='accordion-button collapsed'
               type='button'
               data-bs-toggle='collapse'
               data-bs-target='#panelsStayOpen-collapseThree'
@@ -82,10 +111,10 @@ class AccordionOpen extends React.Component {
           </h2>
           <div
             id='panelsStayOpen-collapseThree'
-            class='accordion-collapse collapse'
+            className='accordion-collapse collapse'
             aria-labelledby='panelsStayOpen-headingThree'
           >
-            <div class='accordion-body'>
+            <div className='accordion-body'>
               {this.props.listInNumbers.map(
                 ({
                   mname,

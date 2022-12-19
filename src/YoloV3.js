@@ -524,34 +524,48 @@ export const YoloV3 = () => {
 
   const rrr = () => {
     console.log('ListInputNumbers', this.props.listInNumbers);
-    return;
-    listInNumbers.list.map(
-      ({ name, min, max, step, stateVal, stateSet, onChange, className }) => (
-        <div className='col' key={index}>
-          <label className=' h5 ' key={index}>
-            {name}
-          </label>
-          <div className='col' key={index + 1000}>
+    return listInNumbers.map(
+      ({ mname, min, max, step, stateVal, stateSet, refName, className }) => (
+        <div className='col'>
+          <label className=' h5 '>{mname}</label>
+          <div className='col'>
             <input
-              key={index + 1}
               className={className}
               type='number'
               min={min}
               max={max}
               step={step}
               value={stateVal}
-              onChange={onChange}
-              // onChange={(event) => {
-              //   onChangeNumber(event, {
-              //     stateSet: stateSet,
-              //     refName: refName,
-              //   });
-              // }}
+              onChange={(event) => {
+                onChangeNumber(event, {
+                  stateSet: stateSet,
+                  refName: refName,
+                });
+              }}
             />
           </div>
         </div>
       )
     );
+  };
+
+  const myRadios = () => {
+    return listModelSelectors.map(({ title, selections, selected }) => (
+      <div>
+        <div className='col-2 mx-auto'>
+          <label htmlFor='selectModel' className=' h5 '>
+            Model
+          </label>
+        </div>
+        <div className='col-6 mx-auto'>
+          <RadioSelect
+            onChange={onSelectModel}
+            selections={Object.keys(modelsTable)}
+            selected={selectedModel}
+          />
+        </div>
+      </div>
+    ));
   };
 
   const FileInput = ({ value, ...rest }) => {
@@ -611,42 +625,6 @@ export const YoloV3 = () => {
         <div className='col'>
           <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
 
-          <div className='col mb-3'>
-            <div className='col selectModel  '>
-              <div className='col-2 mx-auto'>
-                <label htmlFor='selectModel' className=' h5 '>
-                  Model
-                </label>
-              </div>
-              <div className='col-6 mx-auto'>
-                <RadioSelect
-                  onChange={onSelectModel}
-                  selections={Object.keys(modelsTable)}
-                  selected={selectedModel}
-                />
-              </div>
-              <div className='col-2 mx-auto'>
-                <label htmlFor='selectWeightd' className=' h5 mt-3'>
-                  Weights
-                </label>
-              </div>
-
-              <div className='col-6 mx-auto '>
-                <RadioSelect
-                  onChange={onSelectDataset}
-                  selections={Object.keys(modelsTable[selectedModel])}
-                  selected={selectedDataset}
-                />
-              </div>
-
-              <LoadModel
-                onClick={onLoadModel}
-                isWaiting={isModelLoadSpinner}
-                doneMessage={modelLoadedMessage}
-              />
-            </div>
-          </div>
-
           {/* listInputNumber = []
           {listInputNumber.map((option, index) => (
                 <option key={index} value={index}>
@@ -663,10 +641,17 @@ export const YoloV3 = () => {
         /> */}
       </div>
       <AccordionOpen
-        listModelSelectors={listModelSelectors}
-        onClick={onLoadModel}
+        // Item #1 Model Setup Buttons
+        // Radio Buttons
+        onSelectModel={onSelectModel}
+        modelsTable={modelsTable}
+        selectedModel={selectedModel}
+        onSelectDataset={onSelectDataset}
+        selectedDataset={selectedDataset}
+        // Model Select Button
         isWaiting={isModelLoadSpinner}
         doneMessage={modelLoadedMessage}
+        // Item #2 Configuration Input elements
         listInNumbers={listInNumbers}
         onChangeNumber={onChangeNumber}
       />
@@ -747,9 +732,6 @@ export const YoloV3 = () => {
           <canvas className='video' ref={canvasRefVideo} width='' height='' />
         </div>
       </div>
-      {/* <div className='customVideoTagClass '>
-				<video ref={videoRef} preload='auto'></video>
-			</div> */}
     </div>
   );
 };
