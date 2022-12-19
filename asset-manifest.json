@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/yolov3-tfjs/static/js/main.7c586e6c.js",
+    "main.js": "/yolov3-tfjs/static/js/main.b06a6fa0.js",
     "index.html": "/yolov3-tfjs/index.html",
-    "main.7c586e6c.js.map": "/yolov3-tfjs/static/js/main.7c586e6c.js.map"
+    "main.b06a6fa0.js.map": "/yolov3-tfjs/static/js/main.b06a6fa0.js.map"
   },
   "entrypoints": [
-    "static/js/main.7c586e6c.js"
+    "static/js/main.b06a6fa0.js"
   ]
 }
