@@ -307,6 +307,7 @@ export const YoloV3 = () => {
     //use refs in addition to state to update vals during animation.
     if (attrib.refName != '') {
       eval(attrib.refName).current = value;
+      console.log(scoreTHRRef);
     }
   };
 
@@ -768,6 +769,24 @@ export const YoloV3 = () => {
                   stateVal={maxBoxes}
                   stateSet={setMaxBoxes}
                   refName='maxBoxesRef'
+                />
+              </div>
+
+              <div className='col'>
+                <input
+                  className='form-select-lg col'
+                  type='number'
+                  min='0'
+                  max='1'
+                  step='0.1'
+                  id='kk'
+                  value={scoreTHR}
+                  onChange={(event) =>
+                    onChangeNumber(event, {
+                      stateSet: setScoreTHR,
+                      refName: scoreTHRRef,
+                    })
+                  }
                 />
               </div>
             </div>
