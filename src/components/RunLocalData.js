@@ -20,13 +20,11 @@ class RunLocalData extends React.Component {
           <div>
             <button
               variant='primary'
-              disabled={
-                this.props.selectedFile == '' || !this.props.isModelLoaded
-              }
+              disabled={this.props.selectedFile}
               className='btn btn btn-dark  btn-lg col-12 mb-1'
               onClick={this.props.onClickRunLocal}
             >
-              Run Detection
+              Detect!
             </button>
           </div>
         </div>

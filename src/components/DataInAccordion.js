@@ -31,8 +31,8 @@ class DataInAccordion extends React.Component {
           >
             <div className='accordion-body'>
               <RunRemoteData
+                onChange={this.props.onChange}
                 listExamples={this.props.listExamples}
-                isModelLoaded={this.props.isModelLoaded}
                 onClickRunRemote={this.props.onClickRunRemote}
               />
             </div>
@@ -60,7 +60,7 @@ class DataInAccordion extends React.Component {
             <div className='accordion-body'>
               <div className='accordion-body'>
                 <RunLocalData
-                  isModelLoaded={this.props.isModelLoaded}
+                  //   isModelLoaded={this.props.isModelLoaded}
                   onChangeFile={this.props.onChangeFile}
                   onClickRunLocal={this.props.onClickRunLocal}
                 />

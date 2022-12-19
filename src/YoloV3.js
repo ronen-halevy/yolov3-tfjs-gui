@@ -9,6 +9,7 @@ import InputNumber from './components/InputNumber.js';
 
 import RadioSelect from './components/RadioSelect.js';
 import DataInAccordion from './components/DataInAccordion.js';
+import ListInputNumbers from './components/ListInputNumbers.js';
 
 import Draw from './draw.js';
 import { image } from '@tensorflow/tfjs';
@@ -484,6 +485,7 @@ export const YoloV3 = () => {
       );
     }
   }
+
   const listInNumbers = [
     {
       name: 'Score THLD',
@@ -517,47 +519,44 @@ export const YoloV3 = () => {
       refName: 'maxBoxesRef',
       className: 'form-select-lg col-12',
     },
-
-    {
-      name: 'Score THLD',
-      min: '0',
-      max: '1',
-      step: '0.1',
-      statVal: { scoreTHR },
-      stateSet: { setScoreTHR },
-      refName: 'scoreTHRRef',
-      className: 'form-select-lg col-12',
-    },
-
-    {
-      name: 'Score THLD',
-      min: '0',
-      max: '1',
-      step: '0.1',
-      statVal: { scoreTHR },
-      stateSet: { setScoreTHR },
-      refName: 'scoreTHRRef',
-      className: 'form-select-lg col-12',
-    },
-
-    {},
   ];
 
-  const ListInputNumber = () => {
-    <div className='col'>
-      <InputNumber
-        name='Score THLD'
-        min='0'
-        max='1'
-        step='0.1'
-        stateVal={scoreTHR}
-        stateSet={setScoreTHR}
-        refName='scoreTHRRef'
-        onChangeNumber={onChangeNumber}
-        className={'form-select-lg col-12'}
-      />
-    </div>;
+  const SetLinstNumbers = () => {
+    return listInNumbers.map((params, index) => (
+      <div key={index}>
+        <div className='col' key={index}>
+          <InputNumber
+            name={params.name}
+            min={params.min}
+            max={params.max}
+            step={params.step}
+            stateVal={params.stateVal}
+            stateSet={params.stateSet}
+            refName={params.refName}
+            onChangeNumber={params.onChangeNumber}
+            className={params.className}
+            key={index}
+          />
+        </div>
+      </div>
+    ));
   };
+
+  // const ListInputNumber = () => {
+  //   <div className='col'>
+  //     <InputNumber
+  //       name='Score THLD'
+  //       min='0'
+  //       max='1'
+  //       step='0.1'
+  //       stateVal={scoreTHR}
+  //       stateSet={setScoreTHR}
+  //       refName='scoreTHRRef'
+  //       onChangeNumber={onChangeNumber}
+  //       className={'form-select-lg col-12'}
+  //     />
+  //   </div>;
+  // };
 
   const noop = () => {};
 
@@ -605,6 +604,7 @@ export const YoloV3 = () => {
 
   return (
     <div className='container '>
+      {/* <ListInputNumbers listInNumbers /> */}
       <div className=' formExcludesVideo col bg-info bg-gradient'>
         <div className='col'>
           <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
@@ -652,7 +652,7 @@ export const YoloV3 = () => {
                 </option>
               ))} */}
 
-          {/* <div className='row mb-3'>
+          <div className='col mb-3'>
             <div className='col'>
               <InputNumber
                 name='Score THLD'
@@ -694,42 +694,42 @@ export const YoloV3 = () => {
               />
             </div>
 
-            <div className='row'>
-              <div className='col '>
-                <InputNumber
-                  name='Width'
-                  min='0'
-                  max='1920'
-                  step='1'
-                  stateVal={canvasWidth}
-                  stateSet={setCanvasWidth}
-                  refName=''
-                  onChangeNumber={onChangeNumber}
-                  className={'form-select-lg col-12'}
-                />
-              </div>
-              <div className='col'>
-                <InputNumber
-                  name='Height'
-                  min='0'
-                  max='1920'
-                  step='1'
-                  stateVal={canvasHeight}
-                  stateSet={setCanvasHeight}
-                  refName=''
-                  onChangeNumber={onChangeNumber}
-                  className={'form-select-lg col-12'}
-                />
-              </div>
+            {/* <div className='row'> */}
+            <div className='col '>
+              <InputNumber
+                name='Width'
+                min='0'
+                max='1920'
+                step='1'
+                stateVal={canvasWidth}
+                stateSet={setCanvasWidth}
+                refName=''
+                onChangeNumber={onChangeNumber}
+                className={'form-select-lg col-12'}
+              />
             </div>
-          </div> */}
-          <InputNumbers />
-          <DataAccordionInputNumbers />
+            <div className='col'>
+              <InputNumber
+                name='Height'
+                min='0'
+                max='1920'
+                step='1'
+                stateVal={canvasHeight}
+                stateSet={setCanvasHeight}
+                refName=''
+                onChangeNumber={onChangeNumber}
+                className={'form-select-lg col-12'}
+              />
+              {/* </div> */}
+            </div>
+          </div>
+          {/* <InputNumbers />
+          <DataAccordionInputNumbers /> */}
         </div>
       </div>
       <DataInAccordion
         listExamples={listExamples}
-        isModelLoaded={isModelLoaded}
+        onChange={onSelectExample}
         onClickRunRemote={onClickRunRemote}
         onChangeFile={onChangeFile}
         onClickRunLocal={onClickRunLocal}

@@ -14,7 +14,10 @@ class RunRemoteData extends React.Component {
                   </label> */}
           </div>
           <div className='col'>
-            <select className='form-select form-select-lg mb-1'>
+            <select
+              className='form-select form-select-lg mb-1'
+              onChange={this.props.onChange}
+            >
               {this.props.listExamples.map((option, index) => (
                 <option key={index} value={index}>
                   {option.name}
@@ -27,7 +30,6 @@ class RunRemoteData extends React.Component {
           <div>
             <button
               variant='primary'
-              disabled={!this.props.isModelLoaded}
               className='btn btn btn-dark  btn-lg col-12 mb-1'
               onClick={this.props.onClickRunRemote}
             >
