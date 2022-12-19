@@ -181,11 +181,11 @@ export const YoloV3 = () => {
     yoloPredictor.current = new YoloPredictor(renderCallback_);
   }, []);
 
-  const runVideo = () => {
+  const runVideo = (sourceSel) => {
     setShowVideoControl(true);
     videoRef.current.preload = 'auto';
     videoRef.current.crossOrigin = 'anonymous';
-    if (sourceSelection == 'local') {
+    if (sourceSel == 'local') {
       var URL = window.URL || window.webkitURL;
       var fileURL = URL.createObjectURL(selectedFile);
       videoRef.current.src = fileURL;
@@ -241,7 +241,7 @@ export const YoloV3 = () => {
       runImage(selectedFile);
     } else {
       // setSelectedVidFile(selectedFile);
-      runVideo();
+      runVideo('local');
     }
   };
   const onClickRunRemote = () => {
@@ -254,7 +254,7 @@ export const YoloV3 = () => {
       // URL.createObjectURL(selectedFile);
       // runImage(selectedFile);
     } else {
-      runVideo();
+      runVideo('remote');
     }
   };
 
@@ -406,9 +406,13 @@ export const YoloV3 = () => {
               type='button'
               data-bs-toggle='collapse'
               data-bs-target='#flush-collapseOne'
-              aria-expanded='false'
+              aria-expanded='true'
               aria-controls='flush-collapseOne'
               onChange={onChangeDataSource2}
+
+              //   data-bs-target='#panelsStayOpen-collapseOne'
+              //   aria-expanded='true'
+              //   aria-controls='panelsStayOpen-collapseOne'
             >
               Remote Data
             </button>
@@ -449,7 +453,7 @@ export const YoloV3 = () => {
               type='button'
               data-bs-toggle='collapse'
               data-bs-target='#flush-collapseTwo'
-              aria-expanded='false'
+              aria-expanded='true'
               aria-controls='flush-collapseTwo'
             >
               Local File Uplad
@@ -576,6 +580,18 @@ export const YoloV3 = () => {
                       </option>
                     ))}
                   </select>
+                </div>
+              </div>
+              <div className='row '>
+                <div>
+                  <button
+                    variant='primary'
+                    disabled={!isModelLoaded}
+                    className='btn btn btn-dark  btn-lg col-12 mb-1'
+                    onClick={onClickRunRemote}
+                  >
+                    Run Detection
+                  </button>
                 </div>
               </div>
             </div>
