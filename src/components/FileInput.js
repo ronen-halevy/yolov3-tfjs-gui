@@ -15,6 +15,7 @@ class FileInput extends React.Component {
               // {...props}
               style={{ display: 'none' }}
               type='file'
+              accept='video/*'
               onChange={(e) => {
                 this.props.onChange(e);
               }}
@@ -25,7 +26,6 @@ class FileInput extends React.Component {
               </span>
             ) : (
               <span className='badge rounded-pill bg-danger'>
-                {' '}
                 No File Loaded
               </span>
             )}
