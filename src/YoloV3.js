@@ -58,7 +58,7 @@ export const YoloV3 = () => {
 
   const [selectedExample, setSelectedExample] = useState(listExamples[0].url);
 
-  const [showVideoControl, setShowVideoControl] = useState(true);
+  const [isVideoOn, setIsVideoOn] = useState(true);
   const [canvasWidth, setCanvasWidth] = useState(416);
   const [canvasHeight, setCanvasHeight] = useState(416);
   const [durationOfVideo, setDurationOfVideo] = useState(0);
@@ -76,11 +76,12 @@ export const YoloV3 = () => {
     });
     if (videoRef.current.currentTime >= videoRef.current.duration) {
       cancelAnimationFrame(id);
+      setIsVideoOn(false);
     }
   };
 
   const stopVideo = () => {
-    setShowVideoControl(false);
+    setIsVideoOn(false);
 
     if (videoRef.current.src != '') {
       videoRef.current.pause();
@@ -188,7 +189,7 @@ export const YoloV3 = () => {
     videoRef.current.height = canvasHeight; // in px
     videoRef.current.width = canvasWidth; // in px
 
-    setShowVideoControl(false);
+    setIsVideoOn(false);
 
     videoRender.current = new Draw(canvasRefVideo.current);
     yoloPredictor.current = new YoloPredictor(renderCallback_);
@@ -196,7 +197,7 @@ export const YoloV3 = () => {
   }, []);
 
   const runVideo = (sourceSel) => {
-    setShowVideoControl(true);
+    setIsVideoOn(true);
     videoRef.current.preload = 'auto';
     videoRef.current.crossOrigin = 'anonymous';
     if (sourceSel == 'local') {
@@ -249,7 +250,10 @@ export const YoloV3 = () => {
       return;
     }
     stopVideo();
-
+    if (isVideoOn) {
+      setIsVideoOn(false);
+      return;
+    }
     if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
       URL.createObjectURL(selectedFile);
       runImage(selectedFile);
@@ -263,6 +267,10 @@ export const YoloV3 = () => {
       return;
     }
     stopVideo();
+    if (isVideoOn) {
+      setIsVideoOn(false);
+      return;
+    }
 
     if (selectedExample.match(/\.(jpg|jpeg|png|gif)$/i)) {
       // URL.createObjectURL(selectedFile);
@@ -382,7 +390,7 @@ export const YoloV3 = () => {
         isWaiting={isModelLoadSpinner}
         modelLoadedMessage={modelLoadedMessage}
         onLoadModel={onLoadModel}
-        // Item #2 Configuration Input elements
+        //  Configuration - input numbers
         listInNumbers={listInNumbers}
         onChangeNumber={onChangeNumber}
       />
@@ -391,11 +399,13 @@ export const YoloV3 = () => {
         // For input numbers components:
         listInNumbers={listInNumbers}
         onChangeNumber={onChangeNumber}
-        // For select example component:
+        // Run with url selection
         listExamples={listExamples}
         onChange={onSelectExample}
         onClickRunRemote={onClickRunRemote}
-        // For FileInput component:
+        // for both Detect startbuttons
+        isVideoOn={isVideoOn}
+        // Run with FileInput component
         onChangeFile={onChangeFile}
         onClickRunLocal={onClickRunLocal}
         selectedFileName={selectedFileName}
@@ -405,7 +415,7 @@ export const YoloV3 = () => {
       </div>
 
       <div className='col'>
-        {showVideoControl == true && (
+        {isVideoOn == true && (
           <div className='col bg-warning bg-gradient'>
             <input
               type='range'

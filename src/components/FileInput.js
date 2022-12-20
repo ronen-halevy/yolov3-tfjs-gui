@@ -5,12 +5,11 @@ class FileInput extends React.Component {
     super(props);
   }
   render() {
-    console.log('FileInput class', this.props.selectedFileName);
     return (
       <div className='col'>
         <div>
           <label className='btn btn-primary btn-lg col-12 position-relative'>
-            <p1>{this.props.buttonLable} </p1>
+            {this.props.buttonLable}
             {this.props.selectedFileName ? (
               <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
                 {this.props.selectedFileName}

@@ -1,4 +1,5 @@
 import React from 'react';
+import RunButton from './RunButton';
 
 class RunRemoteData extends React.Component {
   constructor(props) {
@@ -27,15 +28,11 @@ class RunRemoteData extends React.Component {
           </div>
         </div>
         <div className='row '>
-          <div>
-            <button
-              variant='primary'
-              className='btn btn btn-dark  btn-lg col-12 mb-1'
-              onClick={this.props.onClickRunRemote}
-            >
-              Detect!
-            </button>
-          </div>
+          <RunButton
+            onClickRunRemote={this.props.onClickRunRemote}
+            isVideoOn={this.props.isVideoOn}
+            disabled={false}
+          />
         </div>
       </div>
     );

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import FileInput from './FileInput';
+import RunButton from './RunButton';
 
 class RunLocalData extends React.Component {
   constructor(props) {
@@ -26,16 +27,11 @@ class RunLocalData extends React.Component {
           />
         </div>
 
-        <div>
-          <button
-            variant='primary'
-            disabled={this.props.selectedFile}
-            className='btn btn btn-dark  btn-lg col-12 mb-1'
-            onClick={this.props.onClickRunLocal}
-          >
-            Detect!
-          </button>
-        </div>
+        <RunButton
+          onClickRunRemote={this.props.onClickRunLocal}
+          isVideoOn={this.props.isVideoOn}
+          disabled={this.props.selectedFileName == ''}
+        />
       </div>
     );
   }

@@ -34,6 +34,7 @@ class DataInAccordion extends React.Component {
                 onChange={this.props.onChange}
                 listExamples={this.props.listExamples}
                 onClickRunRemote={this.props.onClickRunRemote}
+                isVideoOn={this.props.isVideoOn}
               />
             </div>
           </div>
@@ -63,6 +64,7 @@ class DataInAccordion extends React.Component {
                   onChangeFile={this.props.onChangeFile}
                   onClickRunLocal={this.props.onClickRunLocal}
                   selectedFileName={this.props.selectedFileName}
+                  isVideoOn={this.props.isVideoOn}
                 />
               </div>
             </div>
