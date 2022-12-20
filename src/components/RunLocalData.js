@@ -13,8 +13,19 @@ class RunLocalData extends React.Component {
           <FileInput
             onChange={this.props.onChangeFile}
             selectedFileName={this.props.selectedFileName}
+            buttonLable='Click to select a file'
+            accept='video/*, image/*'
           />
         </div>
+        <div className=' mb-2 mx-auto'>
+          <FileInput
+            onChange={this.props.onChangeFile}
+            selectedFileName={this.props.selectedFileName}
+            buttonLable='Click to select a video file'
+            accept='video/*'
+          />
+        </div>
+
         <div>
           <button
             variant='primary'

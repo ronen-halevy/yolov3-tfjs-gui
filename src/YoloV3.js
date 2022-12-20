@@ -370,12 +370,6 @@ export const YoloV3 = () => {
 
   return (
     <div className='container '>
-      {/* <FileInput onChange={onChangeFile} selectedFileName={selectedFileName} /> */}
-      <div className=' formExcludesVideo col bg-info bg-gradient'>
-        <div className='col'>
-          <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
-        </div>
-      </div>
       <AccordionOpen
         // Item #1 Model Setup Buttons
         // Radio Buttons

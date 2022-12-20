@@ -9,26 +9,26 @@ class FileInput extends React.Component {
     return (
       <div className='col'>
         <div>
-          <label className='btn btn-primary btn-lg col-12'>
-            Click to select a video or an image file
+          <label className='btn btn-primary btn-lg col-12 position-relative'>
+            <p1>{this.props.buttonLable} </p1>
+            {this.props.selectedFileName ? (
+              <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                {this.props.selectedFileName}
+              </span>
+            ) : (
+              <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-danger'>
+                No File Loaded
+              </span>
+            )}
             <input
               // {...props}
               style={{ display: 'none' }}
               type='file'
-              accept='video/*, image/*'
+              accept={this.props.accept}
               onChange={(e) => {
                 this.props.onChange(e);
               }}
             />
-            {this.props.selectedFileName ? (
-              <span className='badge rounded-pill bg-success'>
-                {this.props.selectedFileName}
-              </span>
-            ) : (
-              <span className='badge rounded-pill bg-danger'>
-                No File Loaded
-              </span>
-            )}
           </label>
         </div>
       </div>

@@ -11,7 +11,7 @@ class LoadModel extends React.Component {
           <button
             variant='primary'
             // type='submit'
-            className='btn btn btn-primary btn-lg  mb-1 mt-3 col-12'
+            className='btn btn btn-primary position-relative btn-lg  mb-1 mt-3 col-12'
             onClick={this.props.onClick}
           >
             {this.props.isWaiting && (
@@ -24,7 +24,7 @@ class LoadModel extends React.Component {
             <span className='text-center'>
               {this.props.isWaiting ? 'Loading' : 'Load Model'}
             </span>
-            <span className='mx-5 rounded-pill   badge bg-success'>
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
               {this.props.modelLoadedMessage}
             </span>
           </button>

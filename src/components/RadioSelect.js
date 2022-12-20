@@ -8,8 +8,10 @@ class RadioSelect extends React.Component {
       <div key={index} className='form-check-inline col-6 mx-auto'>
         <div key={index} className='col'>
           <div key={index} className='col'>
-            <label key={index} className='form-check-label'>
-              {selItem}
+            <label key={index} className='form-check-label position-relative'>
+              <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill text-dark bg-info'>
+                {selItem}{' '}
+              </span>
             </label>
           </div>
           <div className='col'>
