@@ -18,7 +18,11 @@ class RunLocalData extends React.Component {
             accept='video/*, image/*'
           />
         </div>
-        <div className=' mb-2 mx-auto'>
+        <div className=' mb-2 mx-auto '>
+          <span class='  badge rounded-pill  text-bg-light bg-warning'>
+            Patch button-use if needed
+            <span class='visually-hidden'>unread messages</span>
+          </span>
           <FileInput
             onChange={this.props.onChangeFile}
             selectedFileName={this.props.selectedFileName}
@@ -26,7 +30,12 @@ class RunLocalData extends React.Component {
             accept='video/*'
           />
         </div>
-
+        {this.props.selectedFileName == '' && (
+          <span class='  badge rounded-pill   bg-danger'>
+            No file loaded!
+            <span class='visually-hidden'>unread messages</span>
+          </span>
+        )}
         <RunButton
           onClickRunRemote={this.props.onClickRunLocal}
           isVideoOn={this.props.isVideoOn}
