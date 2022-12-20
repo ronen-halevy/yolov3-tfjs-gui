@@ -20,12 +20,12 @@ class RunLocalData extends React.Component {
         </div>
         <div className=' mb-2 mx-auto '>
           <span class='  badge rounded-pill  text-bg-light bg-warning'>
-            Patch button
+            video files
           </span>
           <FileInput
             onChange={this.props.onChangeFile}
             selectedFileName={this.props.selectedFileName}
-            buttonLable='Click to select a video file'
+            buttonLable='Click to select a file'
             accept='video/*'
           />
         </div>
