@@ -275,20 +275,9 @@ export const YoloV3 = () => {
   const onChangeFile = (event) => {
     console.log(event.target.files[0]);
     stopVideo();
-
-    // var URL = window.URL || window.webkitURL;
-    // var fileURL = URL.createObjectURL(event.target.files[0]);
-    // console.log('onChangeFile', fileURL);
-    // setSelectedFile(fileURL);
     console.log('onChangeFile selectedFileName: ', selectedFileName);
     setSelectedFile(event.target.files[0]);
     setSelectedFileName(event.target.files[0].name);
-
-    // if (event.target.files[0].name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-    // 	setShowVideoControl(false);
-    // } else {
-    // 	// setShowVideoControl(true);
-    // }
   };
 
   const onSelectModel = (event) => {
@@ -377,66 +366,6 @@ export const YoloV3 = () => {
       selections: Object.keys(modelsTable[selectedModel]),
       selected: { selectedDataset },
     },
-  ];
-
-  const noop = (event) => {
-    const dd = { event };
-    console.log('noop', event.target.files[0].name);
-    console.log(event.target.files[0]);
-  };
-
-  // const FileInput = ({ onChange, selectedFileName, ...props }) => {
-  //   console.log('FileInput filename', selectedFileName);
-  //   return (
-  //     <div>
-  //       <div>
-  //         <label className='btn btn-primary'>
-  //           Click to select a video or an image file
-  //           <input
-  //             {...props}
-  //             style={{ display: 'none' }}
-  //             type='file'
-  //             onChange={(e) => {
-  //               onChange(e);
-  //             }}
-  //           />
-  //           {selectedFileName ? (
-  //             <span className='badge bg-secondary'>{selectedFileName}</span>
-  //           ) : (
-  //             <span className='badge bg-secondary'> No File Loaded</span>
-  //           )}
-  //         </label>
-  //       </div>
-  //     </div>
-  //   );
-  // };
-
-  // const FileInput = ({ value, ...rest }) => {
-  //   console.log(value);
-  //   const inputRef = useRef();
-
-  //   useEffect(() => {
-  //     if (value === '') {
-  //       inputRef.current.value = '';
-  //     } else {
-  //       inputRef.current.files = value;
-  //       console.log(inputRef.current.files);
-  //     }
-  //   }, [value]);
-
-  //   return (
-  //     <input
-  //       {...rest}
-  //       type='file'
-  //       accept='image/*, video/*'
-  //       onChange={onChangeFile}
-  //       ref={inputRef}
-  //     />
-  //   );
-  // };
-  const cc = [
-    { a: 'am', b: 'fdfd' },
-    { a: 'mb', b: 'erer' },
   ];
 
   return (
