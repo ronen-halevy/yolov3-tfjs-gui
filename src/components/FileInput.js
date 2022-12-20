@@ -20,11 +20,14 @@ class FileInput extends React.Component {
               }}
             />
             {this.props.selectedFileName ? (
-              <span className='badge bg-success'>
+              <span className='badge rounded-pill bg-success'>
                 {this.props.selectedFileName}
               </span>
             ) : (
-              <span className='badge bg-danger'> No File Loaded</span>
+              <span className='badge rounded-pill bg-danger'>
+                {' '}
+                No File Loaded
+              </span>
             )}
           </label>
         </div>

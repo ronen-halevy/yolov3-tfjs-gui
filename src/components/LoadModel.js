@@ -24,7 +24,7 @@ class LoadModel extends React.Component {
             <span className='text-center'>
               {this.props.isWaiting ? 'Loading' : 'Load Model'}
             </span>
-            <span className='mx-3  bg-success'>
+            <span className='mx-5 rounded-pill   badge bg-success'>
               {this.props.modelLoadedMessage}
             </span>
           </button>
