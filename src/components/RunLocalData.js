@@ -20,8 +20,7 @@ class RunLocalData extends React.Component {
         </div>
         <div className=' mb-2 mx-auto '>
           <span class='  badge rounded-pill  text-bg-light bg-warning'>
-            Patch button-use if needed
-            <span class='visually-hidden'>unread messages</span>
+            Patch button
           </span>
           <FileInput
             onChange={this.props.onChangeFile}
@@ -31,10 +30,7 @@ class RunLocalData extends React.Component {
           />
         </div>
         {this.props.selectedFileName == '' && (
-          <span class='  badge rounded-pill   bg-danger'>
-            No file loaded!
-            <span class='visually-hidden'>unread messages</span>
-          </span>
+          <span class='  badge rounded-pill   bg-danger'>No file loaded!</span>
         )}
         <RunButton
           onClickRunRemote={this.props.onClickRunLocal}

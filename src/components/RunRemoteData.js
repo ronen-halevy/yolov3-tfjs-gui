@@ -14,7 +14,9 @@ class RunRemoteData extends React.Component {
                     Select an Example
                   </label> */}
           </div>
-          <div className='col'>
+          <div className='col position-relative'>
+            <span class='  badge rounded-pill  bg-primary'>Select</span>
+
             <select
               className='form-select form-select-lg mb-1'
               onChange={this.props.onChange}
@@ -25,6 +27,9 @@ class RunRemoteData extends React.Component {
                 </option>
               ))}
             </select>
+            <span class='  position-absolute top-0  start-50 translate-middle badge rounded-pill bg-secondary'>
+              Credit: Videos are fetched from https://mixkit.co/
+            </span>
           </div>
         </div>
         <div className='row '>
