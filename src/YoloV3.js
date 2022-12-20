@@ -34,6 +34,7 @@ export const YoloV3 = () => {
   const scoreTHRRef = useRef(configData.scoreThreshold);
   const iouTHRRef = useRef(configData.iouThreshold);
   const maxBoxesRef = useRef(configData.maxBoxes);
+  const lastLoopRef = useRef(null);
 
   const [modelsTable, setModelsTable] = useState(configData.models);
 
@@ -60,6 +61,7 @@ export const YoloV3 = () => {
   const [canvasHeight, setCanvasHeight] = useState(416);
   const [durationOfVideo, setDurationOfVideo] = useState(0);
   const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
+  const [fps, setFps] = useState(0);
 
   const animationControl = () => {
     var id = window.requestAnimationFrame(function () {
@@ -160,6 +162,12 @@ export const YoloV3 = () => {
       }
     );
   };
+
+  function findFps() {
+    var thisLoop = new Date();
+    setFps(1000 / (thisLoop - lastLoopRef.current));
+    lastLoopRef.current = thisLoop;
+  }
   const renderCallback_ = (imageObject, selBboxes, scores, classIndices) => {
     videoRender.current.drawOnImage(
       imageObject,
@@ -168,13 +176,11 @@ export const YoloV3 = () => {
       classIndices,
       classNames.current
     );
+    findFps();
   };
 
   useEffect(() => {
     videoRef.current = document.createElement('video');
-    // video.src =
-    // 	'https://archive.org/download/C.E.PriceCatWalksTowardCamera/cat_walks_toward_camera_512kb.mp4';
-
     videoRef.current.controls = true;
     videoRef.current.muted = true;
     videoRef.current.height = canvasHeight; // in px
@@ -198,7 +204,7 @@ export const YoloV3 = () => {
     } else {
       videoRef.current.src = selectedExample;
     }
-
+    lastLoopRef.current = new Date();
     videoRef.current.play();
 
     new Promise((resolve) => {
@@ -297,10 +303,9 @@ export const YoloV3 = () => {
 
     const modelConfig = modelsTable[selectedModel][selectedDataset];
     createModel(modelConfig);
-
-    setModelLoadedMessage(
-      selectedModel + ' ' + selectedDataset + ' is ready!!'
-    );
+    const message = selectedModel + ' ' + selectedDataset + ' is ready!!';
+    setModelLoadedMessage(message);
+    console.log(message);
     setIsModelLoadSpinner(false);
     setIsModelLoaded(true);
   };
@@ -317,103 +322,6 @@ export const YoloV3 = () => {
     }
   };
 
-  class DataAccordionInputNumbers extends React.Component {
-    render() {
-      return (
-        <div class='accordion' id='accordionPanelsStayOpenExample'>
-          <div class='accordion-item'>
-            <h2 class='accordion-header' id='panelsStayOpen-headingOne'>
-              <button
-                class='accordion-button'
-                type='button'
-                data-bs-toggle='collapse'
-                data-bs-target='#panelsStayOpen-collapseOne'
-                aria-expanded='true'
-                aria-controls='panelsStayOpen-collapseOne'
-              >
-                Configurations
-              </button>
-            </h2>
-            <div
-              id='panelsStayOpen-collapseOne'
-              class='accordion-collapse collapse '
-              aria-labelledby='panelsStayOpen-headingOne'
-            >
-              <div class='accordion-body'>
-                <InputNumbers />
-              </div>
-            </div>
-          </div>
-          <div class='accordion-item'>
-            <h2 class='accordion-header' id='panelsStayOpen-headingTwo'>
-              <button
-                class='accordion-button collapsed'
-                type='button'
-                data-bs-toggle='collapse'
-                data-bs-target='#panelsStayOpen-collapseTwo'
-                aria-expanded='false'
-                aria-controls='panelsStayOpen-collapseTwo'
-              >
-                Accordion Item #2
-              </button>
-            </h2>
-            <div
-              id='panelsStayOpen-collapseTwo'
-              class='accordion-collapse collapse'
-              aria-labelledby='panelsStayOpen-headingTwo'
-            >
-              <div class='accordion-body'>
-                <strong>This is the second item's accordion body.</strong> It is
-                hidden by default, until the collapse plugin adds the
-                appropriate classes that we use to style each element. These
-                classes control the overall appearance, as well as the showing
-                and hiding via CSS transitions. You can modify any of this with
-                custom CSS or overriding our default variables. It's also worth
-                noting that just about any HTML can go within the{' '}
-                <code>.accordion-body</code>, though the transition does limit
-                overflow.
-              </div>
-            </div>
-          </div>
-          <div class='accordion-item'>
-            <h2 class='accordion-header' id='panelsStayOpen-headingThree'>
-              <button
-                class='accordion-button collapsed'
-                type='button'
-                data-bs-toggle='collapse'
-                data-bs-target='#panelsStayOpen-collapseThree'
-                aria-expanded='false'
-                aria-controls='panelsStayOpen-collapseThree'
-              >
-                Accordion Item #3
-              </button>
-            </h2>
-            <div
-              id='panelsStayOpen-collapseThree'
-              class='accordion-collapse collapse'
-              aria-labelledby='panelsStayOpen-headingThree'
-            >
-              <div class='accordion-body'>
-                <strong>This is the third item's accordion body.</strong> It is
-                hidden by default, until the collapse plugin adds the
-                appropriate classes that we use to style each element. These
-                classes control the overall appearance, as well as the showing
-                and hiding via CSS transitions. You can modify any of this with
-                custom CSS or overriding our default variables. It's also worth
-                noting that just about any HTML can go within the{' '}
-                <code>.accordion-body</code>, though the transition does limit
-                overflow.
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-  }
-
-  const ttt = (event) => {
-    console.log('ttt test cb');
-  };
   const listInNumbers = [
     {
       mname: 'Score THLD',
@@ -464,43 +372,6 @@ export const YoloV3 = () => {
     },
   ];
 
-  // const SetLinstNumbers = () => {
-  //   return listInNumbers.map((params, index) => (
-  //     <div key={index}>
-  //       <div className='col' key={index}>
-  //         <InputNumber
-  //           name={params.name}
-  //           min={params.min}
-  //           max={params.max}
-  //           step={params.step}
-  //           stateVal={params.stateVal}
-  //           stateSet={params.stateSet}
-  //           refName={params.refName}
-  //           onChangeNumber={params.onChangeNumber}
-  //           className={params.className}
-  //           key={index}
-  //         />
-  //       </div>
-  //     </div>
-  //   ));
-  // };
-
-  // const ListInputNumber = () => {
-  //   <div className='col'>
-  //     <InputNumber
-  //       name='Score THLD'
-  //       min='0'
-  //       max='1'
-  //       step='0.1'
-  //       stateVal={scoreTHR}
-  //       stateSet={setScoreTHR}
-  //       refName='scoreTHRRef'
-  //       onChangeNumber={onChangeNumber}
-  //       className={'form-select-lg col-12'}
-  //     />
-  //   </div>;
-  // };
-
   const noop = () => {};
 
   //   const FileInput = ({ value, onChange = noop, ...rest }) => (
@@ -521,33 +392,6 @@ export const YoloV3 = () => {
   //       </label>
   //     </div>
   //   );
-
-  const rrr = () => {
-    console.log('ListInputNumbers', this.props.listInNumbers);
-    return listInNumbers.map(
-      ({ mname, min, max, step, stateVal, stateSet, refName, className }) => (
-        <div className='col'>
-          <label className=' h5 '>{mname}</label>
-          <div className='col'>
-            <input
-              className={className}
-              type='number'
-              min={min}
-              max={max}
-              step={step}
-              value={stateVal}
-              onChange={(event) => {
-                onChangeNumber(event, {
-                  stateSet: stateSet,
-                  refName: refName,
-                });
-              }}
-            />
-          </div>
-        </div>
-      )
-    );
-  };
 
   const myRadios = () => {
     return listModelSelectors.map(({ title, selections, selected }) => (
@@ -597,48 +441,10 @@ export const YoloV3 = () => {
 
   return (
     <div className='container '>
-      {/* {listInNumbers.map(
-        ({ mname, min, max, step, stateVal, stateSet, refName, className }) => (
-          <div className='col'>
-            <label className=' h5 '>{mname}</label>
-            <div className='col'>
-              <input
-                className={className}
-                type='number'
-                min={min}
-                max={max}
-                step={step}
-                value={stateVal}
-                onChange={(event) => {
-                  onChangeNumber(event, {
-                    stateSet: stateSet,
-                    refName: refName,
-                  });
-                }}
-              />
-            </div>
-          </div>
-        )
-      )} */}
-
       <div className=' formExcludesVideo col bg-info bg-gradient'>
         <div className='col'>
           <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
-
-          {/* listInputNumber = []
-          {listInputNumber.map((option, index) => (
-                <option key={index} value={index}>
-                  {option.name}
-                </option>
-              ))} */}
-
-          {/* <InputNumbers />
-          <DataAccordionInputNumbers /> */}
         </div>
-        {/* <ListInputNumbers
-          listInNumbers={listInNumbers}
-          onChangeNumber={onChangeNumber}
-        /> */}
       </div>
       <AccordionOpen
         // Item #1 Model Setup Buttons
@@ -650,7 +456,8 @@ export const YoloV3 = () => {
         selectedDataset={selectedDataset}
         // Model Select Button
         isWaiting={isModelLoadSpinner}
-        doneMessage={modelLoadedMessage}
+        modelLoadedMessage={modelLoadedMessage}
+        onLoadModel={onLoadModel}
         // Item #2 Configuration Input elements
         listInNumbers={listInNumbers}
         onChangeNumber={onChangeNumber}
@@ -665,34 +472,13 @@ export const YoloV3 = () => {
         onChangeFile={onChangeFile}
         onClickRunLocal={onClickRunLocal}
       />
+      <div className='mt-3 '>
+        <canvas className='video' ref={canvasRefVideo} width='' height='' />
+      </div>
+
       <div className='col'>
         {showVideoControl == true && (
           <div className='col bg-warning bg-gradient'>
-            <div className='col mb-3'>
-              <div className='col'>
-                <label className=' form-select-lg text-center text-white bg-primary col-4'>
-                  Playback Speed
-                </label>
-              </div>
-              <div className='col-4 mb-3'>
-                <select
-                  className='className= form-select form-select-lg mb- '
-                  onChange={setVideoSpeed}
-                >
-                  <option value={1.0}>Normal speed</option>
-                  <option value={0.5}>Slow</option>
-                  <option value={2.0}>Fast speed</option>
-                </select>
-              </div>
-
-              <div className='h1 col'>
-                <span className='badge text-bg-dark form-select-lg h3'>
-                  {currentDurationOfVideo} /{durationOfVideo}
-                </span>
-              </div>
-            </div>
-
-            <label htmlFor='customRange3' className='form-label'></label>
             <input
               type='range'
               className='form-range'
@@ -702,35 +488,64 @@ export const YoloV3 = () => {
               id='customRange3'
               value={currentDurationOfVideo}
               onChange={videoDuration}
-            ></input>
+            />
+            <b>{modelLoadedMessage}</b>
+
+            <div className='row mb-3'>
+              <div className='h1 col'>
+                <span className='badge text-bg-dark h3'>
+                  <small className='mx-1'>
+                    {fps.toFixed(2).toString().padStart(5, '0')}
+                  </small>
+                  <small>
+                    {currentDurationOfVideo}/{durationOfVideo}
+                  </small>
+                </span>
+              </div>
+              <div className='col mb-1'>
+                <div className='col-6'>
+                  <label className=' form-select text-center text-white bg-primary col'>
+                    Speed
+                  </label>
+                </div>
+                <div className='col-6 mb-1'>
+                  <select
+                    className='className= form-select form-select mb- '
+                    onChange={setVideoSpeed}
+                  >
+                    <option value={1.0}>Normal speed</option>
+                    <option value={0.5}>Slow</option>
+                    <option value={2.0}>Fast speed</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <div className='row '>
               <button
                 variant='primary'
-                className='btn btn btn-success btn-lg col-1 mb-1 mx-2'
+                className='btn btn btn-success btn-lg col-6 mb-1'
                 onClick={pauseVideo}
               >
-                Pause Video
+                Pause
               </button>
               <button
                 variant='primary'
-                className='btn btn btn-primary btn-lg col-1 mb-1'
+                className='btn btn btn-primary btn-lg col-6 mb-1'
                 onClick={resumeVideo}
               >
-                Resume Video
+                Resume
               </button>
               <button
                 variant='primary'
-                className='btn btn btn-danger btn-lg col-1 mb-1 mx-2'
+                className='btn btn btn-danger btn-lg col-6 mb-1'
                 onClick={stopVideo}
               >
-                Stop Video
+                Stop
               </button>
             </div>
           </div>
         )}
-        <div className='mt-3 '>
-          <canvas className='video' ref={canvasRefVideo} width='' height='' />
-        </div>
       </div>
     </div>
   );

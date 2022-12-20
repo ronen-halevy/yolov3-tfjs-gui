@@ -27,7 +27,7 @@ class LoadModel extends React.Component {
 
         <div className='col-6 mx-auto'>
           <div className=' h5 mb-3 bg-warning text-center'>
-            {this.props.doneMessage}
+            {this.props.modelLoadedMessage}
           </div>
         </div>
       </div>

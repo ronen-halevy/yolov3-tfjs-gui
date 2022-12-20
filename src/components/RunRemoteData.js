@@ -33,7 +33,7 @@ class RunRemoteData extends React.Component {
               className='btn btn btn-dark  btn-lg col-12 mb-1'
               onClick={this.props.onClickRunRemote}
             >
-              Run Detection
+              Detect!
             </button>
           </div>
         </div>

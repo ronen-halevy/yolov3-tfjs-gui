@@ -91,7 +91,7 @@ class AccordionOpen extends React.Component {
               <LoadModel
                 onClick={this.props.onLoadModel}
                 isWaiting={this.props.isModelLoadSpinner}
-                doneMessage={this.props.modelLoadedMessage}
+                modelLoadedMessage={this.props.modelLoadedMessage}
               />
             </div>
           </div>

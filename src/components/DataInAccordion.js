@@ -20,7 +20,7 @@ class DataInAccordion extends React.Component {
               aria-expanded='false'
               aria-controls='flush-collapseOne'
             >
-              Run With Remote Data
+              Fetch & Run
             </button>
           </h2>
           <div
@@ -48,7 +48,7 @@ class DataInAccordion extends React.Component {
               aria-expanded='false'
               aria-controls='flush-collapseTwo'
             >
-              Run With Local Files
+              Upload & Run
             </button>
           </h2>
           <div
