@@ -21,14 +21,13 @@ class LoadModel extends React.Component {
                 aria-hidden='true'
               ></span>
             )}
-            {this.props.isWaiting ? 'Loading' : 'Load Model'}
+            <span className='text-center'>
+              {this.props.isWaiting ? 'Loading' : 'Load Model'}
+            </span>
+            <span className='mx-3  bg-success'>
+              {this.props.modelLoadedMessage}
+            </span>
           </button>
-        </div>
-
-        <div className='col-6 mx-auto'>
-          <div className=' h5 mb-3 bg-warning text-center'>
-            {this.props.modelLoadedMessage}
-          </div>
         </div>
       </div>
     );

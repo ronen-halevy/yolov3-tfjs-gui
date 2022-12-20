@@ -62,6 +62,7 @@ class DataInAccordion extends React.Component {
                 <RunLocalData
                   onChangeFile={this.props.onChangeFile}
                   onClickRunLocal={this.props.onClickRunLocal}
+                  selectedFileName={this.props.selectedFileName}
                 />
               </div>
             </div>

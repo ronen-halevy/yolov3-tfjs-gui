@@ -42,6 +42,8 @@ export const YoloV3 = () => {
 
   // States:
   const [selectedFile, setSelectedFile] = useState('');
+  const [selectedFileName, setSelectedFileName] = useState('');
+
   // const [selectedVidFile, setSelectedVidFile] = useState('');
   const [selectedModel, setSelectedModel] = useState('YoloV3Tiny');
   const [selectedDataset, setSelectedDataset] = useState('coco');
@@ -271,12 +273,17 @@ export const YoloV3 = () => {
   };
 
   const onChangeFile = (event) => {
+    console.log(event.target.files[0]);
     stopVideo();
+
     // var URL = window.URL || window.webkitURL;
     // var fileURL = URL.createObjectURL(event.target.files[0]);
     // console.log('onChangeFile', fileURL);
     // setSelectedFile(fileURL);
+    console.log('onChangeFile selectedFileName: ', selectedFileName);
     setSelectedFile(event.target.files[0]);
+    setSelectedFileName(event.target.files[0].name);
+
     // if (event.target.files[0].name.match(/\.(jpg|jpeg|png|gif)$/i)) {
     // 	setShowVideoControl(false);
     // } else {
@@ -303,7 +310,7 @@ export const YoloV3 = () => {
 
     const modelConfig = modelsTable[selectedModel][selectedDataset];
     createModel(modelConfig);
-    const message = selectedModel + ' ' + selectedDataset + ' is ready!!';
+    const message = selectedModel + ' + ' + selectedDataset + ' is ready!';
     setModelLoadedMessage(message);
     console.log(message);
     setIsModelLoadSpinner(false);
@@ -372,68 +379,61 @@ export const YoloV3 = () => {
     },
   ];
 
-  const noop = () => {};
+  const noop = (event) => {
+    const dd = { event };
+    console.log('noop', event.target.files[0].name);
+    console.log(event.target.files[0]);
+  };
 
-  //   const FileInput = ({ value, onChange = noop, ...rest }) => (
+  // const FileInput = ({ onChange, selectedFileName, ...props }) => {
+  //   console.log('FileInput filename', selectedFileName);
+  //   return (
   //     <div>
-  //       { {Boolean(value.length) && (
-  //         <div>Selected files: {value.map((f) => f.name).join(', ')}</div>
-  //       )} }
-  //       <label>
-  //         Click to select some files...
-  //         <input
-  //           {...rest}
-  //           style={{ display: 'none' }}
-  //           type='file'
-  //           onChange={(e) => {
-  //             onChange([...e.target.files]);
-  //           }}
-  //         />
-  //       </label>
+  //       <div>
+  //         <label className='btn btn-primary'>
+  //           Click to select a video or an image file
+  //           <input
+  //             {...props}
+  //             style={{ display: 'none' }}
+  //             type='file'
+  //             onChange={(e) => {
+  //               onChange(e);
+  //             }}
+  //           />
+  //           {selectedFileName ? (
+  //             <span className='badge bg-secondary'>{selectedFileName}</span>
+  //           ) : (
+  //             <span className='badge bg-secondary'> No File Loaded</span>
+  //           )}
+  //         </label>
+  //       </div>
   //     </div>
   //   );
+  // };
 
-  const myRadios = () => {
-    return listModelSelectors.map(({ title, selections, selected }) => (
-      <div>
-        <div className='col-2 mx-auto'>
-          <label htmlFor='selectModel' className=' h5 '>
-            Model
-          </label>
-        </div>
-        <div className='col-6 mx-auto'>
-          <RadioSelect
-            onChange={onSelectModel}
-            selections={Object.keys(modelsTable)}
-            selected={selectedModel}
-          />
-        </div>
-      </div>
-    ));
-  };
+  // const FileInput = ({ value, ...rest }) => {
+  //   console.log(value);
+  //   const inputRef = useRef();
 
-  const FileInput = ({ value, ...rest }) => {
-    const inputRef = useRef();
+  //   useEffect(() => {
+  //     if (value === '') {
+  //       inputRef.current.value = '';
+  //     } else {
+  //       inputRef.current.files = value;
+  //       console.log(inputRef.current.files);
+  //     }
+  //   }, [value]);
 
-    useEffect(() => {
-      if (value === '') {
-        inputRef.current.value = '';
-      } else {
-        inputRef.current.files = value;
-        console.log(inputRef.current.files);
-      }
-    }, [value]);
-
-    return (
-      <input
-        {...rest}
-        type='file'
-        accept='image/*, video/*'
-        onChange={onChangeFile}
-        ref={inputRef}
-      />
-    );
-  };
+  //   return (
+  //     <input
+  //       {...rest}
+  //       type='file'
+  //       accept='image/*, video/*'
+  //       onChange={onChangeFile}
+  //       ref={inputRef}
+  //     />
+  //   );
+  // };
   const cc = [
     { a: 'am', b: 'fdfd' },
     { a: 'mb', b: 'erer' },
@@ -441,6 +441,7 @@ export const YoloV3 = () => {
 
   return (
     <div className='container '>
+      {/* <FileInput onChange={onChangeFile} selectedFileName={selectedFileName} /> */}
       <div className=' formExcludesVideo col bg-info bg-gradient'>
         <div className='col'>
           <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
@@ -464,13 +465,17 @@ export const YoloV3 = () => {
       />
 
       <DataInAccordion
+        // For input numbers components:
         listInNumbers={listInNumbers}
         onChangeNumber={onChangeNumber}
+        // For select example component:
         listExamples={listExamples}
         onChange={onSelectExample}
         onClickRunRemote={onClickRunRemote}
+        // For FileInput component:
         onChangeFile={onChangeFile}
         onClickRunLocal={onClickRunLocal}
+        selectedFileName={selectedFileName}
       />
       <div className='mt-3 '>
         <canvas className='video' ref={canvasRefVideo} width='' height='' />
