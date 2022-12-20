@@ -15,7 +15,7 @@ class FileInput extends React.Component {
               // {...props}
               style={{ display: 'none' }}
               type='file'
-              accept='image/*, video/*'
+              accept='video/*, image/*'
               onChange={(e) => {
                 this.props.onChange(e);
               }}
