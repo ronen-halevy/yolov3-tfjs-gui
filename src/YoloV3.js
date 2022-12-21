@@ -61,8 +61,15 @@ export const YoloV3 = () => {
   const [maxBoxes, setMaxBoxes] = useState(configData.maxBoxes);
 
   const [selectedExample, setSelectedExample] = useState(listExamples[0].url);
+  const [selectedExampleName, setSelectedExampleName] = useState(
+    listExamples[0].name
+  );
+
+  const [selectedExampleIndex, setSelectedExampleIndex] = useState(0);
 
   const [isVideoOn, setIsVideoOn] = useState(true);
+  const [isVideoPaused, setIsVideoPaused] = useState(false);
+
   const [canvasWidth, setCanvasWidth] = useState(416);
   const [canvasHeight, setCanvasHeight] = useState(416);
   const [durationOfVideo, setDurationOfVideo] = useState(0);
@@ -96,8 +103,14 @@ export const YoloV3 = () => {
     }
   };
 
-  const pauseVideo = () => {
-    videoRef.current.pause();
+  const pauseResumeVideo = () => {
+    if (isVideoPaused) {
+      videoRef.current.play();
+      setIsVideoPaused(false);
+    } else {
+      videoRef.current.pause();
+      setIsVideoPaused(true);
+    }
   };
 
   const resumeVideo = () => {
@@ -310,6 +323,20 @@ export const YoloV3 = () => {
     setSelectedExample(selected.url);
   };
 
+  const onToggleExample = (event) => {
+    stopVideo();
+    console.log(selectedExample);
+
+    const selIndex = (selectedExampleIndex + 1) % listExamples.length;
+    const selected = listExamples[selIndex];
+    console.log(selIndex);
+    console.log(selected);
+
+    setSelectedExample(selected.url);
+    setSelectedExampleIndex(selIndex);
+    setSelectedExampleName(selected.name);
+  };
+
   const onLoadModel = () => {
     setModelLoadedMessage('Loading Model...');
     setIsModelLoadSpinner(true);
@@ -426,6 +453,28 @@ export const YoloV3 = () => {
         onClickSetDataSource={onClickSetDataSource}
         isDataSourceLocal={isDataSourceLocal}
       />
+      {isDataSourceLocal ? (
+        <RunLocalData
+          onChangeFile={onChangeFile}
+          onClickRunLocal={onClickRunLocal}
+          selectedFileName={selectedFileName}
+          // isVideoOn={this.props.isVideoOn}
+        />
+      ) : (
+        <span
+          className='btn btn-primary btn-lg  position-relative badge'
+          onClick={onToggleExample}
+        >
+          Toggle url selection
+          <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+            {selectedExampleName}
+          </span>
+          <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
+            Credit: https://mixkit.co/
+          </span>
+        </span>
+      )}
+
       <div>
         {/* {isDataSourceLocal ? (
           <RunLocalData
@@ -461,7 +510,7 @@ export const YoloV3 = () => {
         <div className='row mb-3'>
           <div className='col mb-1'>
             <span
-              className='badge text-bg-primary position-relative mt-5'
+              className='badge text-bg-primary position-relative mt-5 mx-3'
               onClick={onClickSetDataSource}
             >
               Toggle data source
@@ -492,77 +541,49 @@ export const YoloV3 = () => {
             </div> */}
           </div>
         </div>
-        <span className='badge text-bg-warning h3'>
-          <small className='mx-1'>
-            fps: {fps.toFixed(2).toString().padStart(5, '0')}
-          </small>
-          <small>
-            {currentDurationOfVideo}/{durationOfVideo}
-          </small>
-        </span>
-        <span
-          className='badge text-bg-dark position-relative'
-          onClick={onClickToggleVideoSpeed}
-        >
-          {' '}
-          select speed
-          <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
-            {videoSpeed}
+        <div className='col'>
+          <span className='badge text-bg-warning h3 mx-2 '>
+            <small className='mx-1'>
+              fps: {fps.toFixed(2).toString().padStart(5, '0')}
+            </small>
+            <small>
+              {currentDurationOfVideo}/{durationOfVideo}
+            </small>
           </span>
-        </span>
-        <span className='badge text-bg-success' onClick={pauseVideo}>
-          pause
-        </span>
-        <span className='badge text-bg-primary' onClick={resumeVideo}>
-          resume
-        </span>
 
-        {/* <span
-            className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
-            onClick={onClickRunRemote}
+          <span
+            className='badge text-bg-success mx-2'
+            onClick={isVideoOn ? pauseResumeVideo : () => {}}
           >
-            {!isVideoOn ? (
-              <div>
-                Detect!{' '}
-                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
-                  Click to play url
-                </span>{' '}
-              </div>
-            ) : (
-              <div>
-                Stop{' '}
+            {isVideoPaused ? 'resume' : 'pasue'}
+          </span>
+
+          {isDataSourceLocal ? (
+            <span className='position-relative col-1'>
+              <RunButton
+                onClickRunRemote={
+                  selectedFileName != '' ? onClickRunLocal : () => {}
+                }
+                isVideoOn={isVideoOn}
+                badgeLabel={selectedFileName}
+                disabled={selectedFileName == ''}
+              />
+              {selectedFileName == '' && (
                 <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success '>
-                  Running
+                  Select a file
                 </span>
-              </div>
-            )}
-          </span> */}
-        {isDataSourceLocal ? (
-          <span className='position-relative'>
+              )}
+            </span>
+          ) : (
             <RunButton
-              onClickRunRemote={
-                selectedFileName != '' ? onClickRunLocal : () => {}
-              }
+              onClickRunRemote={onClickRunRemote}
               isVideoOn={isVideoOn}
-              badgeLabel={selectedFileName}
+              badgeLabel='urls'
               disabled={selectedFileName == ''}
             />
-            {selectedFileName == '' && (
-              <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success '>
-                Select a file
-              </span>
-            )}
-          </span>
-        ) : (
-          <RunButton
-            onClickRunRemote={onClickRunRemote}
-            isVideoOn={isVideoOn}
-            badgeLabel='urls'
-            disabled={selectedFileName == ''}
-          />
-        )}
+          )}
+        </div>
       </div>
-
       <div className='mtj-3 '>
         <canvas className='video' ref={canvasRefVideo} width='' height='' />
       </div>

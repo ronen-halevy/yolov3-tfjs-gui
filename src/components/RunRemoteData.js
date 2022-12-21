@@ -29,11 +29,16 @@ class RunRemoteData extends React.Component {
                 </option>
               ))}
             </select>
-            <span class='  position-absolute  start-50 translate-middle badge rounded-pill bg-secondary mb-1'>
-              Credit: Videos are fetched from https://mixkit.co/
-            </span>
           </div>
         </div>
+        {/* <div className='row mt-5'>
+          <RunButton
+            onClickRunRemote={this.props.onClickRunRemote}
+            isVideoOn={this.props.isVideoOn}
+            disabled={false}
+          />
+        </div> */}
+
         {/* <div className='row mt-5'>
           <RunButton
             onClickRunRemote={this.props.onClickRunRemote}

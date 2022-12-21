@@ -30,12 +30,12 @@ class DataInAccordion extends React.Component {
             data-bs-parent='#accordionFlushExample'
           >
             <div className='accordion-body'>
-              {/* <RunRemoteData
+              <RunRemoteData
                 onChange={this.props.onChange}
                 listExamples={this.props.listExamples}
                 onClickRunRemote={this.props.onClickRunRemote}
                 isVideoOn={this.props.isVideoOn}
-              /> */}
+              />
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@ class DataInAccordion extends React.Component {
                     onChangeFile={this.props.onChangeFile}
                     onClickRunLocal={this.props.onClickRunLocal}
                     selectedFileName={this.props.selectedFileName}
-                    isVideoOn={this.props.isVideoOn}
+                    // isVideoOn={this.props.isVideoOn}
                   />
                 ) : (
                   <RunRemoteData

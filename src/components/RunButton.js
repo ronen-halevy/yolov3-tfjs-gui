@@ -13,7 +13,7 @@ class RunButton extends React.Component {
         {' '}
         {!this.props.isVideoOn ? (
           <div>
-            Detect!{' '}
+            play{' '}
             <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
               {this.props.badgeLabel}
             </span>{' '}
