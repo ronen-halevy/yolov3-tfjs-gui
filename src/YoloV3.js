@@ -411,7 +411,26 @@ export const YoloV3 = () => {
         selectedFileName={selectedFileName}
       />
       {isVideoOn && (
-        <div>
+        <div row>
+          <div className='row mb-3'>
+            <div className='col mb-1'>
+              <span className='badge text-bg-dark' onClick={stopVideo}>
+                {' '}
+                speed
+              </span>
+              <div className='col-2 mb-1'>
+                <select
+                  className='className= form-select form-select mb- '
+                  onChange={setVideoSpeed}
+                >
+                  <option value={1.0}>Normal</option>
+                  <option value={0.5}>Slow</option>
+                  <option value={2.0}>Fast</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <span className='badge text-bg-warning h3'>
             <small className='mx-1'>
               fps: {fps.toFixed(2).toString().padStart(5, '0')}
