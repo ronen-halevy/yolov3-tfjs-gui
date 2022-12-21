@@ -467,9 +467,28 @@ export const YoloV3 = () => {
         onClickSetDataSource={onClickSetDataSource}
         isDataSourceLocal={isDataSourceLocal}
       />
+
+      <div className='model mt-3 border border-1 border-secondary position-relative'>
+        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-secondary '>
+          model
+        </span>
+        <span className=' badge rounded-pill bg-secondary position-relative'>
+          {selectedModel}
+          <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
+            selected model
+          </span>
+        </span>
+        <span className=' badge rounded-pill bg-secondary position-relative'>
+          {selectedDataset}
+          <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
+            selected dataset
+          </span>
+        </span>
+        <div className='mt-3 mb-3'></div>
+      </div>
       <div className='dataSource mt-3 border border-1 border-secondary position-relative'>
-        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
-          data source
+        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-secondary  '>
+          data source selection
         </span>
         <div className='mt-3 mb-3'>
           {isDataSourceLocal ? (
@@ -541,7 +560,7 @@ export const YoloV3 = () => {
       </span> */}
 
       <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
-        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
+        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-secondary'>
           configurations
         </span>
         <div className='row '>
@@ -567,15 +586,15 @@ export const YoloV3 = () => {
       </div>
 
       <div className='controlVideo mt-3 border border-1 border-secondary position-relative'>
-        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
+        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-secondary'>
           video control
         </span>
-        <div className='col'>
-          <span className='badge text-bg-warning h3 mx-2 '>
-            <small className='mx-1'>
+        <div className='col mt-3'>
+          <span className='badge text-bg-secondary h3 mx-2 '>
+            <small className='mx-1 '>
               fps: {fps.toFixed(2).toString().padStart(5, '0')}
             </small>
-            <small>
+            <small className='mx-1 text-dark'>
               {currentDurationOfVideo}/{durationOfVideo}
             </small>
           </span>
