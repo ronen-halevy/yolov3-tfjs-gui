@@ -434,6 +434,7 @@ export const YoloV3 = () => {
 
   return (
     <div className='container-fluid '>
+      <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
       <AccordionOpen
         // Item #1 Model Setup Buttons
         // Radio Buttons
@@ -499,21 +500,23 @@ export const YoloV3 = () => {
               // isVideoOn={this.props.isVideoOn}
             />
           ) : (
-            <span
-              className='btn btn-primary btn-lg  position-relative badge'
-              onClick={onSwitchExample}
-            >
-              Switch url selection
-              <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+            <div>
+              <span className='position-absolute top-0  start-0 translate-middle badge rounded-pill bg-success'>
                 {selectedExampleName}
               </span>
-              <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-danger'>
-                {selectedExampleIndex}/ {listExamples.length}
+              <span
+                className='btn btn-dark btn-lg  position-relative badge'
+                onClick={onSwitchExample}
+              >
+                Switch url selection
+                <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-danger'>
+                  {selectedExampleIndex}/ {listExamples.length}
+                </span>
+                <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
+                  Credit: https://mixkit.co/
+                </span>
               </span>
-              <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
-                Credit: https://mixkit.co/
-              </span>
-            </span>
+            </div>
           )}
           <div>
             {/* {isDataSourceLocal ? (
@@ -603,7 +606,7 @@ export const YoloV3 = () => {
             onClick={onClickVideoSpeed}
           >
             {' '}
-            set speed
+            speed
             <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
               x{videoSpeed}
             </span>
@@ -626,7 +629,7 @@ export const YoloV3 = () => {
                 disabled={selectedFileName == ''}
               />
               {selectedFileName == '' && (
-                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill text-bg-warning'>
+                <span className='position-absolute top-0  start-50 translate-middle badge  text-bg-warning'>
                   No file selected
                 </span>
               )}

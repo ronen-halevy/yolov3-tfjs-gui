@@ -7,7 +7,7 @@ class FileInput extends React.Component {
   render() {
     return (
       <span className=''>
-        <label className='btn btn-primary btn-lg  position-relative badge'>
+        <label className='btn btn-dark btn-lg  position-relative badge'>
           {this.props.buttonLable}
           {this.props.selectedFileName ? (
             <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
@@ -15,7 +15,7 @@ class FileInput extends React.Component {
             </span>
           ) : (
             <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-danger'>
-              No File Loaded
+              No file selected
             </span>
           )}
           <input
