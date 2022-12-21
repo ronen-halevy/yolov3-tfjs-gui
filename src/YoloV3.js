@@ -372,7 +372,7 @@ export const YoloV3 = () => {
     const val = (Math.round((stateVal + step) * 10) / 10) % max;
     stateSet(val);
     if (refName != '') {
-      refName = val;
+      refName.current = val;
     }
   };
 
