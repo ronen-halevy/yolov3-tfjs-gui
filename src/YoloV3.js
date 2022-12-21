@@ -10,6 +10,10 @@ import InputNumber from './components/InputNumber.js';
 import RadioSelect from './components/RadioSelect.js';
 import DataInAccordion from './components/DataInAccordion.js';
 import AccordionOpen from './components/AccordionOpen.js';
+import RunButton from './components/RunButton.js';
+import RunLocalData from './components/RunLocalData.js';
+
+import RunRemoteData from './components/RunRemoteData.js';
 
 import ListInputNumbers from './components/ListInputNumbers.js';
 
@@ -394,7 +398,6 @@ export const YoloV3 = () => {
         listInNumbers={listInNumbers}
         onChangeNumber={onChangeNumber}
       />
-
       <DataInAccordion
         // For input numbers components:
         listInNumbers={listInNumbers}
@@ -410,7 +413,21 @@ export const YoloV3 = () => {
         onClickRunLocal={onClickRunLocal}
         selectedFileName={selectedFileName}
       />
-      {isVideoOn && (
+
+      <RunRemoteData
+        onChange={onSelectExample}
+        listExamples={listExamples}
+        onClickRunRemote={onClickRunRemote}
+        isVideoOn={isVideoOn}
+      />
+
+      <RunLocalData
+        onChangeFile={onChangeFile}
+        onClickRunLocal={onClickRunLocal}
+        selectedFileName={selectedFileName}
+        isVideoOn={isVideoOn}
+      />
+      {
         <div row>
           <div className='row mb-3'>
             <div className='col mb-1'>
@@ -430,7 +447,6 @@ export const YoloV3 = () => {
               </div>
             </div>
           </div>
-
           <span className='badge text-bg-warning h3'>
             <small className='mx-1'>
               fps: {fps.toFixed(2).toString().padStart(5, '0')}
@@ -445,15 +461,47 @@ export const YoloV3 = () => {
           <span className='badge text-bg-primary' onClick={resumeVideo}>
             resume
           </span>
-          <span className='badge text-bg-dark' onClick={stopVideo}>
-            stop
-          </span>
+
+          {/* <span
+            className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
+            onClick={onClickRunRemote}
+          >
+            {!isVideoOn ? (
+              <div>
+                Detect!{' '}
+                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
+                  Click to play url
+                </span>{' '}
+              </div>
+            ) : (
+              <div>
+                Stop{' '}
+                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success '>
+                  Running
+                </span>
+              </div>
+            )}
+          </span> */}
+
+          <RunButton
+            onClickRunRemote={onClickRunRemote}
+            isVideoOn={isVideoOn}
+            disabled={selectedFileName == ''}
+          />
+
+          {selectedFileName != '' && (
+            <RunButton
+              onClickRunRemote={onClickRunLocal}
+              isVideoOn={isVideoOn}
+              disabled={selectedFileName == ''}
+            />
+          )}
         </div>
-      )}
+      }
+
       <div className='mtj-3 '>
         <canvas className='video' ref={canvasRefVideo} width='' height='' />
       </div>
-
       <div className='col'>
         {isVideoOn && (
           <div className='col bg-warning bg-gradient'>
@@ -467,49 +515,6 @@ export const YoloV3 = () => {
               value={currentDurationOfVideo}
               onChange={videoDuration}
             />
-            <div className='row mb-3'>
-              <div className='col mb-1'>
-                <div className='col-6'>
-                  <label className=' form-select text-center text-white bg-primary col'>
-                    Speed
-                  </label>
-                </div>
-                <div className='col-6 mb-1'>
-                  <select
-                    className='className= form-select form-select mb- '
-                    onChange={setVideoSpeed}
-                  >
-                    <option value={1.0}>Normal speed</option>
-                    <option value={0.5}>Slow</option>
-                    <option value={2.0}>Fast speed</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div className='row '>
-              <button
-                variant='primary'
-                className='btn btn btn-success btn-lg col-6 mb-1'
-                onClick={pauseVideo}
-              >
-                Pause
-              </button>
-              <button
-                variant='primary'
-                className='btn btn btn-primary btn-lg col-6 mb-1'
-                onClick={resumeVideo}
-              >
-                Resume
-              </button>
-              <button
-                variant='primary'
-                className='btn btn btn-danger btn-lg col-6 mb-1'
-                onClick={stopVideo}
-              >
-                Stop
-              </button>
-            </div>
           </div>
         )}
       </div>

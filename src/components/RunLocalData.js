@@ -29,14 +29,14 @@ class RunLocalData extends React.Component {
             accept='video/*'
           />
         </div>
-        {this.props.selectedFileName == '' && (
+        {/* {this.props.selectedFileName == '' && (
           <span class='  badge rounded-pill   bg-danger'>No file loaded!</span>
-        )}
-        <RunButton
+        )} */}
+        {/* <RunButton
           onClickRunRemote={this.props.onClickRunLocal}
           isVideoOn={this.props.isVideoOn}
           disabled={this.props.selectedFileName == ''}
-        />
+        /> */}
       </div>
     );
   }
