@@ -501,14 +501,14 @@ export const YoloV3 = () => {
             />
           ) : (
             <div>
-              <span className='position-absolute top-0  start-0 translate-middle badge rounded-pill bg-success'>
-                {selectedExampleName}
-              </span>
               <span
                 className='btn btn-dark btn-lg  position-relative badge'
                 onClick={onSwitchExample}
               >
                 Switch url selection
+                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                  {selectedExampleName}
+                </span>
                 <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-danger'>
                   {selectedExampleIndex}/ {listExamples.length}
                 </span>
