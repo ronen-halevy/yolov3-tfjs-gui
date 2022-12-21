@@ -90,6 +90,63 @@ class AccordionOpen extends React.Component {
             </div>
           </div>
         </div>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='panelsStayOpen-headingThree'>
+            <button
+              className='accordion-button collapsed'
+              type='button'
+              data-bs-toggle='collapse'
+              data-bs-target='#panelsStayOpen-collapseThree'
+              aria-expanded='false'
+              aria-controls='panelsStayOpen-collapseThree'
+            >
+              Configurations
+            </button>
+          </h2>
+          <div
+            id='panelsStayOpen-collapseThree'
+            className='accordion-collapse collapse'
+            aria-labelledby='panelsStayOpen-headingThree'
+          >
+            <div className='accordion-body'>
+              {this.props.listInNumbers.map(
+                ({
+                  mname,
+                  min,
+                  max,
+                  step,
+                  stateVal,
+                  stateSet,
+                  refName,
+                  className,
+                }) => (
+                  <div className='col'>
+                    <label className=' h5 '>{mname}</label>
+                    <div className='col'>
+                      <input
+                        className={className}
+                        type='number'
+                        min={min}
+                        max={max}
+                        step={step}
+                        value={stateVal}
+                        onChange={(event) => {
+                          this.props.onChangeNumber(event, {
+                            stateSet: stateSet,
+                            refName: refName,
+                          });
+                        }}
+                      />
+                    </div>
+                    <span class='position-absolute   start-50 translate-middle badge rounded-pill text-bg-warning'>
+                      Duplicate of panel mini buttons functionality
+                    </span>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
