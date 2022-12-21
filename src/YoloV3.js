@@ -137,7 +137,7 @@ export const YoloV3 = () => {
     };
     return getDurationOfVideo;
   };
-  const onClickToggleVideoSpeed = (e) => {
+  const onClickVideoSpeed = (e) => {
     const speed = videoSpeed * 2 > 2.0 ? 0.5 : videoSpeed * 2;
     videoRef.current.playbackRate = parseFloat(speed);
     setVideoSpeed(speed);
@@ -323,7 +323,7 @@ export const YoloV3 = () => {
     setSelectedExample(selected.url);
   };
 
-  const onToggleExample = (event) => {
+  const onSwitchExample = (event) => {
     stopVideo();
     console.log(selectedExample);
 
@@ -362,6 +362,20 @@ export const YoloV3 = () => {
     }
   };
 
+  // onClick={(event) => {
+  //   this.props.onChangeConfigNumber(event, {
+  //     stateVal, rest
+  //   });
+  // }}
+  const onChangeConfigNumber = (listInNumbers, index) => {
+    let { min, max, stateSet, stateVal, refName, step } = listInNumbers[index];
+    const val = (Math.round((stateVal + step) * 10) / 10) % max;
+    stateSet(val);
+    if (refName != '') {
+      refName = val;
+    }
+  };
+
   const onClickSetDataSource = (event) => {
     isDataSourceLocal
       ? setIsDataSourceLocal(false)
@@ -371,34 +385,34 @@ export const YoloV3 = () => {
   const listInNumbers = [
     {
       mname: 'Score THLD',
-      min: '0',
-      max: '1',
-      step: '0.1',
+      min: 0,
+      max: 1,
+      step: 0.1,
       stateVal: scoreTHR,
       stateSet: setScoreTHR,
-      refName: 'scoreTHRRef',
+      refName: scoreTHRRef,
       className: 'form-select-lg col-12',
     },
 
     {
       mname: 'Iou THLD',
-      min: '0',
-      max: '1',
-      step: '0.1',
+      min: 0,
+      max: 1,
+      step: 0.1,
       stateVal: iouTHR,
       stateSet: setIouTHR,
-      refName: 'iouTHRRef',
+      refName: iouTHRRef,
       className: 'form-select-lg col-12',
     },
 
     {
       mname: 'Max Boxes',
-      min: '0',
-      max: '100',
-      step: '1',
+      min: 0,
+      max: 100,
+      step: 1,
       stateVal: maxBoxes,
       stateSet: setMaxBoxes,
-      refName: 'maxBoxesRef',
+      refName: maxBoxesRef,
       className: 'form-select-lg col-12',
     },
   ];
@@ -419,7 +433,7 @@ export const YoloV3 = () => {
   ];
 
   return (
-    <div className='container '>
+    <div className='container-fluid '>
       <AccordionOpen
         // Item #1 Model Setup Buttons
         // Radio Buttons
@@ -453,6 +467,7 @@ export const YoloV3 = () => {
         onClickSetDataSource={onClickSetDataSource}
         isDataSourceLocal={isDataSourceLocal}
       />
+
       {isDataSourceLocal ? (
         <RunLocalData
           onChangeFile={onChangeFile}
@@ -463,18 +478,20 @@ export const YoloV3 = () => {
       ) : (
         <span
           className='btn btn-primary btn-lg  position-relative badge'
-          onClick={onToggleExample}
+          onClick={onSwitchExample}
         >
-          Toggle url selection
+          Switch url selection
           <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
             {selectedExampleName}
+          </span>
+          <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-danger'>
+            {selectedExampleIndex}/ {listExamples.length}
           </span>
           <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
             Credit: https://mixkit.co/
           </span>
         </span>
       )}
-
       <div>
         {/* {isDataSourceLocal ? (
           <RunLocalData
@@ -492,6 +509,15 @@ export const YoloV3 = () => {
           />
         )} */}
       </div>
+      <span
+        className='badge text-bg-dark position-relative mt-5 mx-3'
+        onClick={onClickSetDataSource}
+      >
+        Toggle data source
+        <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
+          {isDataSourceLocal ? 'files' : 'urls'}
+        </span>
+      </span>
 
       {/* <span
         className='badge text-bg-primary position-relative'
@@ -509,36 +535,19 @@ export const YoloV3 = () => {
       <div>
         <div className='row mb-3'>
           <div className='col mb-1'>
-            <span
-              className='badge text-bg-primary position-relative mt-5 mx-3'
-              onClick={onClickSetDataSource}
-            >
-              Toggle data source
-              <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
-                {isDataSourceLocal ? 'files' : 'urls'}
-              </span>
-            </span>
-
-            <span
-              className='badge text-bg-dark position-relative'
-              onClick={onClickToggleVideoSpeed}
-            >
-              {' '}
-              select speed
-              <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
-                {videoSpeed}
-              </span>
-            </span>
-            {/* <div className='col-2 mb-1'>
-              <select
-                className='className= form-select form-select mb- '
-                onChange={setVideoSpeed}
+            {listInNumbers.map(({ mname, stateVal, ...rest }, index) => (
+              <span
+                className='badge text-bg-dark position-relative mt-5 mx-3'
+                onClick={(event) => {
+                  onChangeConfigNumber(listInNumbers, index);
+                }}
               >
-                <option value={1.0}>Normal</option>
-                <option value={0.5}>Slow</option>
-                <option value={2.0}>Fast</option>
-              </select>
-            </div> */}
+                {mname}
+                <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
+                  {stateVal}
+                </span>
+              </span>
+            ))}
           </div>
         </div>
         <div className='col'>
@@ -549,6 +558,16 @@ export const YoloV3 = () => {
             <small>
               {currentDurationOfVideo}/{durationOfVideo}
             </small>
+          </span>
+          <span
+            className='badge text-bg-dark position-relative'
+            onClick={onClickVideoSpeed}
+          >
+            {' '}
+            set speed
+            <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
+              x{videoSpeed}
+            </span>
           </span>
 
           <span
@@ -570,7 +589,7 @@ export const YoloV3 = () => {
               />
               {selectedFileName == '' && (
                 <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success '>
-                  Select a file
+                  No file selected
                 </span>
               )}
             </span>
@@ -578,7 +597,7 @@ export const YoloV3 = () => {
             <RunButton
               onClickRunRemote={onClickRunRemote}
               isVideoOn={isVideoOn}
-              badgeLabel='urls'
+              badgeLabel={selectedExampleName}
               disabled={selectedFileName == ''}
             />
           )}
