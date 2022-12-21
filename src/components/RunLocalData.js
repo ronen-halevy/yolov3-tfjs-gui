@@ -9,26 +9,26 @@ class RunLocalData extends React.Component {
   }
   render() {
     return (
-      <div className='col'>
-        <div className=' mb-2 mx-auto'>
+      <span className=''>
+        <span className=' mb-2 mx-2'>
           <FileInput
             onChange={this.props.onChangeFile}
             selectedFileName={this.props.selectedFileName}
             buttonLable='Click to select a file'
             accept='video/*, image/*'
           />
-        </div>
-        <div className=' mb-2 mx-auto '>
-          <span class='  badge rounded-pill  text-bg-light bg-warning'>
-            video files
-          </span>
+        </span>
+        <span className=' mb-2 position-relative '>
           <FileInput
             onChange={this.props.onChangeFile}
             selectedFileName={this.props.selectedFileName}
             buttonLable='Click to select a file'
             accept='video/*'
           />
-        </div>
+          <span class='  badge rounded-pill  start-50 top-100 text-bg-light bg-warning position-absolute'>
+            video files
+          </span>
+        </span>
         {/* {this.props.selectedFileName == '' && (
           <span class='  badge rounded-pill   bg-danger'>No file loaded!</span>
         )} */}
@@ -37,7 +37,7 @@ class RunLocalData extends React.Component {
           isVideoOn={this.props.isVideoOn}
           disabled={this.props.selectedFileName == ''}
         /> */}
-      </div>
+      </span>
     );
   }
 }

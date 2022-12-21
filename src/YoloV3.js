@@ -68,6 +68,9 @@ export const YoloV3 = () => {
   const [durationOfVideo, setDurationOfVideo] = useState(0);
   const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
   const [fps, setFps] = useState(0);
+  const [videoSpeed, setVideoSpeed] = useState(1.0);
+
+  const [isDataSourceLocal, setIsDataSourceLocal] = useState(false);
 
   const animationControl = () => {
     var id = window.requestAnimationFrame(function () {
@@ -121,8 +124,10 @@ export const YoloV3 = () => {
     };
     return getDurationOfVideo;
   };
-  const setVideoSpeed = (e) => {
-    videoRef.current.playbackRate = parseFloat(e.target.value);
+  const onClickToggleVideoSpeed = (e) => {
+    const speed = videoSpeed * 2 > 2.0 ? 0.5 : videoSpeed * 2;
+    videoRef.current.playbackRate = parseFloat(speed);
+    setVideoSpeed(speed);
   };
 
   const videoDuration = (e) => {
@@ -330,6 +335,12 @@ export const YoloV3 = () => {
     }
   };
 
+  const onClickSetDataSource = (event) => {
+    isDataSourceLocal
+      ? setIsDataSourceLocal(false)
+      : setIsDataSourceLocal(true);
+  };
+
   const listInNumbers = [
     {
       mname: 'Score THLD',
@@ -412,57 +423,101 @@ export const YoloV3 = () => {
         onChangeFile={onChangeFile}
         onClickRunLocal={onClickRunLocal}
         selectedFileName={selectedFileName}
+        onClickSetDataSource={onClickSetDataSource}
+        isDataSourceLocal={isDataSourceLocal}
       />
+      <div>
+        {/* {isDataSourceLocal ? (
+          <RunLocalData
+            onChangeFile={onChangeFile}
+            onClickRunLocal={onClickRunLocal}
+            selectedFileName={selectedFileName}
+            isVideoOn={isVideoOn}
+          />
+        ) : (
+          <RunRemoteData
+            onChange={onSelectExample}
+            listExamples={listExamples}
+            onClickRunRemote={onClickRunRemote}
+            isVideoOn={isVideoOn}
+          />
+        )} */}
+      </div>
 
-      <RunRemoteData
-        onChange={onSelectExample}
-        listExamples={listExamples}
-        onClickRunRemote={onClickRunRemote}
-        isVideoOn={isVideoOn}
-      />
+      {/* <span
+        className='badge text-bg-primary position-relative'
+        onClick={onClickSetDataSource}
+      >
+        Toggle data source
+        <span
+          className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '
+          onClick={onClickSetDataSource}
+        >
+          {isDataSourceLocal ? 'files' : 'urls'}
+        </span>
+      </span> */}
 
-      <RunLocalData
-        onChangeFile={onChangeFile}
-        onClickRunLocal={onClickRunLocal}
-        selectedFileName={selectedFileName}
-        isVideoOn={isVideoOn}
-      />
-      {
-        <div row>
-          <div className='row mb-3'>
-            <div className='col mb-1'>
-              <span className='badge text-bg-dark' onClick={stopVideo}>
-                {' '}
-                speed
+      <div>
+        <div className='row mb-3'>
+          <div className='col mb-1'>
+            <span
+              className='badge text-bg-primary position-relative mt-5'
+              onClick={onClickSetDataSource}
+            >
+              Toggle data source
+              <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
+                {isDataSourceLocal ? 'files' : 'urls'}
               </span>
-              <div className='col-2 mb-1'>
-                <select
-                  className='className= form-select form-select mb- '
-                  onChange={setVideoSpeed}
-                >
-                  <option value={1.0}>Normal</option>
-                  <option value={0.5}>Slow</option>
-                  <option value={2.0}>Fast</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <span className='badge text-bg-warning h3'>
-            <small className='mx-1'>
-              fps: {fps.toFixed(2).toString().padStart(5, '0')}
-            </small>
-            <small>
-              {currentDurationOfVideo}/{durationOfVideo}
-            </small>
-          </span>
-          <span className='badge text-bg-success' onClick={pauseVideo}>
-            pause
-          </span>
-          <span className='badge text-bg-primary' onClick={resumeVideo}>
-            resume
-          </span>
+            </span>
 
-          {/* <span
+            <span
+              className='badge text-bg-dark position-relative'
+              onClick={onClickToggleVideoSpeed}
+            >
+              {' '}
+              select speed
+              <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
+                {videoSpeed}
+              </span>
+            </span>
+            {/* <div className='col-2 mb-1'>
+              <select
+                className='className= form-select form-select mb- '
+                onChange={setVideoSpeed}
+              >
+                <option value={1.0}>Normal</option>
+                <option value={0.5}>Slow</option>
+                <option value={2.0}>Fast</option>
+              </select>
+            </div> */}
+          </div>
+        </div>
+        <span className='badge text-bg-warning h3'>
+          <small className='mx-1'>
+            fps: {fps.toFixed(2).toString().padStart(5, '0')}
+          </small>
+          <small>
+            {currentDurationOfVideo}/{durationOfVideo}
+          </small>
+        </span>
+        <span
+          className='badge text-bg-dark position-relative'
+          onClick={onClickToggleVideoSpeed}
+        >
+          {' '}
+          select speed
+          <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
+            {videoSpeed}
+          </span>
+        </span>
+        <span className='badge text-bg-success' onClick={pauseVideo}>
+          pause
+        </span>
+        <span className='badge text-bg-primary' onClick={resumeVideo}>
+          resume
+        </span>
+
+        {/* <span
             className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
             onClick={onClickRunRemote}
           >
@@ -482,22 +537,31 @@ export const YoloV3 = () => {
               </div>
             )}
           </span> */}
-
+        {isDataSourceLocal ? (
+          <span className='position-relative'>
+            <RunButton
+              onClickRunRemote={
+                selectedFileName != '' ? onClickRunLocal : () => {}
+              }
+              isVideoOn={isVideoOn}
+              badgeLabel={selectedFileName}
+              disabled={selectedFileName == ''}
+            />
+            {selectedFileName == '' && (
+              <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success '>
+                Select a file
+              </span>
+            )}
+          </span>
+        ) : (
           <RunButton
             onClickRunRemote={onClickRunRemote}
             isVideoOn={isVideoOn}
+            badgeLabel='urls'
             disabled={selectedFileName == ''}
           />
-
-          {selectedFileName != '' && (
-            <RunButton
-              onClickRunRemote={onClickRunLocal}
-              isVideoOn={isVideoOn}
-              disabled={selectedFileName == ''}
-            />
-          )}
-        </div>
-      }
+        )}
+      </div>
 
       <div className='mtj-3 '>
         <canvas className='video' ref={canvasRefVideo} width='' height='' />

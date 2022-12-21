@@ -15,7 +15,7 @@ class RunButton extends React.Component {
           <div>
             Detect!{' '}
             <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
-              Click to play url
+              {this.props.badgeLabel}
             </span>{' '}
           </div>
         ) : (
