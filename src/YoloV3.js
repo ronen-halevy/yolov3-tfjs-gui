@@ -467,7 +467,10 @@ export const YoloV3 = () => {
         onClickSetDataSource={onClickSetDataSource}
         isDataSourceLocal={isDataSourceLocal}
       />
-      <div className='setSource mt-3 border border-4 border-secondary'>
+      <div className='dataSource mt-3 border border-1 border-secondary position-relative'>
+        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
+          data source
+        </span>
         <div className='mt-3 mb-3'>
           {isDataSourceLocal ? (
             <RunLocalData
@@ -518,7 +521,7 @@ export const YoloV3 = () => {
             <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
               {isDataSourceLocal ? 'files' : 'urls'}
             </span>
-            <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
+            <span class='  badge rounded-pill  start-50 top-100 text-bg-light bg-warning position-absolute'>
               file or url
             </span>
           </span>
@@ -537,7 +540,10 @@ export const YoloV3 = () => {
         </span>
       </span> */}
 
-      <div className='configButtons mt-3 border border-4 border-secondary'>
+      <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
+        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
+          configurations
+        </span>
         <div className='row '>
           <div className='col mb-3 mt-3'>
             {listInNumbers.map(({ mname, stateVal, max, ...rest }, index) => (
@@ -551,7 +557,7 @@ export const YoloV3 = () => {
                 <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
                   {stateVal}
                 </span>
-                <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
+                <span class='  badge rounded-pill  start-50 top-100 text-bg-light bg-warning position-absolute'>
                   max: {max}{' '}
                 </span>
               </span>
@@ -560,7 +566,10 @@ export const YoloV3 = () => {
         </div>
       </div>
 
-      <div className='controlVideo mt-3 border border-4 border-secondary'>
+      <div className='controlVideo mt-3 border border-1 border-secondary position-relative'>
+        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
+          video control
+        </span>
         <div className='col'>
           <span className='badge text-bg-warning h3 mx-2 '>
             <small className='mx-1'>
@@ -582,7 +591,7 @@ export const YoloV3 = () => {
           </span>
 
           <span
-            className='badge text-bg-success mx-2'
+            className='badge text-bg-primary mx-2'
             onClick={isVideoOn ? pauseResumeVideo : () => {}}
           >
             {isVideoPaused ? 'resume' : 'pasue'}
@@ -598,7 +607,7 @@ export const YoloV3 = () => {
                 disabled={selectedFileName == ''}
               />
               {selectedFileName == '' && (
-                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success '>
+                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill text-bg-warning'>
                   No file selected
                 </span>
               )}
