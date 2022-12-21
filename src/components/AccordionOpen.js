@@ -146,6 +146,9 @@ class AccordionOpen extends React.Component {
                         }}
                       />
                     </div>
+                    <span class='position-absolute   start-50 translate-middle badge rounded-pill text-bg-warning'>
+                      Duplicate of panel mini buttons functionality
+                    </span>
                   </div>
                 )
               )}
