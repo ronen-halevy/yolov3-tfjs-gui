@@ -467,33 +467,34 @@ export const YoloV3 = () => {
         onClickSetDataSource={onClickSetDataSource}
         isDataSourceLocal={isDataSourceLocal}
       />
-
-      {isDataSourceLocal ? (
-        <RunLocalData
-          onChangeFile={onChangeFile}
-          onClickRunLocal={onClickRunLocal}
-          selectedFileName={selectedFileName}
-          // isVideoOn={this.props.isVideoOn}
-        />
-      ) : (
-        <span
-          className='btn btn-primary btn-lg  position-relative badge'
-          onClick={onSwitchExample}
-        >
-          Switch url selection
-          <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
-            {selectedExampleName}
-          </span>
-          <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-danger'>
-            {selectedExampleIndex}/ {listExamples.length}
-          </span>
-          <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
-            Credit: https://mixkit.co/
-          </span>
-        </span>
-      )}
-      <div>
-        {/* {isDataSourceLocal ? (
+      <div className='setSource mt-3 border border-4 border-secondary'>
+        <div className='mt-3 mb-3'>
+          {isDataSourceLocal ? (
+            <RunLocalData
+              onChangeFile={onChangeFile}
+              onClickRunLocal={onClickRunLocal}
+              selectedFileName={selectedFileName}
+              // isVideoOn={this.props.isVideoOn}
+            />
+          ) : (
+            <span
+              className='btn btn-primary btn-lg  position-relative badge'
+              onClick={onSwitchExample}
+            >
+              Switch url selection
+              <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                {selectedExampleName}
+              </span>
+              <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-danger'>
+                {selectedExampleIndex}/ {listExamples.length}
+              </span>
+              <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
+                Credit: https://mixkit.co/
+              </span>
+            </span>
+          )}
+          <div>
+            {/* {isDataSourceLocal ? (
           <RunLocalData
             onChangeFile={onChangeFile}
             onClickRunLocal={onClickRunLocal}
@@ -508,17 +509,21 @@ export const YoloV3 = () => {
             isVideoOn={isVideoOn}
           />
         )} */}
+          </div>
+          <span
+            className='badge text-bg-dark position-relative mt-4 mx-auto d-grid'
+            onClick={onClickSetDataSource}
+          >
+            Toggle data source
+            <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+              {isDataSourceLocal ? 'files' : 'urls'}
+            </span>
+            <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
+              file or url
+            </span>
+          </span>
+        </div>
       </div>
-      <span
-        className='badge text-bg-dark position-relative mt-5 mx-3'
-        onClick={onClickSetDataSource}
-      >
-        Toggle data source
-        <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
-          {isDataSourceLocal ? 'files' : 'urls'}
-        </span>
-      </span>
-
       {/* <span
         className='badge text-bg-primary position-relative'
         onClick={onClickSetDataSource}
@@ -532,12 +537,12 @@ export const YoloV3 = () => {
         </span>
       </span> */}
 
-      <div>
-        <div className='row mb-3'>
-          <div className='col mb-1'>
-            {listInNumbers.map(({ mname, stateVal, ...rest }, index) => (
+      <div className='configButtons mt-3 border border-4 border-secondary'>
+        <div className='row '>
+          <div className='col mb-3 mt-3'>
+            {listInNumbers.map(({ mname, stateVal, max, ...rest }, index) => (
               <span
-                className='badge text-bg-dark position-relative mt-5 mx-3'
+                className='badge text-bg-dark position-relative  mx-3'
                 onClick={(event) => {
                   onChangeConfigNumber(listInNumbers, index);
                 }}
@@ -546,10 +551,16 @@ export const YoloV3 = () => {
                 <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
                   {stateVal}
                 </span>
+                <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
+                  max: {max}{' '}
+                </span>
               </span>
             ))}
           </div>
         </div>
+      </div>
+
+      <div className='controlVideo mt-3 border border-4 border-secondary'>
         <div className='col'>
           <span className='badge text-bg-warning h3 mx-2 '>
             <small className='mx-1'>
@@ -576,7 +587,6 @@ export const YoloV3 = () => {
           >
             {isVideoPaused ? 'resume' : 'pasue'}
           </span>
-
           {isDataSourceLocal ? (
             <span className='position-relative col-1'>
               <RunButton
@@ -603,25 +613,24 @@ export const YoloV3 = () => {
           )}
         </div>
       </div>
+      {isVideoOn && (
+        <div className='col bg-warning bg-gradient'>
+          <input
+            type='range'
+            className='form-range'
+            min='0'
+            max={durationOfVideo}
+            // step='0.5'
+            id='customRange3'
+            value={currentDurationOfVideo}
+            onChange={videoDuration}
+          />
+        </div>
+      )}
       <div className='mtj-3 '>
         <canvas className='video' ref={canvasRefVideo} width='' height='' />
       </div>
-      <div className='col'>
-        {isVideoOn && (
-          <div className='col bg-warning bg-gradient'>
-            <input
-              type='range'
-              className='form-range'
-              min='0'
-              max={durationOfVideo}
-              // step='0.5'
-              id='customRange3'
-              value={currentDurationOfVideo}
-              onChange={videoDuration}
-            />
-          </div>
-        )}
-      </div>
+      <div className='col'></div>
     </div>
   );
 };
