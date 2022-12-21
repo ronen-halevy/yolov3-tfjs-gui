@@ -410,12 +410,33 @@ export const YoloV3 = () => {
         onClickRunLocal={onClickRunLocal}
         selectedFileName={selectedFileName}
       />
-      <div className='mt-3 '>
+      {isVideoOn && (
+        <div>
+          <span className='badge text-bg-warning h3'>
+            <small className='mx-1'>
+              fps: {fps.toFixed(2).toString().padStart(5, '0')}
+            </small>
+            <small>
+              {currentDurationOfVideo}/{durationOfVideo}
+            </small>
+          </span>
+          <span className='badge text-bg-success' onClick={pauseVideo}>
+            pause
+          </span>
+          <span className='badge text-bg-primary' onClick={resumeVideo}>
+            resume
+          </span>
+          <span className='badge text-bg-dark' onClick={stopVideo}>
+            stop
+          </span>
+        </div>
+      )}
+      <div className='mtj-3 '>
         <canvas className='video' ref={canvasRefVideo} width='' height='' />
       </div>
 
       <div className='col'>
-        {isVideoOn == true && (
+        {isVideoOn && (
           <div className='col bg-warning bg-gradient'>
             <input
               type='range'
@@ -427,19 +448,7 @@ export const YoloV3 = () => {
               value={currentDurationOfVideo}
               onChange={videoDuration}
             />
-            <b>{modelLoadedMessage}</b>
-
             <div className='row mb-3'>
-              <div className='h1 col'>
-                <span className='badge text-bg-dark h3'>
-                  <small className='mx-1'>
-                    {fps.toFixed(2).toString().padStart(5, '0')}
-                  </small>
-                  <small>
-                    {currentDurationOfVideo}/{durationOfVideo}
-                  </small>
-                </span>
-              </div>
               <div className='col mb-1'>
                 <div className='col-6'>
                   <label className=' form-select text-center text-white bg-primary col'>

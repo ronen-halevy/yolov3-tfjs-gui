@@ -3,6 +3,7 @@ import React from 'react';
 // import RunRemoteData from './RunRemoteData.js';
 import LoadModel from './LoadModel.js';
 import RadioSelect from './RadioSelect.js';
+import Readme from './Readme.js';
 
 class AccordionOpen extends React.Component {
   constructor(props) {
@@ -30,6 +31,7 @@ class AccordionOpen extends React.Component {
             aria-labelledby='panelsStayOpen-headingOne'
           >
             <div className='accordion-body'>
+              <Readme />
               <strong>This is the first item's accordion body.</strong> It is
               shown by default, until the collapse plugin adds the appropriate
               classes that we use to style each element. These classes control
