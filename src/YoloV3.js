@@ -369,7 +369,8 @@ export const YoloV3 = () => {
   // }}
   const onChangeConfigNumber = (listInNumbers, index) => {
     let { min, max, stateSet, stateVal, refName, step } = listInNumbers[index];
-    const val = (Math.round((stateVal + step) * 10) / 10) % max;
+    const val = Math.round((stateVal + step) * 10) / 10;
+    val = val > max ? max : val;
     stateSet(val);
     if (refName != '') {
       refName.current = val;
