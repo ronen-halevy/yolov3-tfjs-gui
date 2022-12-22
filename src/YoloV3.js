@@ -522,9 +522,6 @@ export const YoloV3 = () => {
               <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
                 {selectedModelIndex + 1}/{Object.keys(modelsTable).length}
               </span>
-              <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
-                switch models
-              </span>
             </span>
           </div>
           <div className='col-6 text-center'>
