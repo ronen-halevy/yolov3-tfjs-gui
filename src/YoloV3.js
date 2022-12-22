@@ -558,18 +558,57 @@ export const YoloV3 = () => {
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
           Data Source Selection
         </span>
-        <div className='mt-3 mb-3 '>
-          {isDataSourceLocal ? (
-            <div className='col-12 text-center'>
+        <div className=' row mt-3 mb-3 '>
+          <div className=' col-1 text-center'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='16'
+              height='16'
+              fill='currentColor'
+              class='bi bi-1-square'
+              viewBox='0 0 16 16'
+            >
+              <path d='M9.283 4.002V12H7.971V5.338h-.065L6.072 6.656V5.385l1.899-1.383h1.312Z' />
+              <path d='M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2Zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2Z' />
+            </svg>
+          </div>
+          <div className=' col-5  '>
+            <span className=''>
+              <span
+                className='badge text-bg-dark position-relative  '
+                onClick={onClickSetDataSource}
+              >
+                <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                  {isDataSourceLocal ? 'local files' : 'fetch by urls'}
+                </span>{' '}
+                Toggle data source
+                <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
+                  file or url
+                </span>
+              </span>
+            </span>
+          </div>
+          <div className=' col-1 text-center'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='16'
+              height='16'
+              fill='currentColor'
+              class='bi bi-2-circle'
+              viewBox='0 0 16 16'
+            >
+              <path d='M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8Zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0ZM6.646 6.24v.07H5.375v-.064c0-1.213.879-2.402 2.637-2.402 1.582 0 2.613.949 2.613 2.215 0 1.002-.6 1.667-1.287 2.43l-.096.107-1.974 2.22v.077h3.498V12H5.422v-.832l2.97-3.293c.434-.475.903-1.008.903-1.705 0-.744-.557-1.236-1.313-1.236-.843 0-1.336.615-1.336 1.306Z' />
+            </svg>
+          </div>
+          <div className=' col-5 '>
+            {isDataSourceLocal ? (
               <RunLocalData
                 onChangeFile={onChangeFile}
                 onClickRunLocal={onClickRunLocal}
                 selectedFileName={selectedFileName}
                 // isVideoOn={this.props.isVideoOn}
               />
-            </div>
-          ) : (
-            <div className='col-12 text-center'>
+            ) : (
               <span
                 className='btn btn-dark btn-lg  position-relative badge '
                 onClick={onSwitchExample}
@@ -585,22 +624,8 @@ export const YoloV3 = () => {
                   Credit: fetching from https://mixkit.co/
                 </span>
               </span>
-            </div>
-          )}
-          <span className='col d-grid'>
-            <span
-              className='badge text-bg-dark position-relative mt-4 mb-2 mx-auto'
-              onClick={onClickSetDataSource}
-            >
-              <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-                {isDataSourceLocal ? 'local files' : 'fetch by urls'}
-              </span>{' '}
-              Toggle data source
-              <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
-                file or url
-              </span>
-            </span>
-          </span>
+            )}
+          </div>
         </div>
       </div>
       {/* <span
