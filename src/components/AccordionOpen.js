@@ -113,20 +113,27 @@ class AccordionOpen extends React.Component {
           >
             <div className='accordion-body'>
               {this.props.listInNumbers.map(
-                ({
-                  mname,
-                  min,
-                  max,
-                  step,
-                  stateVal,
-                  stateSet,
-                  refName,
-                  className,
-                }) => (
-                  <div className='col'>
+                (
+                  {
+                    mname,
+                    min,
+                    max,
+                    step,
+                    stateVal,
+                    stateSet,
+                    refName,
+                    className,
+                  },
+                  index
+                ) => (
+                  <div className='col' key={index}>
                     <label className=' h5 '>{mname}</label>
-                    <div className='col'>
+                    <div
+                      className='col'
+                      key={index + this.props.listInNumbers.length}
+                    >
                       <input
+                        key={index}
                         className={className}
                         type='number'
                         min={min}
@@ -141,7 +148,7 @@ class AccordionOpen extends React.Component {
                         }}
                       />
                     </div>
-                    <span className='position-absolute   start-50 translate-middle badge rounded-pill text-bg-warning'>
+                    <span className='position-absolute   start-50 translate-middle badge rounded-pill text-bg-warning  key={index}'>
                       Duplicate of panel mini buttons functionality
                     </span>
                   </div>

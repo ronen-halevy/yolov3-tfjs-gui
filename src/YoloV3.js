@@ -597,7 +597,7 @@ export const YoloV3 = () => {
                   {selectedExampleIndex + 1}/ {listExamples.length}
                 </span>
                 <span className='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
-                  Credit: fetching from https://mixkit.co/
+                  fetching from https://mixkit.co/
                 </span>
               </span>
             )}
@@ -623,18 +623,25 @@ export const YoloV3 = () => {
         </span>
         <div className='row mb-2'>
           {listInNumbers.map(({ mname, stateVal, max, ...rest }, index) => (
-            <div className='col-4 mb-3 text-center mt-3'>
+            <div className='col-4 mb-3 text-center mt-3' key={index}>
               <span
                 className='badge text-bg-dark position-relative  mx-3'
+                key={index}
                 onClick={(event) => {
                   onChangeConfigNumber(listInNumbers, index);
                 }}
               >
                 {mname}
-                <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
+                <span
+                  className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success'
+                  key={index + listInNumbers.length}
+                >
                   {stateVal}
                 </span>
-                <span className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
+                <span
+                  className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'
+                  key={index + 2 * listInNumbers.length}
+                >
                   max: {max}{' '}
                 </span>
               </span>
