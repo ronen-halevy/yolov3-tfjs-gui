@@ -1,5 +1,0 @@
-{
-   "yoloMaxBoxes":100,
-   "nmsIouThreshold":0.5,
-   "nmsScoreThreshold":0.1
-}
