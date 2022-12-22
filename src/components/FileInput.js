@@ -14,7 +14,7 @@ class FileInput extends React.Component {
               {this.props.selectedFileName}
             </span>
           ) : (
-            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-danger'>
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill text-bg-warning'>
               No file selected
             </span>
           )}
