@@ -18,7 +18,7 @@ class RunLocalData extends React.Component {
             accept='video/*, image/*'
           />
           <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
-            image & video?
+            image & video
           </span>
         </span>
         <span className=' mb-2 position-relative '>
