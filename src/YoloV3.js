@@ -649,56 +649,63 @@ export const YoloV3 = () => {
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
           Video Control
         </span>
-        <div className='col mt-3'>
-          <span className='badge text-bg-secondary h3 mx-2 '>
-            <small className='mx-1 '>
-              fps: {fps.toFixed(2).toString().padStart(5, '0')}
-            </small>
-            <small className='mx-1 text-dark'>
-              {currentDurationOfVideo}/{durationOfVideo}
-            </small>
-          </span>
-          <span
-            className='badge text-bg-dark position-relative'
-            onClick={onClickVideoSpeed}
-          >
-            {' '}
-            speed
-            <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
-              x{videoSpeed}
+        <div className='row mt-3'>
+          <div className='col-3 text-center'>
+            <span className='badge text-bg-secondary h3 mx-2 '>
+              <small className='mx-1 '>
+                fps: {fps.toFixed(2).toString().padStart(5, '0')}
+              </small>
+              <small className='mx-1 text-dark'>
+                {currentDurationOfVideo}/{durationOfVideo}
+              </small>
             </span>
-          </span>
-
-          <span
-            className='badge text-bg-dark mx-2'
-            onClick={isVideoOn ? pauseResumeVideo : () => {}}
-          >
-            {isVideoPaused ? 'resume' : 'pasue'}
-          </span>
-          {isDataSourceLocal ? (
-            <span className='position-relative col-1'>
+          </div>
+          <div className='col-3 text-center'>
+            <span
+              className='badge text-bg-dark position-relative'
+              onClick={onClickVideoSpeed}
+            >
+              {' '}
+              speed
+              <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
+                x{videoSpeed}
+              </span>
+            </span>
+          </div>
+          <div className='col-3 text-center'>
+            <span
+              className='badge text-bg-dark mx-2'
+              onClick={isVideoOn ? pauseResumeVideo : () => {}}
+            >
+              {isVideoPaused ? 'resume' : 'pasue'}
+            </span>
+          </div>
+          <div className='col-3 text-center'>
+            {isDataSourceLocal ? (
+              <span className='position-relative col-1'>
+                <RunButton
+                  onClickRunRemote={
+                    selectedFileName != '' ? onClickRunLocal : () => {}
+                  }
+                  isVideoOn={isVideoOn}
+                  badgeLabel={selectedFileName}
+                  disabled={selectedFileName == ''}
+                />
+                {selectedFileName == '' && (
+                  <span className='position-absolute top-0  start-50 translate-middle badge  text-bg-warning'>
+                    No file selected
+                  </span>
+                )}
+              </span>
+            ) : (
               <RunButton
-                onClickRunRemote={
-                  selectedFileName != '' ? onClickRunLocal : () => {}
-                }
+                onClickRunRemote={onClickRunRemote}
                 isVideoOn={isVideoOn}
-                badgeLabel={selectedFileName}
+                badgeLabel={selectedExampleName}
                 disabled={selectedFileName == ''}
               />
-              {selectedFileName == '' && (
-                <span className='position-absolute top-0  start-50 translate-middle badge  text-bg-warning'>
-                  No file selected
-                </span>
-              )}
-            </span>
-          ) : (
-            <RunButton
-              onClickRunRemote={onClickRunRemote}
-              isVideoOn={isVideoOn}
-              badgeLabel={selectedExampleName}
-              disabled={selectedFileName == ''}
-            />
-          )}
+            )}
+          </div>
         </div>
       </div>
       {isVideoOn && (
