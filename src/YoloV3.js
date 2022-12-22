@@ -52,6 +52,9 @@ export const YoloV3 = () => {
   const [selectedModel, setSelectedModel] = useState('YoloV3Tiny');
   const [selectedDataset, setSelectedDataset] = useState('coco');
 
+  const [selectedModelIndex, setSelectedModelIndex] = useState(0);
+  const [selectedDatasetIndex, setSelectedDatasetIndex] = useState(0);
+
   const [modelLoadedMessage, setModelLoadedMessage] =
     useState('No Model Loaded!');
   const [isModelLoadSpinner, setIsModelLoadSpinner] = useState(false);
@@ -317,6 +320,37 @@ export const YoloV3 = () => {
     setSelectedDataset(event.target.value);
   };
 
+  const onClickedModel = (event) => {
+    const models = Object.keys(modelsTable);
+    const selIndex = (selectedModelIndex + 1) % models.length;
+    const selected = models[selIndex];
+    console.log(selIndex);
+    console.log(selected);
+
+    setSelectedModelIndex(selIndex);
+    setSelectedModel(selected);
+    // check if prev selected dataset is valid for model:
+    const datasets = Object.keys(modelsTable[selected]);
+    if (datasets.length - 1 < selectedDatasetIndex) {
+      const defaultIndex = 0;
+      setSelectedDatasetIndex(defaultIndex);
+      setSelectedDataset(datasets[defaultIndex]);
+    }
+  };
+  const onClickedtaset = (event) => {
+    const models = Object.keys(modelsTable);
+
+    const datasets = Object.keys(modelsTable[selectedModel]);
+
+    const selIndex = (selectedDatasetIndex + 1) % datasets.length;
+    const selected = datasets[selIndex];
+    console.log(selIndex);
+    console.log(selected);
+
+    setSelectedDatasetIndex(selIndex);
+    setSelectedDataset(selected);
+  };
+
   const onSelectExample = (event) => {
     stopVideo();
     const selected = listExamples[event.target.value];
@@ -418,20 +452,21 @@ export const YoloV3 = () => {
     },
   ];
 
-  const listModelSelectors = [
-    {
-      title: 'Model',
-      onChange: { onSelectModel },
-      selections: Object.keys({ modelsTable }),
-      selected: { selectedModel },
-    },
-    {
-      title: 'Weights',
-      onChange: { onSelectDataset },
-      selections: Object.keys(modelsTable[selectedModel]),
-      selected: { selectedDataset },
-    },
-  ];
+  // const listModelSelectors = [
+  //   {
+  //     title: 'Model',
+  //     onChange: { onSelectModel },
+  //     selections: Object.keys({ modelsTable }),
+  //     selected: { selectedModel },
+  //   },
+  //   {
+  //     title: 'Weights',
+  //     onChange: { onSelectDataset },
+  //     selections: Object.keys(modelsTable[selectedModel]),
+  //     selected: { selectedDataset },
+  //   },
+  // ];
+  // Object.keys(modelsTable[selectedModel])
 
   return (
     <div className='container-fluid '>
@@ -474,7 +509,42 @@ export const YoloV3 = () => {
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary '>
           model
         </span>
-        <span className=' badge rounded-pill bg-success position-relative'>
+        <div className='selectModelAndDataset mt-2'>
+          <span
+            className='btn btn-dark btn-lg  position-relative badge mx-3'
+            onClick={onClickedModel}
+          >
+            Select a model
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+              {selectedModel}
+            </span>
+            <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
+              {selectedModelIndex + 1}/{Object.keys(modelsTable).length}
+            </span>
+            <span class='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
+              switch models
+            </span>
+          </span>
+
+          <span
+            className='btn btn-dark btn-lg  position-relative badge '
+            onClick={onClickedtaset}
+          >
+            Select a dataset
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+              {selectedDataset}
+            </span>
+            <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
+              {selectedDatasetIndex + 1} /
+              {Object.keys(modelsTable[selectedModel]).length}
+            </span>
+            <span class='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
+              switch dataset
+            </span>
+          </span>
+        </div>
+
+        {/* <span className=' badge rounded-pill bg-success position-relative'>
           {selectedModel}
           <span class='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
             selected model
@@ -485,7 +555,7 @@ export const YoloV3 = () => {
           <span class='  badge rounded-pill  start-0 top-100 text-bg-secondary  position-absolute'>
             selected dataset
           </span>
-        </span>
+        </span> */}
         <div className='mt-3 mb-3'></div>
       </div>
       <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
@@ -501,7 +571,7 @@ export const YoloV3 = () => {
               // isVideoOn={this.props.isVideoOn}
             />
           ) : (
-            <div>
+            <div className='mx-3'>
               <span
                 className='btn btn-dark btn-lg  position-relative badge '
                 onClick={onSwitchExample}
