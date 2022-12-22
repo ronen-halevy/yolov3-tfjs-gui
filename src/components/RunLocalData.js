@@ -17,9 +17,6 @@ class RunLocalData extends React.Component {
             buttonLable='Click to select a file'
             accept='video/*, image/*'
           />
-          <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
-            image & video
-          </span>
         </span>
 
         {/* {this.props.selectedFileName == '' && (
