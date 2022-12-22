@@ -10,7 +10,7 @@ class RunLocalData extends React.Component {
   render() {
     return (
       <span className=''>
-        <span className=' mb-2 position-relative d-grid '>
+        <span className='  position-relative d-grid '>
           <FileInput
             onChange={this.props.onChangeFile}
             selectedFileName={this.props.selectedFileName}

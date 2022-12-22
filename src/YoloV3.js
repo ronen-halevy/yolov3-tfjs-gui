@@ -514,38 +514,23 @@ export const YoloV3 = () => {
                   {selectedExampleIndex + 1}/ {listExamples.length}
                 </span>
                 <span class='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
-                  Image & video
+                  Credit: fetching from https://mixkit.co/
                 </span>
               </span>
             </div>
           )}
-          <div>
-            {/* {isDataSourceLocal ? (
-          <RunLocalData
-            onChangeFile={onChangeFile}
-            onClickRunLocal={onClickRunLocal}
-            selectedFileName={selectedFileName}
-            isVideoOn={isVideoOn}
-          />
-        ) : (
-          <RunRemoteData
-            onChange={onSelectExample}
-            listExamples={listExamples}
-            onClickRunRemote={onClickRunRemote}
-            isVideoOn={isVideoOn}
-          />
-        )} */}
-          </div>
-          <span
-            className='badge text-bg-dark position-relative mt-4 mx-auto d-grid'
-            onClick={onClickSetDataSource}
-          >
-            <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-              {isDataSourceLocal ? 'local files' : 'fetch by urls'}
-            </span>{' '}
-            Toggle data source
-            <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
-              file or url
+          <span className='col d-grid'>
+            <span
+              className='badge text-bg-dark position-relative mt-4 mx-auto'
+              onClick={onClickSetDataSource}
+            >
+              <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                {isDataSourceLocal ? 'local files' : 'fetch by urls'}
+              </span>{' '}
+              Toggle data source
+              <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
+                file or url
+              </span>
             </span>
           </span>
         </div>
