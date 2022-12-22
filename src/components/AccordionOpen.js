@@ -81,7 +81,7 @@ class AccordionOpen extends React.Component {
                   selections={Object.keys(
                     this.props.modelsTable[this.props.selectedModel]
                   )}
-                  selected={this.props.selectedDataset}
+                  selected={this.props.selectedWeights}
                 />
               </div>
 
