@@ -624,8 +624,8 @@ export const YoloV3 = () => {
           Configurations
         </span>
         <div className='row '>
-          <div className='col mb-3 mt-3'>
-            {listInNumbers.map(({ mname, stateVal, max, ...rest }, index) => (
+          {listInNumbers.map(({ mname, stateVal, max, ...rest }, index) => (
+            <div className='col-4 mb-3 text-center mt-3'>
               <span
                 className='badge text-bg-dark position-relative  mx-3'
                 onClick={(event) => {
@@ -640,8 +640,8 @@ export const YoloV3 = () => {
                   max: {max}{' '}
                 </span>
               </span>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
 
