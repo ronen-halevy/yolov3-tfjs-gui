@@ -89,17 +89,15 @@ class Readme extends React.Component {
           value range is between 0 and 1. Detections with scores below
           thresholds are filtered out. The tradeoff is between False detections
           for lower thresholds, and missed detections for higher thresholds.
-          IouTHLD button
           <br /> <br />
           <h4>IouTHLD button </h4>
           This button sets the threshold for Iou, an acronym for Intersection
           Over Union. Iou measures the amount of overlap between adjacent
           bounding boxes. The value range is between 0 and 1. Detections with
           scores below thresholds are filtered out. The lower the IOU threshold
-          is, the less display will permit overlap between adjacent bounding
-          boxes. The tradeoff is between missing detections of close objects for
-          lower thresholds and receiving false duplicated detections for higher
-          thresholds.
+          is, the less overlapping boxes are displayed. The tradeoff is between
+          missing detections of close objects for lower thresholds and receiving
+          false duplicated detections for higher thresholds.
           <br /> <br />
           <h4>Max Boxes button </h4>
           This button sets the max number of bounding boxes.
