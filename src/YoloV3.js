@@ -469,7 +469,7 @@ export const YoloV3 = () => {
   // Object.keys(modelsTable[selectedModel])
 
   return (
-    <div className='container-fluid '>
+    <div className='container '>
       <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
       <AccordionOpen
         // Item #1 Model Setup Buttons
@@ -505,43 +505,43 @@ export const YoloV3 = () => {
         isDataSourceLocal={isDataSourceLocal}
       />
 
-      <div className='model mt-3 border border-1 border-secondary position-relative'>
+      <div className='model mt-3 mb-2 border border-1 border-secondary position-relative'>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary '>
           Model Selection
         </span>
-        <div className='selectModelAndDataset mt-2'>
-          <span
-            className='btn btn-dark btn-lg  position-relative badge mx-3'
-            onClick={onClickedModel}
-          >
-            Select a model
-            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
-              {selectedModel}
+        <div className='selectModelAndDataset row mt-2'>
+          <div className='col-6  text-center mb-3'>
+            <span
+              className='btn btn-dark btn-lg  position-relative badge start-0'
+              onClick={onClickedModel}
+            >
+              Select a model
+              <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                {selectedModel}
+              </span>
+              <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
+                {selectedModelIndex + 1}/{Object.keys(modelsTable).length}
+              </span>
+              <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
+                switch models
+              </span>
             </span>
-            <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
-              {selectedModelIndex + 1}/{Object.keys(modelsTable).length}
+          </div>
+          <div className='col-6 text-center'>
+            <span
+              className='btn btn-dark btn-lg  position-relative badge start-0'
+              onClick={onClickedtaset}
+            >
+              Select weights
+              <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                {selectedWeights}
+              </span>
+              <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
+                {selectedWeightsIndex + 1} /
+                {Object.keys(modelsTable[selectedModel]).length}
+              </span>
             </span>
-            <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
-              switch models
-            </span>
-          </span>
-
-          <span
-            className='btn btn-dark btn-lg  position-relative badge '
-            onClick={onClickedtaset}
-          >
-            Select weights
-            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
-              {selectedWeights}
-            </span>
-            <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
-              {selectedWeightsIndex + 1} /
-              {Object.keys(modelsTable[selectedModel]).length}
-            </span>
-            <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
-              switch weights
-            </span>
-          </span>
+          </div>
         </div>
 
         {/* <span className=' badge rounded-pill bg-success position-relative'>
@@ -556,7 +556,6 @@ export const YoloV3 = () => {
             selected dataset
           </span>
         </span> */}
-        <div className='mt-3 mb-3'></div>
       </div>
       <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
@@ -564,7 +563,7 @@ export const YoloV3 = () => {
         </span>
         <div className='mt-3 mb-3 '>
           {isDataSourceLocal ? (
-            <div className='mx-3'>
+            <div className='col-12 text-center'>
               <RunLocalData
                 onChangeFile={onChangeFile}
                 onClickRunLocal={onClickRunLocal}
@@ -573,7 +572,7 @@ export const YoloV3 = () => {
               />
             </div>
           ) : (
-            <div className='mx-3'>
+            <div className='col-12 text-center'>
               <span
                 className='btn btn-dark btn-lg  position-relative badge '
                 onClick={onSwitchExample}
