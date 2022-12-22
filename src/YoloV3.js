@@ -369,7 +369,7 @@ export const YoloV3 = () => {
   // }}
   const onChangeConfigNumber = (listInNumbers, index) => {
     let { min, max, stateSet, stateVal, refName, step } = listInNumbers[index];
-    const val = Math.round((stateVal + step) * 10) / 10;
+    let val = Math.round((stateVal + step) * 10) / 10;
     val = val > max ? min : val;
     stateSet(val);
     if (refName != '') {
@@ -511,7 +511,7 @@ export const YoloV3 = () => {
                   {selectedExampleName}
                 </span>
                 <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-danger'>
-                  {selectedExampleIndex}/ {listExamples.length}
+                  {selectedExampleIndex + 1}/ {listExamples.length}
                 </span>
                 <span class='  badge rounded-pill  start-0 top-100 text-bg-light bg-warning position-absolute'>
                   Credit: https://mixkit.co/
