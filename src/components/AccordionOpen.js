@@ -55,7 +55,7 @@ class AccordionOpen extends React.Component {
           >
             <div className='accordion-body'>
               <div className='col-2 mx-auto'>
-                <span class='position-absolute   start-50 translate-middle badge rounded-pill text-bg-warning'>
+                <span className='position-absolute   start-50 translate-middle badge rounded-pill text-bg-warning'>
                   Duplicate of panel mini buttons functionality
                 </span>
                 <label htmlFor='selectModel' className=' h5 mt-3'>
@@ -141,7 +141,7 @@ class AccordionOpen extends React.Component {
                         }}
                       />
                     </div>
-                    <span class='position-absolute   start-50 translate-middle badge rounded-pill text-bg-warning'>
+                    <span className='position-absolute   start-50 translate-middle badge rounded-pill text-bg-warning'>
                       Duplicate of panel mini buttons functionality
                     </span>
                   </div>

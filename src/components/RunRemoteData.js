@@ -15,7 +15,7 @@ class RunRemoteData extends React.Component {
                   </label> */}
           </div>
           <div className='col position-relative mt-2'>
-            <span class='position-absolute top-10  start-50 translate-middle badge rounded-pill bg-primary'>
+            <span className='position-absolute top-10  start-50 translate-middle badge rounded-pill bg-primary'>
               Select
             </span>
 
@@ -29,7 +29,7 @@ class RunRemoteData extends React.Component {
                 </option>
               ))}
             </select>
-            <span class='position-absolute   start-50 translate-middle badge rounded-pill text-bg-warning'>
+            <span className='position-absolute   start-50 translate-middle badge rounded-pill text-bg-warning'>
               Duplicate of panel mini buttons functionality
             </span>
           </div>

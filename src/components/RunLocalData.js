@@ -20,7 +20,7 @@ class RunLocalData extends React.Component {
         </span>
 
         {/* {this.props.selectedFileName == '' && (
-          <span class='  badge rounded-pill   bg-danger'>No file loaded!</span>
+          <span className='  badge rounded-pill   bg-danger'>No file loaded!</span>
         )} */}
         {/* <RunButton
           onClickRunRemote={this.props.onClickRunLocal}

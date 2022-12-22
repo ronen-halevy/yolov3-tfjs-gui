@@ -543,13 +543,13 @@ export const YoloV3 = () => {
 
         {/* <span className=' badge rounded-pill bg-success position-relative'>
           {selectedModel}
-          <span class='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
+          <span className='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
             selected model
           </span>
         </span>
         <span className=' badge rounded-pill bg-success position-relative'>
           {selectedWeights}
-          <span class='  badge rounded-pill  start-0 top-100 text-bg-secondary  position-absolute'>
+          <span className='  badge rounded-pill  start-0 top-100 text-bg-secondary  position-absolute'>
             selected dataset
           </span>
         </span> */}
@@ -569,7 +569,7 @@ export const YoloV3 = () => {
                   {isDataSourceLocal ? 'local files' : 'fetch by urls'}
                 </span>{' '}
                 Toggle data source
-                <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
+                <span className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
                   file or url
                 </span>
               </span>
@@ -596,7 +596,7 @@ export const YoloV3 = () => {
                 <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
                   {selectedExampleIndex + 1}/ {listExamples.length}
                 </span>
-                <span class='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
+                <span className='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
                   Credit: fetching from https://mixkit.co/
                 </span>
               </span>
@@ -634,7 +634,7 @@ export const YoloV3 = () => {
                 <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
                   {stateVal}
                 </span>
-                <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
+                <span className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
                   max: {max}{' '}
                 </span>
               </span>
