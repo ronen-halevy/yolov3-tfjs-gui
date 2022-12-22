@@ -592,7 +592,7 @@ export const YoloV3 = () => {
           )}
           <span className='col d-grid'>
             <span
-              className='badge text-bg-dark position-relative mt-4 mx-auto'
+              className='badge text-bg-dark position-relative mt-4 mb-2 mx-auto'
               onClick={onClickSetDataSource}
             >
               <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
@@ -623,7 +623,7 @@ export const YoloV3 = () => {
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
           Configurations
         </span>
-        <div className='row '>
+        <div className='row mb-2'>
           {listInNumbers.map(({ mname, stateVal, max, ...rest }, index) => (
             <div className='col-4 mb-3 text-center mt-3'>
               <span
