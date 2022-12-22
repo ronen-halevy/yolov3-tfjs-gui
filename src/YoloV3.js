@@ -507,7 +507,7 @@ export const YoloV3 = () => {
 
       <div className='model mt-3 border border-1 border-secondary position-relative'>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary '>
-          model
+          Model Selection
         </span>
         <div className='selectModelAndDataset mt-2'>
           <span
@@ -521,7 +521,7 @@ export const YoloV3 = () => {
             <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
               {selectedModelIndex + 1}/{Object.keys(modelsTable).length}
             </span>
-            <span class='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
+            <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
               switch models
             </span>
           </span>
@@ -538,7 +538,7 @@ export const YoloV3 = () => {
               {selectedDatasetIndex + 1} /
               {Object.keys(modelsTable[selectedModel]).length}
             </span>
-            <span class='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
+            <span class='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
               switch dataset
             </span>
           </span>
@@ -560,16 +560,18 @@ export const YoloV3 = () => {
       </div>
       <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
-          data source selection
+          Data Source Selection
         </span>
         <div className='mt-3 mb-3 '>
           {isDataSourceLocal ? (
-            <RunLocalData
-              onChangeFile={onChangeFile}
-              onClickRunLocal={onClickRunLocal}
-              selectedFileName={selectedFileName}
-              // isVideoOn={this.props.isVideoOn}
-            />
+            <div className='mx-3'>
+              <RunLocalData
+                onChangeFile={onChangeFile}
+                onClickRunLocal={onClickRunLocal}
+                selectedFileName={selectedFileName}
+                // isVideoOn={this.props.isVideoOn}
+              />
+            </div>
           ) : (
             <div className='mx-3'>
               <span
@@ -620,7 +622,7 @@ export const YoloV3 = () => {
 
       <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
-          configurations
+          Configurations
         </span>
         <div className='row '>
           <div className='col mb-3 mt-3'>
@@ -646,7 +648,7 @@ export const YoloV3 = () => {
 
       <div className='controlVideo mt-3 border border-1 border-secondary position-relative'>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
-          video control
+          Video Control
         </span>
         <div className='col mt-3'>
           <span className='badge text-bg-secondary h3 mx-2 '>
