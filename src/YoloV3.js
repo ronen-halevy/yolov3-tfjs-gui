@@ -536,14 +536,15 @@ export const YoloV3 = () => {
           />
         )} */}
           </div>
+          <span className='position-absolute  start-50 translate-middle badge rounded-pill bg-secondary '>
+            {isDataSourceLocal ? 'local files' : 'fetch by urls'}
+          </span>
           <span
             className='badge text-bg-dark position-relative mt-4 mx-auto d-grid'
             onClick={onClickSetDataSource}
           >
+            {' '}
             Toggle data source
-            <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-              {isDataSourceLocal ? 'files' : 'urls'}
-            </span>
             <span class='  badge rounded-pill  start-50 top-100 text-bg-light bg-warning position-absolute'>
               file or url
             </span>
@@ -614,7 +615,7 @@ export const YoloV3 = () => {
           </span>
 
           <span
-            className='badge text-bg-primary mx-2'
+            className='badge text-bg-dark mx-2'
             onClick={isVideoOn ? pauseResumeVideo : () => {}}
           >
             {isVideoPaused ? 'resume' : 'pasue'}
