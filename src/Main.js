@@ -103,10 +103,6 @@ export const Main = () => {
     }
   };
 
-  const resumeVideo = () => {
-    videoRef.current.play();
-  };
-
   const retrieveGetDurationOfVideo = () => {
     const getDurationOfVideo = () => {
       const videoIntervalTime = setInterval(() => {
@@ -270,7 +266,6 @@ export const Main = () => {
       URL.createObjectURL(selectedFile);
       runImage(selectedFile);
     } else {
-      // setSelectedVidFile(selectedFile);
       runVideo('local');
     }
   };
@@ -383,11 +378,6 @@ export const Main = () => {
     }
   };
 
-  // onClick={(event) => {
-  //   this.props.onChangeConfigNumber(event, {
-  //     stateVal, rest
-  //   });
-  // }}
   const onChangeConfigNumber = (listInNumbers, index) => {
     let { min, max, stateSet, stateVal, refName, step } = listInNumbers[index];
     let val = Math.round((stateVal + step) * 10) / 10;
@@ -438,22 +428,6 @@ export const Main = () => {
       className: 'form-select-lg col-12',
     },
   ];
-
-  // const listModelSelectors = [
-  //   {
-  //     title: 'Model',
-  //     onChange: { onSelectModel },
-  //     selections: Object.keys({ modelsTable }),
-  //     selected: { selectedModel },
-  //   },
-  //   {
-  //     title: 'Weights',
-  //     onChange: { onSelectDataset },
-  //     selections: Object.keys(modelsTable[selectedModel]),
-  //     selected: { selectedWeights },
-  //   },
-  // ];
-  // Object.keys(modelsTable[selectedModel])
 
   return (
     <div className='container '>
@@ -516,32 +490,7 @@ export const Main = () => {
             </span>
           </div>
         </div>
-
-        {/* <span className=' badge rounded-pill bg-success position-relative'>
-          {selectedModel}
-          <span className='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
-            selected model
-          </span>
-        </span>
-        <span className=' badge rounded-pill bg-success position-relative'>
-          {selectedWeights}
-          <span className='  badge rounded-pill  start-0 top-100 text-bg-secondary  position-absolute'>
-            selected dataset
-          </span>
-        </span> */}
       </div>
-      {/* <span
-        className='badge text-bg-primary position-relative'
-        onClick={onClickSetDataSource}
-      >
-        Toggle data source
-        <span
-          className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '
-          onClick={onClickSetDataSource}
-        >
-          {isDataSourceLocal ? 'files' : 'urls'}
-        </span>
-      </span> */}
 
       <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
