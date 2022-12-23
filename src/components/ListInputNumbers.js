@@ -1,6 +1,6 @@
 import React from 'react';
 
-import InputNumber from './InputNumber.js';
+import InputNumber from './InputNumber';
 
 const ttt = (event) => {
   console.log('ttt ');

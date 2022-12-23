@@ -1,10 +1,8 @@
 import React from 'react';
-// import RunLocalData from './RunLocalData.js';
-// import RunRemoteData from './RunRemoteData.js';
-import LoadModel from './LoadModel.js';
-import RadioSelect from './RadioSelect.js';
-import Readme from './Readme.js';
-import RunRemoteData from './RunRemoteData.js';
+import LoadModel from './LoadModel';
+import RadioSelect from './RadioSelect';
+import Readme from './Readme';
+import RunRemoteData from './RunRemoteData';
 
 class AccordionOpen extends React.Component {
   constructor(props) {

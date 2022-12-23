@@ -3,16 +3,16 @@ import * as tf from '@tensorflow/tfjs';
 
 tf.setBackend('webgl');
 
-import DataInAccordion from './components/DataInAccordion.js';
-import AccordionOpen from './components/AccordionOpen.js';
-import RunButton from './components/RunButton.js';
-import RunLocalData from './components/RunLocalData.js';
+import DataInAccordion from './components/DataInAccordion';
+import AccordionOpen from './components/AccordionOpen';
+import RunButton from './components/RunButton';
+import RunLocalData from './components/RunLocalData';
 
 import configData from './config/configModel.json';
 import cocoVideos from './examples/cocoVideos.json';
 
-import YoloPredictor from './yolov3/YoloV3.js';
-import Draw from './yolov3/Render.js';
+import YoloPredictor from './yolov3/YoloV3';
+import Draw from './yolov3/Render';
 
 export const Main = () => {
   // Refs:

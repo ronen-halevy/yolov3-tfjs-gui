@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 
-import decode from './decode';
-import nms from './nms';
+import yoloDecode from './yoloDecode';
+import yoloNms from './yoloNms';
 
 class YoloPredictor {
   constructor(renderCallback_) {
@@ -35,11 +35,11 @@ class YoloPredictor {
   detectFrameVideo = (imageFrame, iouTHR, scoreTHR, maxBoxes) => {
     tf.engine().startScope();
     const imageTensor = this.imagePreprocess(imageFrame);
-    const modelOutputGrids = this.model.predict(imageTensor);
+    const model_output_grids = this.model.predict(imageTensor);
 
     // Decode predictions: combines all grids detection results
-    let [bboxes, confidences, classProbs] = decode(
-      modelOutputGrids,
+    let [bboxes, confidences, classProbs] = yoloDecode(
+      model_output_grids,
       this.nclasses,
       this.anchors
     );
@@ -48,12 +48,8 @@ class YoloPredictor {
     classProbs = classProbs.max(axis);
     confidences = confidences.squeeze(axis);
     let scores = confidences.mul(classProbs);
-    // clean mem
-    classProbs.dispose();
-    modelOutputGrids.dispose();
-    confidences.dispose();
 
-    nms(bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes).then(
+    yoloNms(bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes).then(
       (reasultArrays) => {
         let [selBboxes, scores, classIndices] = reasultArrays;
 
