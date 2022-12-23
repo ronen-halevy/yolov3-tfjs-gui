@@ -626,7 +626,7 @@ export const Main = () => {
                 onClick={onSwitchExample}
               >
                 Click to select a url
-                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                <span className='position-absolute top-0  start-0 translate-middle badge rounded-pill bg-success'>
                   {selectedExampleName}
                 </span>
                 <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
