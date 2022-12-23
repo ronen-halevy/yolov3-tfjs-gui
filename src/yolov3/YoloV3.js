@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 
-import yoloDecode from './yoloDecode.js';
-import yoloNms from './yoloNms.js';
+import decode from './decode.js';
+import nms from './nms.js';
 
 class YoloPredictor {
   constructor(renderCallback_) {
@@ -38,7 +38,7 @@ class YoloPredictor {
     const model_output_grids = this.model.predict(imageTensor);
 
     // Decode predictions: combines all grids detection results
-    let [bboxes, confidences, classProbs] = yoloDecode(
+    let [bboxes, confidences, classProbs] = decode(
       model_output_grids,
       this.nclasses,
       this.anchors
@@ -49,7 +49,7 @@ class YoloPredictor {
     confidences = confidences.squeeze(axis);
     let scores = confidences.mul(classProbs);
 
-    yoloNms(bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes).then(
+    nms(bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes).then(
       (reasultArrays) => {
         let [selBboxes, scores, classIndices] = reasultArrays;
 

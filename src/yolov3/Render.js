@@ -1,8 +1,8 @@
 import config from '../config/configRender.json';
 
 /**
- * Contains methods to draw bounding boxes and text annotations on an image's (same as a single frame) detection.
- */ class Draw {
+ * Contains methods to render bounding boxes and text annotations on an image's (same as a single frame) detection.
+ */ class Render {
   constructor(canvas) {
     this.canvas = canvas;
     this.font = config.font;
@@ -12,8 +12,8 @@ import config from '../config/configRender.json';
     this.textBackgoundColor = config.textBackgoundColor;
   }
   /**
-   * @summary Draws a bounding box and text annotations for a detection
-   * @param {contextType} context - THe canvas context to draw on.
+   * @summary renders a bounding box and text annotations for a detection
+   * @param {contextType} context - THe canvas context to render on.
    * @param {Array<float>} bbox - A normalized to [0,1] bbox: [xmin, ymon, xmax, ymax].
    * @param {float} score - Detections's  score value, val range [0,1].
    * @param {float} classId - Class's index.
@@ -21,7 +21,7 @@ import config from '../config/configRender.json';
    * @param {float} imageHeight - Input image's original height.
    */
 
-  drawBbox = (context, bbox, score, className, imageWidth, imageHeight) => {
+  renderBox = (context, bbox, score, className, imageWidth, imageHeight) => {
     context.beginPath();
 
     // render bounding box
@@ -61,14 +61,14 @@ import config from '../config/configRender.json';
   };
 
   /**
-   * @summary Draws a bounding box and text annotations for an array of detections
-   * @param {img} image - An element to draw into the context. The specification permits any canvas image source,.
+   * @summary renders a bounding box and text annotations for an array of detections
+   * @param {img} image - An element to render into the context. The specification permits any canvas image source,.
    * @param {Array<Array<float>>} bboxes - An array with a bbox array per a detection. A bbox is 4 element array which holds normalized to [0,1] bbox: [xmin, ymon, xmax, ymax].
    * @param {Array<float>} scores - An array with a score value per a detectiono.
    * @param {Array<float>} classIndices - An array with a class index per a detectiono.
    */
 
-  drawOnImage = async (image, bboxes, scores, classIndices, classNames) => {
+  renderOnImage = async (image, bboxes, scores, classIndices, classNames) => {
     const context = this.canvas.getContext('2d');
 
     const imageWidth = image.width;
@@ -79,7 +79,7 @@ import config from '../config/configRender.json';
 
     context.drawImage(image, 0, 0, imageWidth, imageHeight);
     bboxes.forEach((box, idx) =>
-      this.drawBbox(
+      this.renderBox(
         context,
         box,
         scores[idx],
@@ -91,4 +91,4 @@ import config from '../config/configRender.json';
   };
 }
 
-export default Draw;
+export default Render;

@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 
-const yoloNms = (bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes) => {
-  const nms = new Promise((resolve) => {
+const nms = (bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes) => {
+  const nmsPromise = new Promise((resolve) => {
     const nmsResults = tf.image.nonMaxSuppressionAsync(
       bboxes,
       scores,
@@ -23,10 +23,11 @@ const yoloNms = (bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes) => {
       scoresArray,
       classIndicesArray,
     ]);
+
     return reasultArrays;
   });
 
-  return nms;
+  return nmsPromise;
 };
 
-export default yoloNms;
+export default nms;

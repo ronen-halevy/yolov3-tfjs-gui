@@ -11,8 +11,8 @@ import RunLocalData from './components/RunLocalData.js';
 import configData from './config/configModel.json';
 import cocoVideos from './examples/cocoVideos.json';
 
-import YoloPredictor from './yolov3/Detect.js';
-import Draw from './yolov3/draw.js';
+import YoloPredictor from './yolov3/YoloV3.js';
+import Draw from './yolov3/Render.js';
 
 export const Main = () => {
   // Refs:
