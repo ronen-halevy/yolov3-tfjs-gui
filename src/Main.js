@@ -498,7 +498,7 @@ export const Main = () => {
           Model Selection
         </span>
         <div className='selectModelAndDataset row mt-2'>
-          <div className='col-6  text-center mb-3'>
+          <div className='col-4  text-center mb-3'>
             <span
               className='btn btn-dark btn-lg  position-relative badge start-0'
               onClick={onClickedModel}
@@ -512,7 +512,9 @@ export const Main = () => {
               </span>
             </span>
           </div>
-          <div className='col-6 text-center'>
+          <div className='col-4 text-center'> </div>
+
+          <div className='col-4 text-center'>
             <span
               className='btn btn-dark btn-lg  position-relative badge start-0'
               onClick={onClickedtaset}
@@ -592,7 +594,7 @@ export const Main = () => {
           Data Source Selection
         </span>
         <div className=' row mt-3 mb-3 '>
-          <div className=' col-6  text-center'>
+          <div className=' col-4  text-center'>
             <span className=''>
               <span
                 className='badge text-bg-dark position-relative  '
@@ -608,8 +610,9 @@ export const Main = () => {
               </span>
             </span>
           </div>
+          <div className=' col-4 text-center'></div>
 
-          <div className=' col-6 text-center'>
+          <div className=' col-4 text-center'>
             {isDataSourceLocal ? (
               <RunLocalData
                 onChangeFile={onChangeFile}
@@ -643,7 +646,7 @@ export const Main = () => {
           Video Control
         </span>
         <div className=' mt-3 row'>
-          <div className='col-6  text-center'>
+          <div className='col-4  text-center'>
             <span
               className='badge text-bg-dark  position-absolute top-0 '
               onClick={onClickVideoSpeed}
@@ -657,7 +660,7 @@ export const Main = () => {
           </div>
         </div>
         <div className='  row'>
-          <div className='col-6  text-center'>
+          <div className='col-4  text-center'>
             <span className='badge text-bg-secondary h3 mx-2 position-relative'>
               <small className='mx-1 '>
                 fps: {fps.toFixed(2).toString().padStart(5, '0')}
@@ -668,7 +671,7 @@ export const Main = () => {
             </span>
           </div>
 
-          <div className='col-3 text-center'>
+          <div className='col-4 text-center'>
             <span
               className='badge text-bg-dark mx-2'
               onClick={isVideoOn ? pauseResumeVideo : () => {}}
@@ -676,7 +679,7 @@ export const Main = () => {
               {isVideoPaused ? 'resume' : 'pasue'}
             </span>
           </div>
-          <div className='col-3  text-center'>
+          <div className='col-4  text-center'>
             {isDataSourceLocal ? (
               <span className='position-relative col-1'>
                 <RunButton
