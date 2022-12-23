@@ -3,8 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 
 tf.setBackend('webgl');
 
-import DataInAccordion from './components/DataInAccordion';
-import AccordionOpen from './components/AccordionOpen';
+import Accordion from './components/Accordion';
 import RunButton from './components/RunButton';
 import RunLocalData from './components/RunLocalData';
 
@@ -459,7 +458,7 @@ export const Main = () => {
   return (
     <div className='container '>
       <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
-      <AccordionOpen
+      <Accordion
         // Item #1 Model Setup Buttons
         // Radio Buttons
         onSelectModel={onSelectModel}

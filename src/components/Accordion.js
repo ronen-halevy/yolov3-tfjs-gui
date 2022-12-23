@@ -4,7 +4,7 @@ import RadioSelect from './RadioSelect';
 import Readme from './Readme';
 import RunRemoteData from './RunRemoteData';
 
-class AccordionOpen extends React.Component {
+class Accordion extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -189,4 +189,4 @@ class AccordionOpen extends React.Component {
   }
 }
 
-export default AccordionOpen;
+export default Accordion;
