@@ -14,7 +14,7 @@ class RunLocalData extends React.Component {
           <FileInput
             onChange={this.props.onChangeFile}
             selectedFileName={this.props.selectedFileName}
-            buttonLable='Click to select a file'
+            buttonLable='Select a file'
             accept='video/*, image/*'
           />
         </span>
