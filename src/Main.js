@@ -14,7 +14,7 @@ import cocoVideos from './examples/cocoVideos.json';
 import YoloPredictor from './yolov3/Detect.js';
 import Draw from './yolov3/draw.js';
 
-export const YoloV3 = () => {
+export const Main = () => {
   // Refs:
   const canvasRefVideo = useRef(null);
 
@@ -723,4 +723,4 @@ export const YoloV3 = () => {
   );
 };
 
-export default YoloV3;
+export default Main;

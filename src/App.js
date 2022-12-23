@@ -1,13 +1,13 @@
 import React from 'react';
 
-import YoloV3 from './YoloV3.js';
+import Main from './Main.js';
 
 const App = () => {
-	return (
-		<div>
-			<YoloV3 />
-		</div>
-	);
+  return (
+    <div>
+      <Main />
+    </div>
+  );
 };
 
 export default App;
