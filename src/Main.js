@@ -474,23 +474,10 @@ export const Main = () => {
         //  Configuration - input numbers
         listInNumbers={listInNumbers}
         onChangeNumber={onChangeNumber}
-      />
-      <DataInAccordion
-        // For input numbers components:
-        listInNumbers={listInNumbers}
-        onChangeNumber={onChangeNumber}
         // Run with url selection
         listExamples={listExamples}
         onChange={onSelectExample}
         onClickRunRemote={onClickRunRemote}
-        // for both Detect startbuttons
-        isVideoOn={isVideoOn}
-        // Run with FileInput component
-        onChangeFile={onChangeFile}
-        onClickRunLocal={onClickRunLocal}
-        selectedFileName={selectedFileName}
-        onClickSetDataSource={onClickSetDataSource}
-        isDataSourceLocal={isDataSourceLocal}
       />
 
       <div className='model mt-3 mb-2 border border-1 border-secondary position-relative'>

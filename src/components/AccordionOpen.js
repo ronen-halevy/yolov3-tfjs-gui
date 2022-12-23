@@ -4,6 +4,7 @@ import React from 'react';
 import LoadModel from './LoadModel.js';
 import RadioSelect from './RadioSelect.js';
 import Readme from './Readme.js';
+import RunRemoteData from './RunRemoteData.js';
 
 class AccordionOpen extends React.Component {
   constructor(props) {
@@ -36,7 +37,7 @@ class AccordionOpen extends React.Component {
           </div>
         </div>
         <div className='accordion-item'>
-          <h2 className='accordion-header' id='panelsStayOpen-headingTwo'>
+          <h2 className='accordion-header' id='panelsStayOpen-headingFour'>
             <button
               className='accordion-button collapsed'
               type='button'
@@ -154,6 +155,34 @@ class AccordionOpen extends React.Component {
                   </div>
                 )
               )}
+            </div>
+          </div>
+        </div>
+        <div className='accordion-item'>
+          <h2 className='accordion-header' id='panelsStayOpen-headingFour'>
+            <button
+              className='accordion-button collapsed'
+              type='button'
+              data-bs-toggle='collapse'
+              data-bs-target='#panelsStayOpen-collapseFour'
+              aria-expanded='false'
+              aria-controls='panelsStayOpen-collapseFour'
+            >
+              Select Video
+            </button>
+          </h2>
+          <div
+            id='panelsStayOpen-collapseFour'
+            className='accordion-collapse collapse'
+            aria-labelledby='panelsStayOpen-headingFour'
+          >
+            <div className='accordion-body'>
+              <RunRemoteData
+                onChange={this.props.onChange}
+                listExamples={this.props.listExamples}
+                onClickRunRemote={this.props.onClickRunRemote}
+                isVideoOn={this.props.isVideoOn}
+              />
             </div>
           </div>
         </div>
