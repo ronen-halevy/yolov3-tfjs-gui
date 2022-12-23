@@ -146,7 +146,12 @@ class Readme extends React.Component {
         <br />
         <br />
         <br />
-        Errata: Animation is active when in pause{' '}
+        Errata:
+        <br />
+        <ol>
+          <li>Animation is active when in pause </li>
+          <li> resume persists after stop</li>
+        </ol>
       </div>
     );
   }
