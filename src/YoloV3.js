@@ -3,20 +3,16 @@ import * as tf from '@tensorflow/tfjs';
 
 tf.setBackend('webgl');
 
-import Accordion from './components/Accordion';
-import RunButton from './components/RunButton';
-import RunLocalData from './components/RunLocalData';
-import ModelSelectionPanel from './components/ModelSelectionPanel';
-import ConfigurationsPanel from './components/ConfigurationsPanel';
-import SelectDataSource from './components/SelectDataSource';
-import SelectUrlByList from './components/SelectUrlByList';
-import VideoControlPanel from './components/VideoControlPanel';
+import DataInAccordion from './components/DataInAccordion.js';
+import AccordionOpen from './components/AccordionOpen.js';
+import RunButton from './components/RunButton.js';
+import RunLocalData from './components/RunLocalData.js';
 
 import configData from './config/configModel.json';
 import cocoVideos from './examples/cocoVideos.json';
 
-import YoloPredictor from './yolov3/YoloV3';
-import Draw from './yolov3/Render';
+import YoloPredictor from './yolov3/Detect.js';
+import Draw from './yolov3/draw.js';
 
 export const Main = () => {
   // Refs:
@@ -108,6 +104,10 @@ export const Main = () => {
     }
   };
 
+  const resumeVideo = () => {
+    videoRef.current.play();
+  };
+
   const retrieveGetDurationOfVideo = () => {
     const getDurationOfVideo = () => {
       const videoIntervalTime = setInterval(() => {
@@ -185,7 +185,7 @@ export const Main = () => {
     lastLoopRef.current = thisLoop;
   }
   const renderCallback_ = (imageObject, selBboxes, scores, classIndices) => {
-    videoRender.current.renderOnImage(
+    videoRender.current.drawOnImage(
       imageObject,
       selBboxes,
       scores,
@@ -271,6 +271,7 @@ export const Main = () => {
       URL.createObjectURL(selectedFile);
       runImage(selectedFile);
     } else {
+      // setSelectedVidFile(selectedFile);
       runVideo('local');
     }
   };
@@ -383,6 +384,11 @@ export const Main = () => {
     }
   };
 
+  // onClick={(event) => {
+  //   this.props.onChangeConfigNumber(event, {
+  //     stateVal, rest
+  //   });
+  // }}
   const onChangeConfigNumber = (listConfigItems, index) => {
     let { min, max, stateSet, stateVal, refName, step } =
       listConfigItems[index];
@@ -409,6 +415,7 @@ export const Main = () => {
       stateVal: scoreTHR,
       stateSet: setScoreTHR,
       refName: scoreTHRRef,
+      className: 'form-select-lg col-12',
     },
 
     {
@@ -419,6 +426,7 @@ export const Main = () => {
       stateVal: iouTHR,
       stateSet: setIouTHR,
       refName: iouTHRRef,
+      className: 'form-select-lg col-12',
     },
 
     {
@@ -429,13 +437,30 @@ export const Main = () => {
       stateVal: maxBoxes,
       stateSet: setMaxBoxes,
       refName: maxBoxesRef,
+      className: 'form-select-lg col-12',
     },
   ];
+
+  // const listModelSelectors = [
+  //   {
+  //     title: 'Model',
+  //     onChange: { onSelectModel },
+  //     selections: Object.keys({ modelsTable }),
+  //     selected: { selectedModel },
+  //   },
+  //   {
+  //     title: 'Weights',
+  //     onChange: { onSelectDataset },
+  //     selections: Object.keys(modelsTable[selectedModel]),
+  //     selected: { selectedWeights },
+  //   },
+  // ];
+  // Object.keys(modelsTable[selectedModel])
 
   return (
     <div className='container '>
       <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
-      <Accordion
+      <AccordionOpen
         // Item #1 Model Setup Buttons
         // Radio Buttons
         onSelectModel={onSelectModel}
@@ -450,46 +475,97 @@ export const Main = () => {
         //  Configuration - input numbers
         listConfigItems={listConfigItems}
         onChangeNumber={onChangeNumber}
+      />
+      <DataInAccordion
+        // For input numbers components:
+        listConfigItems={listConfigItems}
+        onChangeNumber={onChangeNumber}
         // Run with url selection
         listExamples={listExamples}
         onChange={onSelectExample}
         onClickRunRemote={onClickRunRemote}
-      />
-      <ModelSelectionPanel
-        onClickedModel={onClickedModel}
-        selectedModel={selectedModel}
-        selectedModelIndex={selectedModelIndex}
-        modelsTable={modelsTable}
-        onClickedtaset={onClickedtaset}
-        selectedWeights={selectedWeights}
-        selectedWeightsIndex={selectedWeightsIndex}
+        // for both Detect startbuttons
+        isVideoOn={isVideoOn}
+        // Run with FileInput component
+        onChangeFile={onChangeFile}
+        onClickRunLocal={onClickRunLocal}
+        selectedFileName={selectedFileName}
+        onClickSetDataSource={onClickSetDataSource}
+        isDataSourceLocal={isDataSourceLocal}
       />
 
-      <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
-        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
-          Configurations
+      <div className='model mt-3 mb-2 border border-1 border-secondary position-relative'>
+        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary '>
+          Model Selection
         </span>
-        <div className='row mb-2'>
-          <ConfigurationsPanel
-            listConfigItems={listConfigItems}
-            onChangeConfigNumber={onChangeConfigNumber}
-          />
+        <div className='selectModelAndDataset row mt-2'>
+          <div className='col-6  text-center mb-3'>
+            <span
+              className='btn btn-dark btn-lg  position-relative badge start-0'
+              onClick={onClickedModel}
+            >
+              Select a model
+              <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                {selectedModel}
+              </span>
+              <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
+                {selectedModelIndex + 1}/{Object.keys(modelsTable).length}
+              </span>
+            </span>
+          </div>
+          <div className='col-6 text-center'>
+            <span
+              className='btn btn-dark btn-lg  position-relative badge start-0'
+              onClick={onClickedtaset}
+            >
+              Select weights
+              <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                {selectedWeights}
+              </span>
+              <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
+                {selectedWeightsIndex + 1} /
+                {Object.keys(modelsTable[selectedModel]).length}
+              </span>
+            </span>
+          </div>
         </div>
+
+        {/* <span className=' badge rounded-pill bg-success position-relative'>
+          {selectedModel}
+          <span className='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
+            selected model
+          </span>
+        </span>
+        <span className=' badge rounded-pill bg-success position-relative'>
+          {selectedWeights}
+          <span className='  badge rounded-pill  start-0 top-100 text-bg-secondary  position-absolute'>
+            selected dataset
+          </span>
+        </span> */}
       </div>
       <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
           Data Source Selection
         </span>
         <div className=' row mt-3 mb-3 '>
-          <div className=' col-4  text-center'>
-            <SelectDataSource
-              onClickSetDataSource={onClickSetDataSource}
-              isDataSourceLocal={isDataSourceLocal}
-            />
+          <div className=' col-6  text-center'>
+            <span className=''>
+              <span
+                className='badge text-bg-dark position-relative  '
+                onClick={onClickSetDataSource}
+              >
+                <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                  {isDataSourceLocal ? 'local files' : 'fetch by urls'}
+                </span>{' '}
+                Toggle data source
+                <span className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
+                  file or url
+                </span>
+              </span>
+            </span>
           </div>
-          <div className=' col-4 text-center'></div>
 
-          <div className=' col-4 text-center'>
+          <div className=' col-6 text-center'>
             {isDataSourceLocal ? (
               <RunLocalData
                 onChangeFile={onChangeFile}
@@ -498,14 +574,68 @@ export const Main = () => {
                 // isVideoOn={this.props.isVideoOn}
               />
             ) : (
-              <SelectUrlByList
-                onSwitchExample={onSwitchExample}
-                selectedExampleName={selectedExampleName}
-                selectedExampleIndex={selectedExampleIndex}
-                listExamplesLength={listExamples.length}
-              />
+              <span
+                className='btn btn-dark btn-lg  position-relative badge '
+                onClick={onSwitchExample}
+              >
+                Click to select a url
+                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                  {selectedExampleName}
+                </span>
+                <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
+                  {selectedExampleIndex + 1}/ {listExamples.length}
+                </span>
+                <span className='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
+                  fetching from https://mixkit.co/
+                </span>
+              </span>
             )}
           </div>
+        </div>
+      </div>
+      {/* <span
+        className='badge text-bg-primary position-relative'
+        onClick={onClickSetDataSource}
+      >
+        Toggle data source
+        <span
+          className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '
+          onClick={onClickSetDataSource}
+        >
+          {isDataSourceLocal ? 'files' : 'urls'}
+        </span>
+      </span> */}
+
+      <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
+        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
+          Configurations
+        </span>
+        <div className='row mb-2'>
+          {listConfigItems.map(({ mname, stateVal, max, ...rest }, index) => (
+            <div className='col-4 mb-3 text-center mt-3' key={index}>
+              <span
+                className='badge text-bg-dark position-relative  mx-3'
+                key={index}
+                onClick={(event) => {
+                  onChangeConfigNumber(listConfigItems, index);
+                }}
+              >
+                {mname}
+                <span
+                  className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success'
+                  key={index + listConfigItems.length}
+                >
+                  {stateVal}
+                </span>
+                <span
+                  className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'
+                  key={index + 2 * listConfigItems.length}
+                >
+                  max: {max}{' '}
+                </span>
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -513,22 +643,63 @@ export const Main = () => {
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
           Video Control
         </span>
-        <div className=' mt-3 row'>
-          <VideoControlPanel
-            onClickVideoSpeed={onClickVideoSpeed}
-            videoSpeed={videoSpeed}
-            fps={fps}
-            currentDurationOfVideo={currentDurationOfVideo}
-            durationOfVideo={durationOfVideo}
-            isVideoOn={isVideoOn}
-            pauseResumeVideo={pauseResumeVideo}
-            isVideoPaused={isVideoPaused}
-            isDataSourceLocal={isDataSourceLocal}
-            selectedFileName={selectedFileName}
-            onClickRunRemote={onClickRunRemote}
-            onClickRunLocal={onClickRunLocal}
-            selectedExampleName={selectedExampleName}
-          />
+        <div className=' mt-3'>
+          {/* <div className='col'> */}
+          <span className='badge text-bg-secondary h3 mx-2 '>
+            <small className='mx-1 '>
+              fps: {fps.toFixed(2).toString().padStart(5, '0')}
+            </small>
+            <small className='mx-1 text-dark'>
+              {currentDurationOfVideo}/{durationOfVideo}
+            </small>
+          </span>
+          {/* </div> */}
+          {/* <div className='col '> */}
+          <span
+            className='badge text-bg-dark position-relative'
+            onClick={onClickVideoSpeed}
+          >
+            {' '}
+            speed
+            <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success '>
+              x{videoSpeed}
+            </span>
+          </span>
+          {/* </div> */}
+          {/* <div className='col '> */}
+          <span
+            className='badge text-bg-dark mx-2'
+            onClick={isVideoOn ? pauseResumeVideo : () => {}}
+          >
+            {isVideoPaused ? 'resume' : 'pasue'}
+          </span>
+          {/* </div>
+          <div className='col'> */}
+          {isDataSourceLocal ? (
+            <span className='position-relative col-1'>
+              <RunButton
+                onClickRunRemote={
+                  selectedFileName != '' ? onClickRunLocal : () => {}
+                }
+                isVideoOn={isVideoOn}
+                badgeLabel={selectedFileName}
+                disabled={selectedFileName == ''}
+              />
+              {selectedFileName == '' && (
+                <span className='position-absolute top-0  start-50 translate-middle badge  text-bg-warning'>
+                  No file selected
+                </span>
+              )}
+            </span>
+          ) : (
+            <RunButton
+              onClickRunRemote={onClickRunRemote}
+              isVideoOn={isVideoOn}
+              badgeLabel={selectedExampleName}
+              disabled={selectedFileName == ''}
+            />
+          )}
+          {/* </div> */}
         </div>
       </div>
       {isVideoOn && (

@@ -12,9 +12,9 @@ class ListInputNumbers extends React.Component {
     super(props);
   }
   render() {
-    console.log('ListInputNumbers', this.props.listInNumbers);
+    console.log('ListInputNumbers', this.props.listConfigItems);
 
-    return this.props.listInNumbers.map(
+    return this.props.listConfigItems.map(
       ({ mname, min, max, step, stateVal, stateSet, refName, className }) => (
         <div className='col'>
           <label className=' h5 '>{mname}</label>

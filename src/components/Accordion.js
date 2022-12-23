@@ -111,7 +111,7 @@ class Accordion extends React.Component {
             aria-labelledby='panelsStayOpen-headingThree'
           >
             <div className='accordion-body'>
-              {this.props.listInNumbers.map(
+              {this.props.listConfigItems.map(
                 (
                   {
                     mname,
@@ -129,7 +129,7 @@ class Accordion extends React.Component {
                     <label className=' h5 '>{mname}</label>
                     <div
                       className='col'
-                      key={index + this.props.listInNumbers.length}
+                      key={index + this.props.listConfigItems.length}
                     >
                       <input
                         key={index}
