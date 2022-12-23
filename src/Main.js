@@ -603,7 +603,7 @@ export const Main = () => {
                 <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
                   {isDataSourceLocal ? 'local files' : 'fetch by urls'}
                 </span>{' '}
-                Toggle data source
+                Data source
                 <span className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
                   file or url
                 </span>
