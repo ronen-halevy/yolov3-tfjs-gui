@@ -1,34 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as tf from '@tensorflow/tfjs';
-// import Dropdown from 'react-bootstrap/Dropdown';
 
 tf.setBackend('webgl');
 
-import LoadModel from './components/LoadModel.js';
-import InputNumber from './components/InputNumber.js';
-
-import RadioSelect from './components/RadioSelect.js';
 import DataInAccordion from './components/DataInAccordion.js';
 import AccordionOpen from './components/AccordionOpen.js';
 import RunButton from './components/RunButton.js';
 import RunLocalData from './components/RunLocalData.js';
 
-import RunRemoteData from './components/RunRemoteData.js';
-
-import ListInputNumbers from './components/ListInputNumbers.js';
-
-import Draw from './draw.js';
-import { image } from '@tensorflow/tfjs';
-
 import configData from './config/configModel.json';
 import cocoVideos from './examples/cocoVideos.json';
 
-import YoloPredictor from './Detect.js';
+import YoloPredictor from './yolov3/Detect.js';
+import Draw from './yolov3/draw.js';
 
 export const YoloV3 = () => {
   // Refs:
   const canvasRefVideo = useRef(null);
-  const canvasRefImage = useRef(null);
 
   const classNames = useRef(null);
   const yoloPredictor = useRef(null);

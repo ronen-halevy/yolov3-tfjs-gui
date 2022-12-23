@@ -13,9 +13,10 @@ class Readme extends React.Component {
         based on the paper by Joseph Redmon, and Ali Farhadi. Yolov3 is the 3rd
         version of the algorithm. <br />
         Yolo is a CNN-based deep learning algorithm, which classifies images'
-        objects and bound them with boxes. The app renders bounding boxes
-        annotated with predicted names and prediction&rsquo;s confidence scores.{' '}
-        <br /> <br />
+        objects and bounds them with boxes. The app renders predicted bounding
+        boxes orround the detected objects, annotated with predicted
+        objects&rsquo;s names and prediction&rsquo;s confidence scores. <br />{' '}
+        <br />
         <h3>A brief user's guide</h3> The app is set with default
         configurations, so you are ready to press play and run the default video
         selection!
