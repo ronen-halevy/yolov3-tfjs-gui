@@ -185,7 +185,7 @@ export const Main = () => {
     lastLoopRef.current = thisLoop;
   }
   const renderCallback_ = (imageObject, selBboxes, scores, classIndices) => {
-    videoRender.current.drawOnImage(
+    videoRender.current.renderOnImage(
       imageObject,
       selBboxes,
       scores,
