@@ -24,6 +24,9 @@ const nms = (bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes) => {
       classIndicesArray,
     ]);
 
+    selectedBboxes.dispose();
+    electedClasses.dispose();
+    selectedScores.dispose();
     return reasultArrays;
   });
 

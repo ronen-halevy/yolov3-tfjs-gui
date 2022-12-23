@@ -35,11 +35,11 @@ class YoloPredictor {
   detectFrameVideo = (imageFrame, iouTHR, scoreTHR, maxBoxes) => {
     tf.engine().startScope();
     const imageTensor = this.imagePreprocess(imageFrame);
-    const model_output_grids = this.model.predict(imageTensor);
+    const modelOutputGrids = this.model.predict(imageTensor);
 
     // Decode predictions: combines all grids detection results
     let [bboxes, confidences, classProbs] = decode(
-      model_output_grids,
+      modelOutputGrids,
       this.nclasses,
       this.anchors
     );
@@ -48,6 +48,10 @@ class YoloPredictor {
     classProbs = classProbs.max(axis);
     confidences = confidences.squeeze(axis);
     let scores = confidences.mul(classProbs);
+    // clean mem
+    classProbs.dispose();
+    modelOutputGrids.dispose();
+    confidences.dispose();
 
     nms(bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes).then(
       (reasultArrays) => {
