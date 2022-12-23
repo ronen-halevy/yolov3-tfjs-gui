@@ -50,7 +50,6 @@ class YoloPredictor {
     let scores = confidences.mul(classProbs);
     // clean mem
     classProbs.dispose();
-    modelOutputGrids.dispose();
     confidences.dispose();
 
     nms(bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes).then(
