@@ -115,7 +115,7 @@ class Accordion extends React.Component {
                   className='form-select form-select-lg mb-1'
                   onChange={this.props.onChange}
                 >
-                  {this.props.listExamples.map((option, index) => (
+                  {this.props.videoExamplesList.map((option, index) => (
                     <option key={index} value={index}>
                       {option.name}
                     </option>

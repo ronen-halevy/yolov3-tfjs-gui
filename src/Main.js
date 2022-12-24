@@ -19,7 +19,6 @@ import Draw from './yolov3/Render';
 export const Main = () => {
   // Refs:
   const canvasRefVideo = useRef(null);
-
   const classNames = useRef(null);
   const yoloPredictor = useRef(null);
   const videoRender = useRef(null);
@@ -29,11 +28,10 @@ export const Main = () => {
   const iouTHRRef = useRef(configData.iouThreshold);
   const maxBoxesRef = useRef(configData.maxBoxes);
   const lastLoopRef = useRef(null);
-
   const [modelsTable, setModelsTable] = useState(configData.models);
-
-  const [listExamples, setListExamples] = useState(cocoVideos.cocoVideos);
-
+  const [videoExamplesList, setVideoExamplesList] = useState(
+    cocoVideos.cocoVideos
+  );
   // States:
   const [selectedFile, setSelectedFile] = useState('');
   const [selectedFileName, setSelectedFileName] = useState('');
@@ -53,9 +51,11 @@ export const Main = () => {
   const [iouTHR, setIouTHR] = useState(configData.iouThreshold);
   const [maxBoxes, setMaxBoxes] = useState(configData.maxBoxes);
 
-  const [selectedExample, setSelectedExample] = useState(listExamples[0].url);
+  const [selectedExample, setSelectedExample] = useState(
+    videoExamplesList[0].url
+  );
   const [selectedExampleName, setSelectedExampleName] = useState(
-    listExamples[0].name
+    videoExamplesList[0].name
   );
 
   const [selectedExampleIndex, setSelectedExampleIndex] = useState(0);
@@ -71,6 +71,41 @@ export const Main = () => {
   const [videoSpeed, setVideoSpeed] = useState(1.0);
 
   const [isFileSource, setIsFileSource] = useState(false);
+
+  const configItemsList = [
+    {
+      mname: 'Score THLD',
+      min: 0,
+      max: 1,
+      step: 0.1,
+      stateVal: scoreTHR,
+      stateSet: setScoreTHR,
+      refName: scoreTHRRef,
+    },
+
+    {
+      mname: 'Iou THLD',
+      min: 0,
+      max: 1,
+      step: 0.1,
+      stateVal: iouTHR,
+      stateSet: setIouTHR,
+      refName: iouTHRRef,
+    },
+
+    {
+      mname: 'Max Boxes',
+      min: 0,
+      max: 100,
+      step: 1,
+      stateVal: maxBoxes,
+      stateSet: setMaxBoxes,
+      refName: maxBoxesRef,
+    },
+  ];
+
+  //  utils
+  // callBacks:
 
   const animationControl = () => {
     var id = window.requestAnimationFrame(function () {
@@ -328,16 +363,13 @@ export const Main = () => {
 
     const selIndex = (selectedWeightsIndex + 1) % datasets.length;
     const selected = datasets[selIndex];
-    console.log(selIndex);
-    console.log(selected);
-
     setSelectedWeightsIndex(selIndex);
     setSelectedWeights(selected);
   };
 
   const onSelectExample = (event) => {
     stopVideo();
-    const selected = listExamples[event.target.value];
+    const selected = videoExamplesList[event.target.value];
     setSelectedExample(selected.url);
   };
 
@@ -345,8 +377,8 @@ export const Main = () => {
     stopVideo();
     console.log(selectedExample);
 
-    const selIndex = (selectedExampleIndex + 1) % listExamples.length;
-    const selected = listExamples[selIndex];
+    const selIndex = (selectedExampleIndex + 1) % videoExamplesList.length;
+    const selected = videoExamplesList[selIndex];
     console.log(selIndex);
     console.log(selected);
 
@@ -368,9 +400,9 @@ export const Main = () => {
     setIsModelLoaded(true);
   };
 
-  const onChangeConfigNumber = (listConfigItems, index) => {
+  const onChangeConfigNumber = (configItemsList, index) => {
     let { min, max, stateSet, stateVal, refName, step } =
-      listConfigItems[index];
+      configItemsList[index];
     let val = Math.round((stateVal + step) * 10) / 10;
     val = val > max ? min : val;
     stateSet(val);
@@ -382,38 +414,6 @@ export const Main = () => {
   const onClickSetDataSource = (event) => {
     isFileSource ? setIsFileSource(false) : setIsFileSource(true);
   };
-
-  const listConfigItems = [
-    {
-      mname: 'Score THLD',
-      min: 0,
-      max: 1,
-      step: 0.1,
-      stateVal: scoreTHR,
-      stateSet: setScoreTHR,
-      refName: scoreTHRRef,
-    },
-
-    {
-      mname: 'Iou THLD',
-      min: 0,
-      max: 1,
-      step: 0.1,
-      stateVal: iouTHR,
-      stateSet: setIouTHR,
-      refName: iouTHRRef,
-    },
-
-    {
-      mname: 'Max Boxes',
-      min: 0,
-      max: 100,
-      step: 1,
-      stateVal: maxBoxes,
-      stateSet: setMaxBoxes,
-      refName: maxBoxesRef,
-    },
-  ];
 
   return (
     <div className='container '>
@@ -430,7 +430,7 @@ export const Main = () => {
         modelLoadedMessage={modelLoadedMessage}
         onLoadModel={onLoadModel}
         // Run with url selection
-        listExamples={listExamples}
+        videoExamplesList={videoExamplesList}
         onChange={onSelectExample}
       />
       <ModelSelectionPanel
@@ -449,7 +449,7 @@ export const Main = () => {
         </span>
         <div className='row mb-2'>
           <ConfigurationsPanel
-            listConfigItems={listConfigItems}
+            configItemsList={configItemsList}
             onChangeConfigNumber={onChangeConfigNumber}
           />
         </div>
