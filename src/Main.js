@@ -114,6 +114,24 @@ export const Main = () => {
     }
   };
 
+  const traceDurationOfVideo = () => {
+    const videoIntervalTime = setInterval(() => {
+      setCurrentDurationOfVideo(
+        parseFloat(videoRef.current.currentTime).toFixed(1)
+      );
+
+      if (
+        parseFloat(videoRef.current.currentTime) >= videoRef.current.duration
+      ) {
+        clearVideoInterval();
+      }
+    }, 500);
+
+    const clearVideoInterval = () => {
+      clearInterval(videoIntervalTime);
+    };
+  };
+
   // callBacks:
 
   const animationControl = () => {
@@ -141,23 +159,6 @@ export const Main = () => {
     }
   };
 
-  const traceDurationOfVideo = () => {
-    const videoIntervalTime = setInterval(() => {
-      setCurrentDurationOfVideo(
-        parseFloat(videoRef.current.currentTime).toFixed(1)
-      );
-
-      if (
-        parseFloat(videoRef.current.currentTime) >= videoRef.current.duration
-      ) {
-        clearVideoInterval();
-      }
-    }, 500);
-
-    const clearVideoInterval = () => {
-      clearInterval(videoIntervalTime);
-    };
-  };
   const onClickVideoSpeed = (e) => {
     const speed = videoSpeed * 2 > 2.0 ? 0.5 : videoSpeed * 2;
     videoRef.current.playbackRate = parseFloat(speed);
@@ -463,7 +464,7 @@ export const Main = () => {
           onSwitchExample={onSwitchExample}
           selectedExampleName={selectedExampleName}
           selectedExampleIndex={selectedExampleIndex}
-          listExamplesLength
+          videoExamplesListLen={videoExamplesList.length}
         />
       </div>
 

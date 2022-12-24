@@ -13,7 +13,7 @@ export default class DataSourceSelectionPanel extends Component {
       onSwitchExample,
       selectedExampleName,
       selectedExampleIndex,
-      listExamplesLength,
+      videoExamplesListLen,
     } = this.props;
 
     return (
@@ -39,7 +39,7 @@ export default class DataSourceSelectionPanel extends Component {
               onSwitchExample={onSwitchExample}
               selectedExampleName={selectedExampleName}
               selectedExampleIndex={selectedExampleIndex}
-              listExamplesLength={listExamplesLength}
+              videoExamplesListLen={videoExamplesListLen}
             />
           )}
         </div>

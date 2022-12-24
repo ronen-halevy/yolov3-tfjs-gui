@@ -6,7 +6,7 @@ export default class UrlSelectButton extends Component {
       onSwitchExample,
       selectedExampleName,
       selectedExampleIndex,
-      listExamplesLength,
+      videoExamplesListLen,
     } = this.props;
     return (
       <span
@@ -21,7 +21,7 @@ export default class UrlSelectButton extends Component {
           from https://mixkit.co/
         </span>
         <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
-          {selectedExampleIndex + 1}/ {listExamplesLength}
+          {selectedExampleIndex + 1}/ {videoExamplesListLen}
         </span>
       </span>
     );
