@@ -1,6 +1,6 @@
 import React from 'react';
 
-class LoadModel extends React.Component {
+export default class LoadModel extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -33,5 +33,3 @@ class LoadModel extends React.Component {
     );
   }
 }
-
-export default LoadModel;
