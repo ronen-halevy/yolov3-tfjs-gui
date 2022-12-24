@@ -4,7 +4,7 @@ import * as tf from '@tensorflow/tfjs';
 tf.setBackend('webgl');
 
 import Accordion from './components/Accordion';
-import RunButton from './components/RunButton';
+// import RunButton from './components/RunButton';
 import RunLocalData from './components/RunLocalData';
 import ModelSelectionPanel from './components/ModelSelectionPanel';
 import ConfigurationsPanel from './components/ConfigurationsPanel';
@@ -371,18 +371,6 @@ export const Main = () => {
     setIsModelLoaded(true);
   };
 
-  const onChangeNumber = (event, attrib) => {
-    console.log(event);
-    let { value, min, max } = event.target;
-    value = Math.max(Number(min), Math.min(Number(max), Number(value)));
-    eval(attrib.stateSet)(value);
-    //use refs in addition to state to update vals during animation.
-    if (attrib.refName != '') {
-      eval(attrib.refName).current = value;
-      console.log(scoreTHRRef);
-    }
-  };
-
   const onChangeConfigNumber = (listConfigItems, index) => {
     let { min, max, stateSet, stateVal, refName, step } =
       listConfigItems[index];
@@ -447,9 +435,6 @@ export const Main = () => {
         isWaiting={isModelLoadSpinner}
         modelLoadedMessage={modelLoadedMessage}
         onLoadModel={onLoadModel}
-        //  Configuration - input numbers
-        listConfigItems={listConfigItems}
-        onChangeNumber={onChangeNumber}
         // Run with url selection
         listExamples={listExamples}
         onChange={onSelectExample}
