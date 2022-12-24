@@ -7,9 +7,8 @@ export default class DataSourceSelectionPanel extends Component {
   render() {
     const {
       onClickSetDataSource,
-      isDataSourceLocal,
+      isFileSource,
       onChangeFile,
-      // onClickRunLocal,
       selectedFileName,
       onSwitchExample,
       selectedExampleName,
@@ -22,13 +21,13 @@ export default class DataSourceSelectionPanel extends Component {
         <div className=' col-4  text-center'>
           <DataSourceSelectButton
             onClickSetDataSource={onClickSetDataSource}
-            isDataSourceLocal={isDataSourceLocal}
+            isFileSource={isFileSource}
           />
         </div>
         <div className=' col-4 text-center'></div>
 
         <div className=' col-4 text-center'>
-          {isDataSourceLocal ? (
+          {isFileSource ? (
             <FileInputButton
               onChange={onChangeFile}
               selectedFileName={selectedFileName}

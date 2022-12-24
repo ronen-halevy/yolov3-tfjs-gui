@@ -11,10 +11,10 @@ export default class VideoControlPanel extends Component {
       isVideoOn,
       pauseResumeVideo,
       isVideoPaused,
-      isDataSourceLocal,
+      isFileSource,
       selectedFileName,
-      onClickRunRemote,
-      onClickRunLocal,
+      onClickRunOnUrl,
+      onClickRunFromFile,
       selectedExampleName,
     } = this.props;
 
@@ -52,10 +52,10 @@ export default class VideoControlPanel extends Component {
           <span
             className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
             onClick={
-              !isDataSourceLocal
-                ? onClickRunRemote
+              !isFileSource
+                ? onClickRunOnUrl
                 : selectedFileName != ''
-                ? onClickRunLocal
+                ? onClickRunFromFile
                 : () => {}
             }
           >
@@ -64,7 +64,7 @@ export default class VideoControlPanel extends Component {
               <div>
                 play{' '}
                 <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
-                  {!isDataSourceLocal ? selectedExampleName : selectedFileName}
+                  {!isFileSource ? selectedExampleName : selectedFileName}
                 </span>{' '}
               </div>
             ) : (

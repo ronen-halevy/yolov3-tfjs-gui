@@ -70,7 +70,7 @@ export const Main = () => {
   const [fps, setFps] = useState(0);
   const [videoSpeed, setVideoSpeed] = useState(1.0);
 
-  const [isDataSourceLocal, setIsDataSourceLocal] = useState(false);
+  const [isFileSource, setIsFileSource] = useState(false);
 
   const animationControl = () => {
     var id = window.requestAnimationFrame(function () {
@@ -211,7 +211,7 @@ export const Main = () => {
     setIsVideoOn(true);
     videoRef.current.preload = 'auto';
     videoRef.current.crossOrigin = 'anonymous';
-    if (sourceSel == 'local') {
+    if (sourceSel == 'url') {
       var URL = window.URL || window.webkitURL;
       var fileURL = URL.createObjectURL(selectedFile);
       videoRef.current.src = fileURL;
@@ -256,7 +256,7 @@ export const Main = () => {
     });
   };
 
-  const onClickRunLocal = () => {
+  const onClickRunFromFile = () => {
     if (!isModelLoaded) {
       return;
     }
@@ -269,10 +269,10 @@ export const Main = () => {
       URL.createObjectURL(selectedFile);
       runImage(selectedFile);
     } else {
-      runVideo('local');
+      runVideo('url');
     }
   };
-  const onClickRunRemote = () => {
+  const onClickRunOnUrl = () => {
     if (!isModelLoaded) {
       return;
     }
@@ -286,7 +286,7 @@ export const Main = () => {
       // URL.createObjectURL(selectedFile);
       // runImage(selectedFile);
     } else {
-      runVideo('remote');
+      runVideo('url');
     }
   };
 
@@ -381,9 +381,7 @@ export const Main = () => {
   };
 
   const onClickSetDataSource = (event) => {
-    isDataSourceLocal
-      ? setIsDataSourceLocal(false)
-      : setIsDataSourceLocal(true);
+    isFileSource ? setIsFileSource(false) : setIsFileSource(true);
   };
 
   const listConfigItems = [
@@ -463,9 +461,8 @@ export const Main = () => {
         </span>
         <DataSourceSelectionPanel
           onClickSetDataSource={onClickSetDataSource}
-          isDataSourceLocal={isDataSourceLocal}
+          isFileSource={isFileSource}
           onChangeFile={onChangeFile}
-          // onClickRunLocal,
           selectedFileName={selectedFileName}
           onSwitchExample={onSwitchExample}
           selectedExampleName={selectedExampleName}
@@ -488,10 +485,10 @@ export const Main = () => {
             isVideoOn={isVideoOn}
             pauseResumeVideo={pauseResumeVideo}
             isVideoPaused={isVideoPaused}
-            isDataSourceLocal={isDataSourceLocal}
+            isFileSource={isFileSource}
             selectedFileName={selectedFileName}
-            onClickRunRemote={onClickRunRemote}
-            onClickRunLocal={onClickRunLocal}
+            onClickRunOnUrl={onClickRunOnUrl}
+            onClickRunFromFile={onClickRunFromFile}
             selectedExampleName={selectedExampleName}
           />
         </div>
