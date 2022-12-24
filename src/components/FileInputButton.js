@@ -1,6 +1,6 @@
 import React from 'react';
 
-class FileInputButton extends React.Component {
+export default class FileInputButton extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -32,5 +32,3 @@ class FileInputButton extends React.Component {
     );
   }
 }
-
-export default FileInputButton;

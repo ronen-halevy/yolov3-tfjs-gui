@@ -1,5 +1,5 @@
 import React from 'react';
-class Readme extends React.Component {
+export default class Readme extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -157,4 +157,3 @@ class Readme extends React.Component {
     );
   }
 }
-export default Readme;

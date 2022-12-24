@@ -1,5 +1,5 @@
 import React from 'react';
-class RadioSelect extends React.Component {
+export default class RadioSelect extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -28,5 +28,3 @@ class RadioSelect extends React.Component {
     ));
   }
 }
-
-export default RadioSelect;
