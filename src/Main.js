@@ -36,13 +36,10 @@ export const Main = () => {
   const [selectedFile, setSelectedFile] = useState('');
   const [selectedFileName, setSelectedFileName] = useState('');
 
-  // const [selectedVidFile, setSelectedVidFile] = useState('');
   const [selectedModel, setSelectedModel] = useState('YoloV3Tiny');
   const [selectedWeights, setSelectedWeights] = useState('coco');
-
   const [selectedModelIndex, setSelectedModelIndex] = useState(0);
   const [selectedWeightsIndex, setSelectedWeightsIndex] = useState(0);
-
   const [modelLoadedMessage, setModelLoadedMessage] =
     useState('No Model Loaded!');
   const [isModelLoadSpinner, setIsModelLoadSpinner] = useState(false);
@@ -50,28 +47,24 @@ export const Main = () => {
   const [scoreTHR, setScoreTHR] = useState(configData.scoreThreshold);
   const [iouTHR, setIouTHR] = useState(configData.iouThreshold);
   const [maxBoxes, setMaxBoxes] = useState(configData.maxBoxes);
-
   const [selectedExample, setSelectedExample] = useState(
     videoExamplesList[0].url
   );
   const [selectedExampleName, setSelectedExampleName] = useState(
     videoExamplesList[0].name
   );
-
   const [selectedExampleIndex, setSelectedExampleIndex] = useState(0);
-
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isVideoPaused, setIsVideoPaused] = useState(false);
-
   const [canvasWidth, setCanvasWidth] = useState(416);
   const [canvasHeight, setCanvasHeight] = useState(416);
   const [durationOfVideo, setDurationOfVideo] = useState(0);
   const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
   const [fps, setFps] = useState(0);
   const [videoSpeed, setVideoSpeed] = useState(1.0);
-
   const [isFileSource, setIsFileSource] = useState(false);
 
+  // data
   const configItemsList = [
     {
       mname: 'Score THLD',
@@ -104,6 +97,19 @@ export const Main = () => {
     },
   ];
 
+  // useEffects
+  useEffect(() => {
+    videoRef.current = document.createElement('video');
+    videoRef.current.controls = true;
+    videoRef.current.muted = true;
+    videoRef.current.height = canvasHeight; // in px
+    videoRef.current.width = canvasWidth; // in px
+    setIsVideoOn(false);
+    videoRender.current = new Draw(canvasRefVideo.current);
+    yoloPredictor.current = new YoloPredictor(renderCallback_);
+    onLoadModel();
+  }, []);
+
   //  utils
   const stopVideo = () => {
     setIsVideoOn(false);
@@ -130,6 +136,93 @@ export const Main = () => {
     const clearVideoInterval = () => {
       clearInterval(videoIntervalTime);
     };
+  };
+
+  const createModel = (modelData) => {
+    const modelUrl = modelData.modelUrl;
+    const anchorsUrl = modelData.anchorsUrl;
+    const classNamesUrl = modelData.classNamesUrl;
+
+    const modelPromise = tf.loadLayersModel(modelUrl);
+    const anchorsPromise = fetch(anchorsUrl).then((response) =>
+      response.json()
+    );
+
+    const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
+    console.log('createModel pre promise');
+
+    Promise.all([modelPromise, anchorsPromise, classNamesPromise]).then(
+      (values) => {
+        const classNames_ = values[2].split(/\r?\n/);
+        yoloPredictor.current.initModel(values[0]);
+        yoloPredictor.current.initAnchors(values[1].anchor);
+        yoloPredictor.current.initNclasses(classNames_.length);
+
+        classNames.current = classNames_;
+        console.log('createModel done');
+
+        setIsModelLoaded(true);
+      }
+    );
+  };
+
+  function convertFileToDataUri(field) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.addEventListener('loadend', () => {
+        resolve(reader.result);
+      });
+      reader.readAsDataURL(field);
+    });
+  }
+
+  const runImage = (selectedFile) => {
+    var imageObject = new window.Image();
+
+    var promise = convertFileToDataUri(selectedFile);
+    promise.then((fileUrl) => {
+      imageObject.crossorigin = 'anonymous';
+      imageObject.src = fileUrl;
+    });
+    imageObject.addEventListener('load', async () => {
+      yoloPredictor.current.detectFrameVideo(
+        imageObject,
+        iouTHRRef.current,
+        scoreTHRRef.current,
+        maxBoxesRef.current
+      );
+    });
+  };
+
+  const runVideo = (sourceSel) => {
+    setIsVideoOn(true);
+    videoRef.current.preload = 'auto';
+    videoRef.current.crossOrigin = 'anonymous';
+    if (sourceSel == 'file') {
+      var URL = window.URL || window.webkitURL;
+      var fileURL = URL.createObjectURL(selectedFile);
+      videoRef.current.src = fileURL;
+    } else {
+      videoRef.current.src = selectedExample;
+    }
+    lastLoopRef.current = new Date();
+    videoRef.current.play();
+
+    new Promise((resolve) => {
+      videoRef.current.onloadedmetadata = () => {
+        resolve();
+      };
+    }).then(() => {
+      setDurationOfVideo(videoRef.current.duration);
+      traceDurationOfVideo();
+      yoloPredictor.current.setAnimationCallback(animationControl);
+      yoloPredictor.current.detectFrameVideo(
+        videoRef.current,
+        iouTHRRef.current,
+        scoreTHRRef.current,
+        maxBoxesRef.current
+      );
+    });
   };
 
   // callBacks:
@@ -165,49 +258,9 @@ export const Main = () => {
     setVideoSpeed(speed);
   };
 
-  const videoDuration = (e) => {
+  const updateVideoDuration = (e) => {
     setCurrentDurationOfVideo(parseFloat(e.target.value));
     videoRef.current.currentTime = parseFloat(e.target.value);
-  };
-
-  // create image file read promise
-  function fileToDataUri(field) {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.addEventListener('loadend', () => {
-        resolve(reader.result);
-      });
-      reader.readAsDataURL(field);
-    });
-  }
-  /* Use Effect Hooks:*/
-
-  const createModel = (modelData) => {
-    const modelUrl = modelData.modelUrl;
-    const anchorsUrl = modelData.anchorsUrl;
-    const classNamesUrl = modelData.classNamesUrl;
-
-    const modelPromise = tf.loadLayersModel(modelUrl);
-    const anchorsPromise = fetch(anchorsUrl).then((response) =>
-      response.json()
-    );
-
-    const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
-    console.log('createModel pre promise');
-
-    Promise.all([modelPromise, anchorsPromise, classNamesPromise]).then(
-      (values) => {
-        const classNames_ = values[2].split(/\r?\n/);
-        yoloPredictor.current.initModel(values[0]);
-        yoloPredictor.current.initAnchors(values[1].anchor);
-        yoloPredictor.current.initNclasses(classNames_.length);
-
-        classNames.current = classNames_;
-        console.log('createModel done');
-
-        setIsModelLoaded(true);
-      }
-    );
   };
 
   function findFps() {
@@ -224,69 +277,6 @@ export const Main = () => {
       classNames.current
     );
     findFps();
-  };
-
-  useEffect(() => {
-    videoRef.current = document.createElement('video');
-    videoRef.current.controls = true;
-    videoRef.current.muted = true;
-    videoRef.current.height = canvasHeight; // in px
-    videoRef.current.width = canvasWidth; // in px
-
-    setIsVideoOn(false);
-
-    videoRender.current = new Draw(canvasRefVideo.current);
-    yoloPredictor.current = new YoloPredictor(renderCallback_);
-    onLoadModel();
-  }, []);
-
-  const runVideo = (sourceSel) => {
-    setIsVideoOn(true);
-    videoRef.current.preload = 'auto';
-    videoRef.current.crossOrigin = 'anonymous';
-    if (sourceSel == 'file') {
-      var URL = window.URL || window.webkitURL;
-      var fileURL = URL.createObjectURL(selectedFile);
-      videoRef.current.src = fileURL;
-    } else {
-      videoRef.current.src = selectedExample;
-    }
-    lastLoopRef.current = new Date();
-    videoRef.current.play();
-
-    new Promise((resolve) => {
-      videoRef.current.onloadedmetadata = () => {
-        resolve();
-      };
-    }).then(() => {
-      setDurationOfVideo(videoRef.current.duration);
-      traceDurationOfVideo();
-      yoloPredictor.current.setAnimationCallback(animationControl);
-      yoloPredictor.current.detectFrameVideo(
-        videoRef.current,
-        iouTHRRef.current,
-        scoreTHRRef.current,
-        maxBoxesRef.current
-      );
-    });
-  };
-
-  const runImage = (selectedFile) => {
-    var imageObject = new window.Image();
-
-    var promise = fileToDataUri(selectedFile);
-    promise.then((fileUrl) => {
-      imageObject.crossorigin = 'anonymous';
-      imageObject.src = fileUrl;
-    });
-    imageObject.addEventListener('load', async () => {
-      yoloPredictor.current.detectFrameVideo(
-        imageObject,
-        iouTHRRef.current,
-        scoreTHRRef.current,
-        maxBoxesRef.current
-      );
-    });
   };
 
   const onClickRunFromFile = () => {
@@ -500,7 +490,7 @@ export const Main = () => {
             // step='0.5'
             id='customRange3'
             value={currentDurationOfVideo}
-            onChange={videoDuration}
+            onChange={updateVideoDuration}
           />
         </div>
       )}
