@@ -4,13 +4,11 @@ import * as tf from '@tensorflow/tfjs';
 tf.setBackend('webgl');
 
 import Accordion from './components/Accordion';
-import FileInputButton from './components/FileInputButton';
 
 import ModelSelectionPanel from './components/ModelSelectionPanel';
 import ConfigurationsPanel from './components/ConfigurationsPanel';
-import SelectDataSource from './components/SelectDataSource';
-import SelectUrlByList from './components/SelectUrlByList';
 import VideoControlPanel from './components/VideoControlPanel';
+import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 
 import configData from './config/configModel.json';
 import cocoVideos from './examples/cocoVideos.json';
@@ -424,7 +422,6 @@ export const Main = () => {
     <div className='container '>
       <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
       <Accordion
-        // Item #1 Model Setup Buttons
         // Radio Buttons
         onSelectModel={onSelectModel}
         modelsTable={modelsTable}
@@ -464,33 +461,17 @@ export const Main = () => {
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
           Data Source Selection
         </span>
-        <div className=' row mt-3 mb-3 '>
-          <div className=' col-4  text-center'>
-            <SelectDataSource
-              onClickSetDataSource={onClickSetDataSource}
-              isDataSourceLocal={isDataSourceLocal}
-            />
-          </div>
-          <div className=' col-4 text-center'></div>
-
-          <div className=' col-4 text-center'>
-            {isDataSourceLocal ? (
-              <FileInputButton
-                onChange={onChangeFile}
-                selectedFileName={selectedFileName}
-                buttonLable='Select a file'
-                accept='video/*, image/*'
-              />
-            ) : (
-              <SelectUrlByList
-                onSwitchExample={onSwitchExample}
-                selectedExampleName={selectedExampleName}
-                selectedExampleIndex={selectedExampleIndex}
-                listExamplesLength={listExamples.length}
-              />
-            )}
-          </div>
-        </div>
+        <DataSourceSelectionPanel
+          onClickSetDataSource={onClickSetDataSource}
+          isDataSourceLocal={isDataSourceLocal}
+          onChangeFile={onChangeFile}
+          // onClickRunLocal,
+          selectedFileName={selectedFileName}
+          onSwitchExample={onSwitchExample}
+          selectedExampleName={selectedExampleName}
+          selectedExampleIndex={selectedExampleIndex}
+          listExamplesLength
+        />
       </div>
 
       <div className='controlVideo mt-3 border border-1 border-secondary position-relative'>
