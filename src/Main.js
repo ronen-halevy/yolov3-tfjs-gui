@@ -211,7 +211,7 @@ export const Main = () => {
     setIsVideoOn(true);
     videoRef.current.preload = 'auto';
     videoRef.current.crossOrigin = 'anonymous';
-    if (sourceSel == 'url') {
+    if (sourceSel == 'file') {
       var URL = window.URL || window.webkitURL;
       var fileURL = URL.createObjectURL(selectedFile);
       videoRef.current.src = fileURL;
@@ -269,7 +269,7 @@ export const Main = () => {
       URL.createObjectURL(selectedFile);
       runImage(selectedFile);
     } else {
-      runVideo('url');
+      runVideo('file');
     }
   };
   const onClickRunOnUrl = () => {
@@ -281,7 +281,6 @@ export const Main = () => {
       setIsVideoOn(false);
       return;
     }
-
     if (selectedExample.match(/\.(jpg|jpeg|png|gif)$/i)) {
       // URL.createObjectURL(selectedFile);
       // runImage(selectedFile);
