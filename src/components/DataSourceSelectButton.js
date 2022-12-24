@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class SelectDataSource extends Component {
+export default class DataSourceSelectButton extends Component {
   render() {
     const { onClickSetDataSource, isDataSourceLocal } = this.props;
     return (
