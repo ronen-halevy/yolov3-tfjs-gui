@@ -56,7 +56,6 @@ export default class VideoControlPanel extends Component {
                 }
                 isVideoOn={isVideoOn}
                 badgeLabel={selectedFileName}
-                disabled={selectedFileName == ''}
               />
               {selectedFileName == '' && (
                 <span className='position-absolute top-0  start-50 translate-middle badge  text-bg-warning'>
@@ -69,7 +68,6 @@ export default class VideoControlPanel extends Component {
               onClickRunRemote={onClickRunRemote}
               isVideoOn={isVideoOn}
               badgeLabel={selectedExampleName}
-              disabled={selectedFileName == ''}
             />
           )}
         </div>

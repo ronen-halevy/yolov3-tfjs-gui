@@ -4,7 +4,6 @@ import * as tf from '@tensorflow/tfjs';
 tf.setBackend('webgl');
 
 import Accordion from './components/Accordion';
-// import RunButton from './components/RunButton';
 import RunLocalData from './components/RunLocalData';
 import ModelSelectionPanel from './components/ModelSelectionPanel';
 import ConfigurationsPanel from './components/ConfigurationsPanel';
