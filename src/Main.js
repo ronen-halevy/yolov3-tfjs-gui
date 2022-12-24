@@ -322,7 +322,7 @@ export const Main = () => {
       setSelectedWeights(datasets[defaultIndex]);
     }
   };
-  const onClickedtaset = (event) => {
+  const onClickSelectWeights = (event) => {
     const models = Object.keys(modelsTable);
 
     const datasets = Object.keys(modelsTable[selectedModel]);
@@ -439,7 +439,7 @@ export const Main = () => {
         selectedModel={selectedModel}
         selectedModelIndex={selectedModelIndex}
         modelsTable={modelsTable}
-        onClickedtaset={onClickedtaset}
+        onClickSelectWeights={onClickSelectWeights}
         selectedWeights={selectedWeights}
         selectedWeightsIndex={selectedWeightsIndex}
       />

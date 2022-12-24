@@ -7,7 +7,7 @@ export default class ModelSelectionPanel extends Component {
       selectedModel,
       selectedModelIndex,
       modelsTable,
-      onClickedtaset,
+      onClickSelectWeights,
       selectedWeights,
       selectedWeightsIndex,
       ...rest
@@ -38,7 +38,7 @@ export default class ModelSelectionPanel extends Component {
             <div className='col-4 text-center'>
               <span
                 className='btn btn-dark btn-lg  position-relative badge start-0'
-                onClick={onClickedtaset}
+                onClick={onClickSelectWeights}
               >
                 Select weights
                 <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
