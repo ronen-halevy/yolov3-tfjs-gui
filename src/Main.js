@@ -4,7 +4,8 @@ import * as tf from '@tensorflow/tfjs';
 tf.setBackend('webgl');
 
 import Accordion from './components/Accordion';
-import RunLocalData from './components/RunLocalData';
+import FileInputButton from './components/FileInputButton';
+
 import ModelSelectionPanel from './components/ModelSelectionPanel';
 import ConfigurationsPanel from './components/ConfigurationsPanel';
 import SelectDataSource from './components/SelectDataSource';
@@ -437,7 +438,6 @@ export const Main = () => {
         // Run with url selection
         listExamples={listExamples}
         onChange={onSelectExample}
-        onClickRunRemote={onClickRunRemote}
       />
       <ModelSelectionPanel
         onClickedModel={onClickedModel}
@@ -475,11 +475,11 @@ export const Main = () => {
 
           <div className=' col-4 text-center'>
             {isDataSourceLocal ? (
-              <RunLocalData
-                onChangeFile={onChangeFile}
-                onClickRunLocal={onClickRunLocal}
+              <FileInputButton
+                onChange={onChangeFile}
                 selectedFileName={selectedFileName}
-                // isVideoOn={this.props.isVideoOn}
+                buttonLable='Select a file'
+                accept='video/*, image/*'
               />
             ) : (
               <SelectUrlByList

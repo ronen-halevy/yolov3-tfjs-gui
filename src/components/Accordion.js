@@ -2,7 +2,6 @@ import React from 'react';
 import LoadModel from './LoadModel';
 import RadioSelect from './RadioSelect';
 import Readme from './Readme';
-import RunRemoteData from './RunRemoteData';
 
 class Accordion extends React.Component {
   constructor(props) {
@@ -111,12 +110,18 @@ class Accordion extends React.Component {
             aria-labelledby='panelsStayOpen-headingFour'
           >
             <div className='accordion-body'>
-              <RunRemoteData
-                onChange={this.props.onChange}
-                listExamples={this.props.listExamples}
-                onClickRunRemote={this.props.onClickRunRemote}
-                isVideoOn={this.props.isVideoOn}
-              />
+              <div className='col selectEXamples'>
+                <select
+                  className='form-select form-select-lg mb-1'
+                  onChange={this.props.onChange}
+                >
+                  {this.props.listExamples.map((option, index) => (
+                    <option key={index} value={index}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
         </div>

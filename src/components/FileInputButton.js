@@ -1,6 +1,6 @@
 import React from 'react';
 
-class FileInput extends React.Component {
+class FileInputButton extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -33,30 +33,4 @@ class FileInput extends React.Component {
   }
 }
 
-// const FileInput = ({ onChange, selectedFileName, ...props }) => {
-//   console.log('selectedFileName', selectedFileName);
-//   return (
-//     <div>
-//       <div>
-//         <label className='btn btn-primary'>
-//           Click to select a video or an image file
-//           <input
-//             {...props}
-//             style={{ display: 'none' }}
-//             type='file'
-//             onChange={(e) => {
-//               onChange(e);
-//             }}
-//           />
-//           {selectedFileName ? (
-//             <span className='badge bg-success'>{selectedFileName}</span>
-//           ) : (
-//             <span className='badge bg-danger'> No File Loaded</span>
-//           )}
-//         </label>
-//       </div>
-//     </div>
-//   );
-// };
-
-export default FileInput;
+export default FileInputButton;

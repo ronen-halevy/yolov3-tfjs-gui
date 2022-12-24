@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import RunButton from './RunButton';
-
 export default class VideoControlPanel extends Component {
   render() {
     const {
@@ -22,6 +20,7 @@ export default class VideoControlPanel extends Component {
 
     return (
       <div className='row'>
+        {/* Speed button */}
         <div className='col-4  text-center position-relative mb-1'>
           <span className='badge text-bg-dark  ' onClick={onClickVideoSpeed}>
             {' '}
@@ -39,6 +38,7 @@ export default class VideoControlPanel extends Component {
             </span>
           </span>
         </div>
+        {/* Pause resume button */}
         <div className='col-4 text-center'>
           <span
             className='badge text-bg-dark mx-2'
@@ -47,29 +47,35 @@ export default class VideoControlPanel extends Component {
             {isVideoPaused ? 'resume' : 'pasue'}
           </span>
         </div>
+        {/* Run-stop button */}
         <div className='col-4  text-center'>
-          {isDataSourceLocal ? (
-            <span className='position-relative col-1'>
-              <RunButton
-                onClickRunRemote={
-                  selectedFileName != '' ? onClickRunLocal : () => {}
-                }
-                isVideoOn={isVideoOn}
-                badgeLabel={selectedFileName}
-              />
-              {selectedFileName == '' && (
-                <span className='position-absolute top-0  start-50 translate-middle badge  text-bg-warning'>
-                  No file selected
+          <span
+            className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
+            onClick={
+              !isDataSourceLocal
+                ? onClickRunRemote
+                : selectedFileName != ''
+                ? onClickRunLocal
+                : () => {}
+            }
+          >
+            {' '}
+            {!isVideoOn ? (
+              <div>
+                play{' '}
+                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                  {!isDataSourceLocal ? selectedExampleName : selectedFileName}
+                </span>{' '}
+              </div>
+            ) : (
+              <div>
+                Stop{' '}
+                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                  Running
                 </span>
-              )}
-            </span>
-          ) : (
-            <RunButton
-              onClickRunRemote={onClickRunRemote}
-              isVideoOn={isVideoOn}
-              badgeLabel={selectedExampleName}
-            />
-          )}
+              </div>
+            )}
+          </span>
         </div>
       </div>
     );
