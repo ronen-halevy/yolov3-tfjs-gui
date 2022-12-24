@@ -105,6 +105,15 @@ export const Main = () => {
   ];
 
   //  utils
+  const stopVideo = () => {
+    setIsVideoOn(false);
+
+    if (videoRef.current.src != '') {
+      videoRef.current.pause();
+      videoRef.current.currentTime = videoRef.current.duration;
+    }
+  };
+
   // callBacks:
 
   const animationControl = () => {
@@ -122,15 +131,6 @@ export const Main = () => {
     }
   };
 
-  const stopVideo = () => {
-    setIsVideoOn(false);
-
-    if (videoRef.current.src != '') {
-      videoRef.current.pause();
-      videoRef.current.currentTime = videoRef.current.duration;
-    }
-  };
-
   const pauseResumeVideo = () => {
     if (isVideoPaused) {
       videoRef.current.play();
@@ -141,25 +141,22 @@ export const Main = () => {
     }
   };
 
-  const retrieveGetDurationOfVideo = () => {
-    const getDurationOfVideo = () => {
-      const videoIntervalTime = setInterval(() => {
-        setCurrentDurationOfVideo(
-          parseFloat(videoRef.current.currentTime).toFixed(1)
-        );
+  const traceDurationOfVideo = () => {
+    const videoIntervalTime = setInterval(() => {
+      setCurrentDurationOfVideo(
+        parseFloat(videoRef.current.currentTime).toFixed(1)
+      );
 
-        if (
-          parseFloat(videoRef.current.currentTime) >= videoRef.current.duration
-        ) {
-          clearVideoInterval();
-        }
-      }, 500);
+      if (
+        parseFloat(videoRef.current.currentTime) >= videoRef.current.duration
+      ) {
+        clearVideoInterval();
+      }
+    }, 500);
 
-      const clearVideoInterval = () => {
-        clearInterval(videoIntervalTime);
-      };
+    const clearVideoInterval = () => {
+      clearInterval(videoIntervalTime);
     };
-    return getDurationOfVideo;
   };
   const onClickVideoSpeed = (e) => {
     const speed = videoSpeed * 2 > 2.0 ? 0.5 : videoSpeed * 2;
@@ -262,7 +259,7 @@ export const Main = () => {
       };
     }).then(() => {
       setDurationOfVideo(videoRef.current.duration);
-      retrieveGetDurationOfVideo()();
+      traceDurationOfVideo();
       yoloPredictor.current.setAnimationCallback(animationControl);
       yoloPredictor.current.detectFrameVideo(
         videoRef.current,
