@@ -9,9 +9,9 @@ class Readme extends React.Component {
         <h2>Welcome to the Yolo Tfjs Demo!</h2>
         <br /> <br />
         <h3>A brief description</h3> <br />
-        The app demonstrates an original implementation of the YoloV3 algorithm,
-        based on the paper by Joseph Redmon, and Ali Farhadi. Yolov3 is the 3rd
-        version of the algorithm. <br />
+        The app demonstrates an original implementation of the YoloV3 object
+        detection algorithm, based on the paper by Joseph Redmon, and Ali
+        Farhadi. Yolov3 is the 3rd version of the algorithm. <br />
         Yolo is a CNN-based deep learning algorithm, which classifies images'
         objects and bounds them with boxes. The app renders predicted bounding
         boxes orround the detected objects, annotated with predicted
@@ -40,13 +40,13 @@ class Readme extends React.Component {
         <br /> <br />
         <h4>Model Selection panel</h4>
         <br />
-        <h5>Select model button</h5>
+        <h5>Model button</h5>
         Currently, the selection is between YoloV3 and its lightweight version,
         YoloV3-Tiny. The first performs better in terms of detection accuracy
         but consumes more computing resources. The full Yolov3 may be too heavy
         for some devices. Actually, YoloV3-Tiny may also be too heavy for some
         devices, or may not be able to run at all. <br /> <br />
-        <h5>Select weights button</h5>
+        <h5>Weights button</h5>
         The model should be loaded with pre-trained weights. Currently, the
         selection is between the Coco weights, produced by training with the 80
         types of objects Coco dataset, and the Shapes weights, produced by
@@ -58,33 +58,34 @@ class Readme extends React.Component {
         <br />
         <br />
         <h4>Data Source Selection panel</h4>
-        <br />
-        <h5>Toggle data source button</h5>
+        <br /> <br />
+        <h5>Data source button</h5>
         This button selects the source of consumed data, i.e. the input image or
         video files. Selection is between uploading from local storage, or
         fetching, (currently videos only), from video sites.
-        <br />
-        <h5>Select a url button</h5>
+        <br /> <br />
+        <h5>Url button</h5>
         This button is visible when the url data source is selected. A click on
         the button cyclically moves the selection to the next video URL on the
         list. To keep it compact, the URL is not presented, but only a
         short-form name of the video. The item&rsquo;s index is displayed as a
         badge in the upper right corner.
-        <br />
-        <h5>Select a file button </h5>
+        <br /> <br />
+        <h5>File button </h5>
         This button is visible when the file data source is selected. Select an
         image or video file from local storage by clicking on the button.
         <br /> <br />
         <h4>Configuration Panel</h4>
         The panel consists of 3 configuration buttons. The buttons&rsquo; effect
         is immediate, even while a video play. A button click cyclically
-        increments the value. <br />
-        <h5>scoreTHLD button </h5>
+        increments the value.
+        <br /> <br />
+        <h5>ScoreTHLD button </h5>
         This button sets the threshold for the detection confidence score. The
         value range is between 0 and 1. Detections with scores below thresholds
         are filtered out. The tradeoff is between False detections for lower
         thresholds, and missed detections for higher thresholds.
-        <br />
+        <br /> <br />
         <h5>IouTHLD button </h5>
         This button sets the threshold for Iou, an acronym for Intersection Over
         Union. Iou measures the amount of overlap between adjacent bounding
@@ -93,24 +94,24 @@ class Readme extends React.Component {
         overlapping boxes are displayed. The tradeoff is between missing
         detections of close objects for lower thresholds and receiving false
         duplicated detections for higher thresholds.
-        <br />
+        <br /> <br />
         <h5>Max Boxes button </h5>
         This button sets the max number of bounding boxes.
         <br /> <br />
         <h4>Video Control panel</h4>
         These buttons are effective for video data only.
-        <br />
-        <h5>fps and seconds counter </h5>
+        <br /> <br />
+        <h5>Fps and seconds counter </h5>
         A small display of fps and running seconds. Fps may vary according to
         the platform, model type, and data.
-        <br />
-        <h5>speed button </h5>
+        <br /> <br />
+        <h5>Speed button </h5>
         Selects between 3 video play speeds.
-        <br />
-        <h5> play-stop </h5>
+        <br /> <br />
+        <h5> Play-stop </h5>
         button Toggles between play and stop.
-        <br />
-        <h5> pause-replay button </h5>
+        <br /> <br />
+        <h5> Pause-replay button </h5>
         Toggles between pause and replay states. The button is effective only
         before the stop button is pressed.
         <br />
