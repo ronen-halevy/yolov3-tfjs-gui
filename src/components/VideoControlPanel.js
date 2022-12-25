@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 
 export default class VideoControlPanel extends Component {
+  onClickVideoSpeed1 = (e) => {
+    const speed = videoSpeed * 2 > 2.0 ? 0.5 : videoSpeed * 2;
+    videoRef.current.playbackRate = parseFloat(speed);
+    setVideoSpeed(speed);
+  };
+
   render() {
     const {
       onClickVideoSpeed,
@@ -11,11 +17,8 @@ export default class VideoControlPanel extends Component {
       isVideoOn,
       pauseResumeVideo,
       isVideoPaused,
-      isFileSource,
-      selectedFileName,
-      onClickRunOnUrl,
-      onClickRunFromFile,
-      selectedExampleName,
+
+      onClickPlay,
     } = this.props;
 
     return (
@@ -51,22 +54,11 @@ export default class VideoControlPanel extends Component {
         <div className='col-4  text-center'>
           <span
             className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
-            onClick={
-              !isFileSource
-                ? onClickRunOnUrl
-                : selectedFileName != ''
-                ? onClickRunFromFile
-                : () => {}
-            }
+            onClick={onClickPlay}
           >
             {' '}
             {!isVideoOn ? (
-              <div>
-                play{' '}
-                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
-                  {!isFileSource ? selectedExampleName : selectedFileName}
-                </span>{' '}
-              </div>
+              <div>play </div>
             ) : (
               <div>
                 Stop{' '}

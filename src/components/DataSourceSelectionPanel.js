@@ -11,9 +11,8 @@ export default class DataSourceSelectionPanel extends Component {
       onChangeFile,
       selectedFileName,
       onSwitchExample,
-      selectedExampleName,
+      videoExamplesList,
       selectedExampleIndex,
-      videoExamplesListLen,
     } = this.props;
 
     return (
@@ -37,9 +36,8 @@ export default class DataSourceSelectionPanel extends Component {
           ) : (
             <UrlSelectButton
               onSwitchExample={onSwitchExample}
-              selectedExampleName={selectedExampleName}
+              videoExamplesList={videoExamplesList}
               selectedExampleIndex={selectedExampleIndex}
-              videoExamplesListLen={videoExamplesListLen}
             />
           )}
         </div>

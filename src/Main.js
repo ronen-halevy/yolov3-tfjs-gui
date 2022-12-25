@@ -44,12 +44,10 @@ export const Main = () => {
   const [scoreTHR, setScoreTHR] = useState(configData.scoreThreshold);
   const [iouTHR, setIouTHR] = useState(configData.iouThreshold);
   const [maxBoxes, setMaxBoxes] = useState(configData.maxBoxes);
-  const [selectedExample, setSelectedExample] = useState(
-    videoExamplesList[0].url
-  );
-  const [selectedExampleName, setSelectedExampleName] = useState(
-    videoExamplesList[0].name
-  );
+
+  // const [selectedExampleName, setSelectedExampleName] = useState(
+  //   videoExamplesList[0].name
+  // );
   const [selectedExampleIndex, setSelectedExampleIndex] = useState(0);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isVideoPaused, setIsVideoPaused] = useState(false);
@@ -111,6 +109,38 @@ export const Main = () => {
   }, [selectedModel, selectedWeights]);
 
   //  utils
+
+  const runVideo = (sourceSel) => {
+    setIsVideoOn(true);
+    videoRef.current.preload = 'auto';
+    videoRef.current.crossOrigin = 'anonymous';
+    if (sourceSel == 'file') {
+      var URL = window.URL || window.webkitURL;
+      var fileURL = URL.createObjectURL(selectedFile);
+      videoRef.current.src = fileURL;
+    } else {
+      videoRef.current.src = videoExamplesList[selectedExampleIndex].url;
+    }
+    lastLoopRef.current = new Date();
+    videoRef.current.play();
+
+    new Promise((resolve) => {
+      videoRef.current.onloadedmetadata = () => {
+        resolve();
+      };
+    }).then(() => {
+      setDurationOfVideo(videoRef.current.duration);
+      traceDurationOfVideo();
+      yoloPredictor.current.setAnimationCallback(animationControl);
+      yoloPredictor.current.detectFrameVideo(
+        videoRef.current,
+        iouTHRRef.current,
+        scoreTHRRef.current,
+        maxBoxesRef.current
+      );
+    });
+  };
+
   const stopVideo = () => {
     setIsVideoOn(false);
 
@@ -166,37 +196,6 @@ export const Main = () => {
     });
   };
 
-  const runVideo = (sourceSel) => {
-    setIsVideoOn(true);
-    videoRef.current.preload = 'auto';
-    videoRef.current.crossOrigin = 'anonymous';
-    if (sourceSel == 'file') {
-      var URL = window.URL || window.webkitURL;
-      var fileURL = URL.createObjectURL(selectedFile);
-      videoRef.current.src = fileURL;
-    } else {
-      videoRef.current.src = selectedExample;
-    }
-    lastLoopRef.current = new Date();
-    videoRef.current.play();
-
-    new Promise((resolve) => {
-      videoRef.current.onloadedmetadata = () => {
-        resolve();
-      };
-    }).then(() => {
-      setDurationOfVideo(videoRef.current.duration);
-      traceDurationOfVideo();
-      yoloPredictor.current.setAnimationCallback(animationControl);
-      yoloPredictor.current.detectFrameVideo(
-        videoRef.current,
-        iouTHRRef.current,
-        scoreTHRRef.current,
-        maxBoxesRef.current
-      );
-    });
-  };
-
   // callBacks:
 
   const animationControl = () => {
@@ -242,7 +241,7 @@ export const Main = () => {
     lastLoopRef.current = thisLoop;
   }
 
-  const onClickRunFromFile = () => {
+  const onClickPlay = () => {
     if (!isModelLoaded) {
       return;
     }
@@ -252,26 +251,16 @@ export const Main = () => {
       return;
     }
     if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-      URL.createObjectURL(selectedFile);
-      runImage(selectedFile);
+      if (isFileSource) {
+        URL.createObjectURL(selectedFile);
+        runImage(selectedFile);
+      }
     } else {
-      runVideo('file');
-    }
-  };
-  const onClickRunOnUrl = () => {
-    if (!isModelLoaded) {
-      return;
-    }
-    stopVideo();
-    if (isVideoOn) {
-      setIsVideoOn(false);
-      return;
-    }
-    if (selectedExample.match(/\.(jpg|jpeg|png|gif)$/i)) {
-      // URL.createObjectURL(selectedFile);
-      // runImage(selectedFile);
-    } else {
-      runVideo('url');
+      !isFileSource
+        ? runVideo('url')
+        : selectedFileName != ''
+        ? runVideo('file')
+        : () => {};
     }
   };
 
@@ -320,22 +309,18 @@ export const Main = () => {
 
   const onSelectExample = (event) => {
     stopVideo();
-    const selected = videoExamplesList[event.target.value];
-    setSelectedExample(selected.url);
+    setSelectedExampleIndex(event.target.value);
   };
 
   const onSwitchExample = (event) => {
     stopVideo();
-    console.log(selectedExample);
 
     const selIndex = (selectedExampleIndex + 1) % videoExamplesList.length;
     const selected = videoExamplesList[selIndex];
     console.log(selIndex);
     console.log(selected);
 
-    setSelectedExample(selected.url);
     setSelectedExampleIndex(selIndex);
-    setSelectedExampleName(selected.name);
   };
 
   const onLoadModel = () => {
@@ -399,7 +384,6 @@ export const Main = () => {
         selectedWeights={selectedWeights}
         selectedWeightsIndex={selectedWeightsIndex}
       />
-
       <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
           Configurations
@@ -421,16 +405,19 @@ export const Main = () => {
           onChangeFile={onChangeFile}
           selectedFileName={selectedFileName}
           onSwitchExample={onSwitchExample}
-          selectedExampleName={selectedExampleName}
+          videoExamplesList={videoExamplesList}
           selectedExampleIndex={selectedExampleIndex}
-          videoExamplesListLen={videoExamplesList.length}
         />
       </div>
-
       <div className='controlVideo mt-3 border border-1 border-secondary position-relative'>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
           Video Control
         </span>
+        <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
+          {!isFileSource
+            ? videoExamplesList[selectedExampleIndex].name
+            : selectedFileName}
+        </span>{' '}
         <div className=' mt-3 row'>
           <VideoControlPanel
             onClickVideoSpeed={onClickVideoSpeed}
@@ -438,14 +425,11 @@ export const Main = () => {
             fps={fps}
             currentDurationOfVideo={currentDurationOfVideo}
             durationOfVideo={durationOfVideo}
-            isVideoOn={isVideoOn}
+            // isVideoOn={isVideoOn}
             pauseResumeVideo={pauseResumeVideo}
             isVideoPaused={isVideoPaused}
             isFileSource={isFileSource}
-            selectedFileName={selectedFileName}
-            onClickRunOnUrl={onClickRunOnUrl}
-            onClickRunFromFile={onClickRunFromFile}
-            selectedExampleName={selectedExampleName}
+            onClickPlay={onClickPlay}
           />
         </div>
       </div>
