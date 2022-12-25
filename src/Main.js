@@ -11,14 +11,12 @@ import configData from './config/configModel.json';
 import cocoVideos from './examples/cocoVideos.json';
 
 import YoloPredictor from './yolov3/YoloV3';
-import Draw from './yolov3/Render';
 
 export const Main = () => {
   // Refs:
   const canvasRefVideo = useRef(null);
   const classNames = useRef(null);
   const yoloPredictor = useRef(null);
-  const videoRender = useRef(null);
   const videoRef = useRef(null);
   // refs affect changes during animation:
   const scoreTHRRef = useRef(configData.scoreThreshold);
@@ -104,8 +102,7 @@ export const Main = () => {
     videoRef.current.height = canvasHeight; // in px
     videoRef.current.width = canvasWidth; // in px
     setIsVideoOn(false);
-    videoRender.current = new Draw(canvasRefVideo.current);
-    yoloPredictor.current = new YoloPredictor(renderCallback_);
+    yoloPredictor.current = new YoloPredictor(canvasRefVideo.current);
     onLoadModel();
   }, []);
 
@@ -211,6 +208,7 @@ export const Main = () => {
         maxBoxesRef.current
       );
     });
+    findFps();
     if (videoRef.current.currentTime >= videoRef.current.duration) {
       cancelAnimationFrame(id);
       setIsVideoOn(false);
@@ -243,16 +241,6 @@ export const Main = () => {
     setFps(1000 / (thisLoop - lastLoopRef.current));
     lastLoopRef.current = thisLoop;
   }
-  const renderCallback_ = (imageObject, selBboxes, scores, classIndices) => {
-    videoRender.current.renderOnImage(
-      imageObject,
-      selBboxes,
-      scores,
-      classIndices,
-      classNames.current
-    );
-    findFps();
-  };
 
   const onClickRunFromFile = () => {
     if (!isModelLoaded) {

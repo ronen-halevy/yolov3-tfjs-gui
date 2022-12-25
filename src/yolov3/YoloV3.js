@@ -2,28 +2,17 @@ import * as tf from '@tensorflow/tfjs';
 tf.setBackend('webgl');
 
 import { createModel } from './createModel';
-// import Draw from './Render';
+import Render from './Render';
 
 import decode from './decode';
 import nms from './nms';
 
 class YoloPredictor {
-  constructor(renderCallback_) {
-    this.renderCallback = renderCallback_;
-    // videoRender.current = new Draw(canvasRefVideo);
+  constructor(canvasRefVideo) {
+    this.render = new Render(canvasRefVideo);
   }
 
-  // renderCallback_ = (imageObject, selBboxes, scores, classIndices) => {
-  //   videoRender.current.renderOnImage(
-  //     imageObject,
-  //     selBboxes,
-  //     scores,
-  //     classIndices,
-  //     this.classNames
-  //   );
-  //   findFps();
-  // };
-
+  // findFps();
   setModel = (modelUrl, anchorsUrl, classNamesUrl) => {
     const promise = createModel(modelUrl, anchorsUrl, classNamesUrl).then(
       (res) => {
@@ -75,9 +64,13 @@ class YoloPredictor {
     nms(bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes).then(
       (reasultArrays) => {
         let [selBboxes, scores, classIndices] = reasultArrays;
-
-        this.renderCallback(imageFrame, selBboxes, scores, classIndices);
-
+        this.render.renderOnImage(
+          imageFrame,
+          selBboxes,
+          scores,
+          classIndices,
+          this.classNames
+        );
         if (imageFrame.tagName == 'VIDEO') {
           this.animationCallback(imageFrame);
         }
