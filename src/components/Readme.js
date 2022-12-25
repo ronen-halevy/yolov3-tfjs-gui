@@ -152,6 +152,7 @@ export default class Readme extends React.Component {
         <ol>
           <li>Animation is active when in pause </li>
           <li> resume persists after stop</li>
+          <li> update model and weights</li>
         </ol>
       </div>
     );
