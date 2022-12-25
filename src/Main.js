@@ -1,7 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import * as tf from '@tensorflow/tfjs';
-
-tf.setBackend('webgl');
 
 import Accordion from './components/Accordion';
 
@@ -28,11 +25,13 @@ export const Main = () => {
   const iouTHRRef = useRef(configData.iouThreshold);
   const maxBoxesRef = useRef(configData.maxBoxes);
   const lastLoopRef = useRef(null);
+
+  // States:
   const [modelsTable, setModelsTable] = useState(configData.models);
   const [videoExamplesList, setVideoExamplesList] = useState(
     cocoVideos.cocoVideos
   );
-  // States:
+
   const [selectedFile, setSelectedFile] = useState('');
   const [selectedFileName, setSelectedFileName] = useState('');
 
@@ -110,6 +109,10 @@ export const Main = () => {
     onLoadModel();
   }, []);
 
+  useEffect(() => {
+    onLoadModel();
+  }, [selectedModel, selectedWeights]);
+
   //  utils
   const stopVideo = () => {
     setIsVideoOn(false);
@@ -136,34 +139,6 @@ export const Main = () => {
     const clearVideoInterval = () => {
       clearInterval(videoIntervalTime);
     };
-  };
-
-  const createModel = (modelData) => {
-    const modelUrl = modelData.modelUrl;
-    const anchorsUrl = modelData.anchorsUrl;
-    const classNamesUrl = modelData.classNamesUrl;
-
-    const modelPromise = tf.loadLayersModel(modelUrl);
-    const anchorsPromise = fetch(anchorsUrl).then((response) =>
-      response.json()
-    );
-
-    const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
-    console.log('createModel pre promise');
-
-    Promise.all([modelPromise, anchorsPromise, classNamesPromise]).then(
-      (values) => {
-        const classNames_ = values[2].split(/\r?\n/);
-        yoloPredictor.current.initModel(values[0]);
-        yoloPredictor.current.initAnchors(values[1].anchor);
-        yoloPredictor.current.initNclasses(classNames_.length);
-
-        classNames.current = classNames_;
-        console.log('createModel done');
-
-        setIsModelLoaded(true);
-      }
-    );
   };
 
   function convertFileToDataUri(field) {
@@ -378,14 +353,20 @@ export const Main = () => {
   const onLoadModel = () => {
     setModelLoadedMessage('Loading Model...');
     setIsModelLoadSpinner(true);
-
     const modelConfig = modelsTable[selectedModel][selectedWeights];
-    createModel(modelConfig);
-    const message = selectedModel + ' + ' + selectedWeights + ' is ready!';
-    setModelLoadedMessage(message);
-    console.log(message);
-    setIsModelLoadSpinner(false);
-    setIsModelLoaded(true);
+    const { modelUrl, anchorsUrl, classNamesUrl, ...rest } = modelConfig;
+    const resPromise = yoloPredictor.current.setModel(
+      modelUrl,
+      anchorsUrl,
+      classNamesUrl
+    );
+    resPromise.then((result) => {
+      const message = selectedModel + ' + ' + selectedWeights + ' is ready!';
+      setModelLoadedMessage(message);
+      setIsModelLoadSpinner(false);
+      setIsModelLoaded(true);
+      classNames.current = result[2].split(/\r?\n/);
+    });
   };
 
   const onChangeConfigNumber = (configItemsList, index) => {

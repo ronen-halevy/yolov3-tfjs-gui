@@ -1,4 +1,8 @@
 import * as tf from '@tensorflow/tfjs';
+tf.setBackend('webgl');
+
+import { createModel } from './createModel';
+// import Draw from './Render';
 
 import decode from './decode';
 import nms from './nms';
@@ -6,17 +10,33 @@ import nms from './nms';
 class YoloPredictor {
   constructor(renderCallback_) {
     this.renderCallback = renderCallback_;
+    // videoRender.current = new Draw(canvasRefVideo);
   }
 
-  initNclasses = (val) => {
-    this.nclasses = val;
+  // renderCallback_ = (imageObject, selBboxes, scores, classIndices) => {
+  //   videoRender.current.renderOnImage(
+  //     imageObject,
+  //     selBboxes,
+  //     scores,
+  //     classIndices,
+  //     this.classNames
+  //   );
+  //   findFps();
+  // };
+
+  setModel = (modelUrl, anchorsUrl, classNamesUrl) => {
+    const promise = createModel(modelUrl, anchorsUrl, classNamesUrl).then(
+      (res) => {
+        this.model = res[0];
+        this.anchors = res[1].anchor;
+        this.classNames = res[2].split(/\r?\n/);
+        this.nclasses = this.classNames.length;
+        return res;
+      }
+    );
+    return promise;
   };
-  initAnchors = (val_) => {
-    this.anchors = val_;
-  };
-  initModel = (val) => {
-    this.model = val;
-  };
+
   setAnimationCallback = (animationCallback_) => {
     this.animationCallback = animationCallback_;
   };
