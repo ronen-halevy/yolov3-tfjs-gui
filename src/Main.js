@@ -14,7 +14,6 @@ import YoloPredictor from './yolov3/YoloV3';
 export const Main = () => {
   // Refs:
   const canvasRefVideo = useRef(null);
-  const classNames = useRef(null);
   const yoloPredictor = useRef(null);
   const videoRef = useRef(null);
   // refs affect changes during animation:
@@ -25,14 +24,6 @@ export const Main = () => {
 
   // States:
 
-  // const [selectedModel, setSelectedModel] = useState('YoloV3Tiny');
-  // const [selectedWeights, setSelectedWeights] = useState('coco');
-  // const [selectedModelIndex, setSelectedModelIndex] = useState(0);
-  // const [selectedWeightsIndex, setSelectedWeightsIndex] = useState(0);
-  const [modelLoadedMessage, setModelLoadedMessage] =
-    useState('No Model Loaded!');
-  const [isModelLoadSpinner, setIsModelLoadSpinner] = useState(false);
-  const [isModelLoaded, setIsModelLoaded] = useState(false);
   const [scoreTHR, setScoreTHR] = useState(configNms.scoreThreshold);
   const [iouTHR, setIouTHR] = useState(configNms.iouThreshold);
   const [maxBoxes, setMaxBoxes] = useState(configNms.maxBoxes);
@@ -49,23 +40,11 @@ export const Main = () => {
   const [videoSpeed, setVideoSpeed] = useState(1.0);
 
   const [isFileSource, setIsFileSource] = useState(false);
-  const [selectedFile, setSelectedFile] = useState('');
-  const [selectedFileName, setSelectedFileName] = useState('');
-  const [selectedExampleIndex, setSelectedExampleIndex] = useState(0);
 
   const [dataUrl, setDataUrl] = useState('');
   const [dataType, setDataType] = useState('');
 
   const [isReady, setIsReady] = useState(false);
-
-  const onChangeSource = (isFile, selected) => {
-    setIsFileSource(isFile);
-    if (isFile) {
-      setSelectedFile(identifier);
-    } else {
-      setSelectedExampleIndex(selected);
-    }
-  };
 
   // data
   const configItemsList = [
@@ -111,13 +90,7 @@ export const Main = () => {
     setIsVideoOn(false);
     yoloPredictor.current = new YoloPredictor(canvasRefVideo.current);
     setIsReady(true);
-
-    // onLoadModel();
   }, []);
-
-  const createYolo = () => {
-    yoloPredictor.current = new YoloPredictor(canvasRefVideo.current);
-  };
 
   const onLoadModel = (modelUrl, anchorsUrl, classNamesUrl) => {
     console.log(yoloPredictor);
@@ -159,17 +132,7 @@ export const Main = () => {
     };
   };
 
-  function convertFileToDataUri(file) {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.addEventListener('loadend', () => {
-        resolve(reader.result);
-      });
-      reader.readAsDataURL(file);
-    });
-  }
-
-  const playImage = (url) => {
+  const playImage = () => {
     var imageObject = new window.Image();
 
     const runAsync = async () => {
