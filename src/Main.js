@@ -8,7 +8,6 @@ import VideoControlPanel from './components/VideoControlPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 
 import configData from './config/configModel.json';
-import cocoVideos from './examples/cocoVideos.json';
 
 import YoloPredictor from './yolov3/YoloV3';
 
@@ -26,12 +25,6 @@ export const Main = () => {
 
   // States:
   const [modelsTable, setModelsTable] = useState(configData.models);
-  const [videoExamplesList, setVideoExamplesList] = useState(
-    cocoVideos.cocoVideos
-  );
-
-  const [selectedFile, setSelectedFile] = useState('');
-  const [selectedFileName, setSelectedFileName] = useState('');
 
   const [selectedModel, setSelectedModel] = useState('YoloV3Tiny');
   const [selectedWeights, setSelectedWeights] = useState('coco');
@@ -46,9 +39,7 @@ export const Main = () => {
   const [maxBoxes, setMaxBoxes] = useState(configData.maxBoxes);
 
   // const [selectedExampleName, setSelectedExampleName] = useState(
-  //   videoExamplesList[0].name
-  // );
-  const [selectedExampleIndex, setSelectedExampleIndex] = useState(0);
+
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isVideoPaused, setIsVideoPaused] = useState(false);
   const [canvasWidth, setCanvasWidth] = useState(416);
@@ -57,7 +48,23 @@ export const Main = () => {
   const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
   const [fps, setFps] = useState(0);
   const [videoSpeed, setVideoSpeed] = useState(1.0);
+
   const [isFileSource, setIsFileSource] = useState(false);
+  const [selectedFile, setSelectedFile] = useState('');
+  const [selectedFileName, setSelectedFileName] = useState('');
+  const [selectedExampleIndex, setSelectedExampleIndex] = useState(0);
+
+  const [dataUrl, setDataUrl] = useState('');
+  const [dataType, setDataType] = useState('');
+
+  const onChangeSource = (isFile, selected) => {
+    setIsFileSource(isFile);
+    if (isFile) {
+      setSelectedFile(identifier);
+    } else {
+      setSelectedExampleIndex(selected);
+    }
+  };
 
   // data
   const configItemsList = [
@@ -110,37 +117,6 @@ export const Main = () => {
 
   //  utils
 
-  const runVideo = (sourceSel) => {
-    setIsVideoOn(true);
-    videoRef.current.preload = 'auto';
-    videoRef.current.crossOrigin = 'anonymous';
-    if (sourceSel == 'file') {
-      var URL = window.URL || window.webkitURL;
-      var fileURL = URL.createObjectURL(selectedFile);
-      videoRef.current.src = fileURL;
-    } else {
-      videoRef.current.src = videoExamplesList[selectedExampleIndex].url;
-    }
-    lastLoopRef.current = new Date();
-    videoRef.current.play();
-
-    new Promise((resolve) => {
-      videoRef.current.onloadedmetadata = () => {
-        resolve();
-      };
-    }).then(() => {
-      setDurationOfVideo(videoRef.current.duration);
-      traceDurationOfVideo();
-      yoloPredictor.current.setAnimationCallback(animationControl);
-      yoloPredictor.current.detectFrameVideo(
-        videoRef.current,
-        iouTHRRef.current,
-        scoreTHRRef.current,
-        maxBoxesRef.current
-      );
-    });
-  };
-
   const stopVideo = () => {
     setIsVideoOn(false);
 
@@ -168,27 +144,54 @@ export const Main = () => {
     };
   };
 
-  function convertFileToDataUri(field) {
+  function convertFileToDataUri(file) {
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.addEventListener('loadend', () => {
         resolve(reader.result);
       });
-      reader.readAsDataURL(field);
+      reader.readAsDataURL(file);
     });
   }
 
-  const runImage = (selectedFile) => {
+  const playImage = (url) => {
     var imageObject = new window.Image();
 
-    var promise = convertFileToDataUri(selectedFile);
-    promise.then((fileUrl) => {
-      imageObject.crossorigin = 'anonymous';
-      imageObject.src = fileUrl;
-    });
-    imageObject.addEventListener('load', async () => {
+    const runAsync = async () => {
+      const res = await fetch(dataUrl);
+      const imageBlob = await res.blob();
+      const imageObjectURL = URL.createObjectURL(imageBlob);
+      imageObject.src = imageObjectURL;
+      imageObject.addEventListener('load', async () => {
+        yoloPredictor.current.detectFrameVideo(
+          imageObject,
+          iouTHRRef.current,
+          scoreTHRRef.current,
+          maxBoxesRef.current
+        );
+      });
+    };
+    runAsync();
+  };
+
+  const playVideo = () => {
+    setIsVideoOn(true);
+    videoRef.current.preload = 'auto';
+    videoRef.current.crossOrigin = 'anonymous';
+    videoRef.current.src = dataUrl;
+    lastLoopRef.current = new Date();
+    videoRef.current.play();
+
+    new Promise((resolve) => {
+      videoRef.current.onloadedmetadata = () => {
+        resolve();
+      };
+    }).then(() => {
+      setDurationOfVideo(videoRef.current.duration);
+      traceDurationOfVideo();
+      yoloPredictor.current.setAnimationCallback(animationControl);
       yoloPredictor.current.detectFrameVideo(
-        imageObject,
+        videoRef.current,
         iouTHRRef.current,
         scoreTHRRef.current,
         maxBoxesRef.current
@@ -250,26 +253,8 @@ export const Main = () => {
       setIsVideoOn(false);
       return;
     }
-    if (selectedFile.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-      if (isFileSource) {
-        URL.createObjectURL(selectedFile);
-        runImage(selectedFile);
-      }
-    } else {
-      !isFileSource
-        ? runVideo('url')
-        : selectedFileName != ''
-        ? runVideo('file')
-        : () => {};
-    }
-  };
-
-  const onChangeFile = (event) => {
-    console.log(event.target.files[0]);
-    stopVideo();
-    console.log('onChangeFile selectedFileName: ', selectedFileName);
-    setSelectedFile(event.target.files[0]);
-    setSelectedFileName(event.target.files[0].name);
+    console.log('onClickPlay');
+    dataType == 'image' ? playImage() : playVideo();
   };
 
   const onSelectModel = (event) => {
@@ -307,22 +292,6 @@ export const Main = () => {
     setSelectedWeights(selected);
   };
 
-  const onSelectExample = (event) => {
-    stopVideo();
-    setSelectedExampleIndex(event.target.value);
-  };
-
-  const onSwitchExample = (event) => {
-    stopVideo();
-
-    const selIndex = (selectedExampleIndex + 1) % videoExamplesList.length;
-    const selected = videoExamplesList[selIndex];
-    console.log(selIndex);
-    console.log(selected);
-
-    setSelectedExampleIndex(selIndex);
-  };
-
   const onLoadModel = () => {
     setModelLoadedMessage('Loading Model...');
     setIsModelLoadSpinner(true);
@@ -353,10 +322,11 @@ export const Main = () => {
     }
   };
 
-  const onClickSetDataSource = (event) => {
-    isFileSource ? setIsFileSource(false) : setIsFileSource(true);
+  const onClickSetDataSource = (url, type) => {
+    stopVideo();
+    setDataUrl(url);
+    setDataType(type);
   };
-
   return (
     <div className='container '>
       <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
@@ -371,9 +341,6 @@ export const Main = () => {
         isWaiting={isModelLoadSpinner}
         modelLoadedMessage={modelLoadedMessage}
         onLoadModel={onLoadModel}
-        // Run with url selection
-        videoExamplesList={videoExamplesList}
-        onChange={onSelectExample}
       />
       <ModelSelectionPanel
         onClickedModel={onClickedModel}
@@ -399,25 +366,13 @@ export const Main = () => {
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
           Data Source Selection
         </span>
-        <DataSourceSelectionPanel
-          onClickSetDataSource={onClickSetDataSource}
-          isFileSource={isFileSource}
-          onChangeFile={onChangeFile}
-          selectedFileName={selectedFileName}
-          onSwitchExample={onSwitchExample}
-          videoExamplesList={videoExamplesList}
-          selectedExampleIndex={selectedExampleIndex}
-        />
+        <DataSourceSelectionPanel onClickSetDataSource={onClickSetDataSource} />
       </div>
       <div className='controlVideo mt-3 border border-1 border-secondary position-relative'>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
           Video Control
         </span>
-        <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
-          {!isFileSource
-            ? videoExamplesList[selectedExampleIndex].name
-            : selectedFileName}
-        </span>{' '}
+
         <div className=' mt-3 row'>
           <VideoControlPanel
             onClickVideoSpeed={onClickVideoSpeed}

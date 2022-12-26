@@ -91,40 +91,6 @@ class Accordion extends React.Component {
             </div>
           </div>
         </div>
-        <div className='accordion-item'>
-          <h2 className='accordion-header' id='panelsStayOpen-headingFour'>
-            <button
-              className='accordion-button collapsed'
-              type='button'
-              data-bs-toggle='collapse'
-              data-bs-target='#panelsStayOpen-collapseFour'
-              aria-expanded='false'
-              aria-controls='panelsStayOpen-collapseFour'
-            >
-              Select Video
-            </button>
-          </h2>
-          <div
-            id='panelsStayOpen-collapseFour'
-            className='accordion-collapse collapse'
-            aria-labelledby='panelsStayOpen-headingFour'
-          >
-            <div className='accordion-body'>
-              <div className='col selectEXamples'>
-                <select
-                  className='form-select form-select-lg mb-1'
-                  onChange={this.props.onChange}
-                >
-                  {this.props.videoExamplesList.map((option, index) => (
-                    <option key={index} value={index}>
-                      {option.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     );
   }
