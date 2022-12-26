@@ -51,44 +51,7 @@ class Accordion extends React.Component {
             className='accordion-collapse collapse'
             aria-labelledby='panelsStayOpen-headingTwo'
           >
-            <div className='accordion-body'>
-              <div className='col-2 mx-auto'>
-                <span className='position-absolute   start-50 translate-middle badge rounded-pill text-bg-warning'>
-                  Duplicate of panel mini buttons functionality
-                </span>
-                <label htmlFor='selectModel' className=' h5 mt-3'>
-                  Model
-                </label>
-              </div>
-              <div className='col-6 mx-auto'>
-                <RadioSelect
-                  onChange={this.props.onSelectModel}
-                  selections={Object.keys(this.props.modelsTable)}
-                  selected={this.props.selectedModel}
-                />
-              </div>
-              <div className='col-2 mx-auto'>
-                <label htmlFor='selectWeightd' className=' h5 mt-3'>
-                  Weights
-                </label>
-              </div>
-
-              <div className='col-6 mx-auto '>
-                <RadioSelect
-                  onChange={this.props.onSelectDataset}
-                  selections={Object.keys(
-                    this.props.modelsTable[this.props.selectedModel]
-                  )}
-                  selected={this.props.selectedWeights}
-                />
-              </div>
-
-              <LoadModel
-                onClick={this.props.onLoadModel}
-                isWaiting={this.props.isModelLoadSpinner}
-                modelLoadedMessage={this.props.modelLoadedMessage}
-              />
-            </div>
+            <div className='accordion-body'></div>
           </div>
         </div>
       </div>

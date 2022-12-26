@@ -1,8 +1,4 @@
 {
-  "maxBoxes": 100,
-  "iouThreshold": 0.5,
-  "scoreThreshold": 0.1,
-
   "models": {
     "YoloV3Tiny": {
       "coco": {

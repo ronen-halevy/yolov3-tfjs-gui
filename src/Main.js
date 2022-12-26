@@ -7,7 +7,7 @@ import ConfigurationsPanel from './components/ConfigurationsPanel';
 import VideoControlPanel from './components/VideoControlPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 
-import configData from './config/configModel.json';
+import configNms from './config/configNms.json';
 
 import YoloPredictor from './yolov3/YoloV3';
 
@@ -18,25 +18,24 @@ export const Main = () => {
   const yoloPredictor = useRef(null);
   const videoRef = useRef(null);
   // refs affect changes during animation:
-  const scoreTHRRef = useRef(configData.scoreThreshold);
-  const iouTHRRef = useRef(configData.iouThreshold);
-  const maxBoxesRef = useRef(configData.maxBoxes);
+  const scoreTHRRef = useRef(configNms.scoreThreshold);
+  const iouTHRRef = useRef(configNms.iouThreshold);
+  const maxBoxesRef = useRef(configNms.maxBoxes);
   const lastLoopRef = useRef(null);
 
   // States:
-  const [modelsTable, setModelsTable] = useState(configData.models);
 
-  const [selectedModel, setSelectedModel] = useState('YoloV3Tiny');
-  const [selectedWeights, setSelectedWeights] = useState('coco');
-  const [selectedModelIndex, setSelectedModelIndex] = useState(0);
-  const [selectedWeightsIndex, setSelectedWeightsIndex] = useState(0);
+  // const [selectedModel, setSelectedModel] = useState('YoloV3Tiny');
+  // const [selectedWeights, setSelectedWeights] = useState('coco');
+  // const [selectedModelIndex, setSelectedModelIndex] = useState(0);
+  // const [selectedWeightsIndex, setSelectedWeightsIndex] = useState(0);
   const [modelLoadedMessage, setModelLoadedMessage] =
     useState('No Model Loaded!');
   const [isModelLoadSpinner, setIsModelLoadSpinner] = useState(false);
   const [isModelLoaded, setIsModelLoaded] = useState(false);
-  const [scoreTHR, setScoreTHR] = useState(configData.scoreThreshold);
-  const [iouTHR, setIouTHR] = useState(configData.iouThreshold);
-  const [maxBoxes, setMaxBoxes] = useState(configData.maxBoxes);
+  const [scoreTHR, setScoreTHR] = useState(configNms.scoreThreshold);
+  const [iouTHR, setIouTHR] = useState(configNms.iouThreshold);
+  const [maxBoxes, setMaxBoxes] = useState(configNms.maxBoxes);
 
   // const [selectedExampleName, setSelectedExampleName] = useState(
 
@@ -56,6 +55,8 @@ export const Main = () => {
 
   const [dataUrl, setDataUrl] = useState('');
   const [dataType, setDataType] = useState('');
+
+  const [isReady, setIsReady] = useState(false);
 
   const onChangeSource = (isFile, selected) => {
     setIsFileSource(isFile);
@@ -101,6 +102,7 @@ export const Main = () => {
 
   // useEffects
   useEffect(() => {
+    console.log('useEffect');
     videoRef.current = document.createElement('video');
     videoRef.current.controls = true;
     videoRef.current.muted = true;
@@ -108,12 +110,25 @@ export const Main = () => {
     videoRef.current.width = canvasWidth; // in px
     setIsVideoOn(false);
     yoloPredictor.current = new YoloPredictor(canvasRefVideo.current);
-    onLoadModel();
+    setIsReady(true);
+
+    // onLoadModel();
   }, []);
 
-  useEffect(() => {
-    onLoadModel();
-  }, [selectedModel, selectedWeights]);
+  const createYolo = () => {
+    yoloPredictor.current = new YoloPredictor(canvasRefVideo.current);
+  };
+
+  const onLoadModel = (modelUrl, anchorsUrl, classNamesUrl) => {
+    console.log(yoloPredictor);
+    const resPromise = yoloPredictor.current.setModel(
+      modelUrl,
+      anchorsUrl,
+      classNamesUrl
+    );
+
+    return resPromise;
+  };
 
   //  utils
 
@@ -245,9 +260,9 @@ export const Main = () => {
   }
 
   const onClickPlay = () => {
-    if (!isModelLoaded) {
-      return;
-    }
+    // if (!isModelLoaded) {
+    //   return;
+    // }
     stopVideo();
     if (isVideoOn) {
       setIsVideoOn(false);
@@ -255,60 +270,6 @@ export const Main = () => {
     }
     console.log('onClickPlay');
     dataType == 'image' ? playImage() : playVideo();
-  };
-
-  const onSelectModel = (event) => {
-    setSelectedModel(event.target.value);
-  };
-  const onSelectDataset = (event) => {
-    setSelectedWeights(event.target.value);
-  };
-
-  const onClickedModel = (event) => {
-    const models = Object.keys(modelsTable);
-    const selIndex = (selectedModelIndex + 1) % models.length;
-    const selected = models[selIndex];
-    console.log(selIndex);
-    console.log(selected);
-
-    setSelectedModelIndex(selIndex);
-    setSelectedModel(selected);
-    // check if prev selected dataset is valid for model:
-    const datasets = Object.keys(modelsTable[selected]);
-    if (datasets.length - 1 < selectedWeightsIndex) {
-      const defaultIndex = 0;
-      setSelectedWeightsIndex(defaultIndex);
-      setSelectedWeights(datasets[defaultIndex]);
-    }
-  };
-  const onClickSelectWeights = (event) => {
-    const models = Object.keys(modelsTable);
-
-    const datasets = Object.keys(modelsTable[selectedModel]);
-
-    const selIndex = (selectedWeightsIndex + 1) % datasets.length;
-    const selected = datasets[selIndex];
-    setSelectedWeightsIndex(selIndex);
-    setSelectedWeights(selected);
-  };
-
-  const onLoadModel = () => {
-    setModelLoadedMessage('Loading Model...');
-    setIsModelLoadSpinner(true);
-    const modelConfig = modelsTable[selectedModel][selectedWeights];
-    const { modelUrl, anchorsUrl, classNamesUrl, ...rest } = modelConfig;
-    const resPromise = yoloPredictor.current.setModel(
-      modelUrl,
-      anchorsUrl,
-      classNamesUrl
-    );
-    resPromise.then((result) => {
-      const message = selectedModel + ' + ' + selectedWeights + ' is ready!';
-      setModelLoadedMessage(message);
-      setIsModelLoadSpinner(false);
-      setIsModelLoaded(true);
-      classNames.current = result[2].split(/\r?\n/);
-    });
   };
 
   const onChangeConfigNumber = (configItemsList, index) => {
@@ -330,27 +291,9 @@ export const Main = () => {
   return (
     <div className='container '>
       <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
-      <Accordion
-        // Radio Buttons
-        onSelectModel={onSelectModel}
-        modelsTable={modelsTable}
-        selectedModel={selectedModel}
-        onSelectDataset={onSelectDataset}
-        selectedWeights={selectedWeights}
-        // Model Select Button
-        isWaiting={isModelLoadSpinner}
-        modelLoadedMessage={modelLoadedMessage}
-        onLoadModel={onLoadModel}
-      />
-      <ModelSelectionPanel
-        onClickedModel={onClickedModel}
-        selectedModel={selectedModel}
-        selectedModelIndex={selectedModelIndex}
-        modelsTable={modelsTable}
-        onClickSelectWeights={onClickSelectWeights}
-        selectedWeights={selectedWeights}
-        selectedWeightsIndex={selectedWeightsIndex}
-      />
+      <Accordion />
+      {/* Module triggers model loading on start so load it not before yolo is ready: */}
+      {isReady && <ModelSelectionPanel onLoadModel={onLoadModel} />}
       <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
           Configurations
