@@ -1,6 +1,13 @@
 import * as tf from '@tensorflow/tfjs';
 
-const nms = (bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes) => {
+export const nms = (
+  bboxes,
+  scores,
+  classIndices,
+  iouTHR,
+  scoreTHR,
+  maxBoxes
+) => {
   const nmsPromise = new Promise((resolve) => {
     const nmsResults = tf.image.nonMaxSuppressionAsync(
       bboxes,
@@ -32,5 +39,3 @@ const nms = (bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes) => {
 
   return nmsPromise;
 };
-
-export default nms;

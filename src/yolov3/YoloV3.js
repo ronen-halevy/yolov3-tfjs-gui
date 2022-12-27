@@ -1,13 +1,12 @@
 import * as tf from '@tensorflow/tfjs';
 tf.setBackend('webgl');
+import { decode } from './decode';
 
-import { createModel } from './createModel';
 import Render from './Render';
+import { createModel } from './createModel';
+import { nms } from './nms';
 
-import decode from './decode';
-import nms from './nms';
-
-class YoloPredictor {
+export default class YoloPredictor {
   constructor(canvasRefVideo) {
     this.render = new Render(canvasRefVideo);
   }
@@ -80,5 +79,3 @@ class YoloPredictor {
     );
   };
 }
-
-export default YoloPredictor;

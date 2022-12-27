@@ -2,7 +2,8 @@ import config from '../config/configRender.json';
 
 /**
  * Contains methods to render bounding boxes and text annotations on an image's (same as a single frame) detection.
- */ class Render {
+ */
+export default class Render {
   constructor(canvas) {
     this.canvas = canvas;
     this.font = config.font;
@@ -90,5 +91,3 @@ import config from '../config/configRender.json';
     );
   };
 }
-
-export default Render;
