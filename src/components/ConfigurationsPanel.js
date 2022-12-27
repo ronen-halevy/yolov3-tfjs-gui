@@ -1,32 +1,22 @@
 import React, { Component } from 'react';
+import ConfigurationButton from './ConfigurationButton';
 export default class ConfigurationsPanel extends Component {
+  onChange(index) {
+    this.props.onChangeConfigNumber(this.props.configItemsList, index);
+  }
   render() {
-    const { configItemsList, onChangeConfigNumber } = this.props;
+    const { configItemsList } = this.props;
     return (
       <div className='row mb-2'>
         {configItemsList.map(({ mname, stateVal, max, ...rest }, index) => (
           <div className='col-4 mb-3 text-center mt-3' key={index}>
-            <span
-              className='badge text-bg-dark position-relative  mx-3'
-              key={index}
-              onClick={(event) => {
-                onChangeConfigNumber(configItemsList, index);
-              }}
-            >
-              {mname}
-              <span
-                className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success'
-                key={index + configItemsList.length}
-              >
-                {stateVal}
-              </span>
-              <span
-                className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'
-                key={index + 2 * configItemsList.length}
-              >
-                max: {max}{' '}
-              </span>
-            </span>
+            <ConfigurationButton
+              onClick={this.onChange}
+              label={mname}
+              headerBadge={stateVal}
+              footerBadge={max}
+              index={index}
+            />
           </div>
         ))}
       </div>
