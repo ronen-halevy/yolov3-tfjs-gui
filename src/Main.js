@@ -7,6 +7,7 @@ import ConfigurationsPanel from './components/ConfigurationsPanel';
 import VideoControlPanel from './components/VideoControlPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 
+import Player from './Player';
 import YoloPredictor from './yolov3/YoloV3';
 
 export const Main = () => {
@@ -17,6 +18,8 @@ export const Main = () => {
   // refs affect changes during animation:
 
   const lastLoopRef = useRef(null);
+
+  const player = useRef(null);
 
   // States:
 
@@ -49,6 +52,16 @@ export const Main = () => {
     setIsVideoOn(false);
     yoloPredictor.current = new YoloPredictor(canvasRefVideo.current);
     setIsReady(true);
+
+    const tt = (frame) => {
+      yoloPredictor.current.detectFrameVideo(frame);
+    };
+    console.log(tt);
+    player.current = new Player(tt, canvasHeight, canvasWidth);
+
+    yoloPredictor.current.setAnimationCallback(
+      player.current.getAnimationControl()
+    );
   }, []);
 
   const onLoadModel = (modelUrl, anchorsUrl, classNamesUrl) => {
@@ -63,95 +76,16 @@ export const Main = () => {
 
   //  utils
 
-  const stopVideo = () => {
-    setIsVideoOn(false);
-
-    if (videoRef.current.src != '') {
-      videoRef.current.pause();
-      videoRef.current.currentTime = videoRef.current.duration;
-    }
-  };
-
-  const traceDurationOfVideo = () => {
-    const videoIntervalTime = setInterval(() => {
-      setCurrentDurationOfVideo(
-        parseFloat(videoRef.current.currentTime).toFixed(1)
-      );
-
-      if (
-        parseFloat(videoRef.current.currentTime) >= videoRef.current.duration
-      ) {
-        clearVideoInterval();
-      }
-    }, 500);
-
-    const clearVideoInterval = () => {
-      clearInterval(videoIntervalTime);
-    };
-  };
-
-  const playImage = () => {
-    var imageObject = new window.Image();
-
-    const runAsync = async () => {
-      const res = await fetch(dataUrl);
-      const imageBlob = await res.blob();
-      const imageObjectURL = URL.createObjectURL(imageBlob);
-      imageObject.src = imageObjectURL;
-      imageObject.addEventListener('load', async () => {
-        yoloPredictor.current.detectFrameVideo(imageObject);
-      });
-    };
-    runAsync();
-  };
-
-  const playVideo = () => {
-    setIsVideoOn(true);
-    videoRef.current.preload = 'auto';
-    videoRef.current.crossOrigin = 'anonymous';
-    videoRef.current.src = dataUrl;
-    lastLoopRef.current = new Date();
-    videoRef.current.play();
-
-    new Promise((resolve) => {
-      videoRef.current.onloadedmetadata = () => {
-        resolve();
-      };
-    }).then(() => {
-      setDurationOfVideo(videoRef.current.duration);
-      traceDurationOfVideo();
-      yoloPredictor.current.setAnimationCallback(animationControl);
-      yoloPredictor.current.detectFrameVideo(videoRef.current);
-    });
-  };
-
   // callBacks:
 
-  const animationControl = () => {
-    var id = window.requestAnimationFrame(function () {
-      yoloPredictor.current.detectFrameVideo(videoRef.current);
-    });
-    findFps();
-    if (videoRef.current.currentTime >= videoRef.current.duration) {
-      cancelAnimationFrame(id);
-      setIsVideoOn(false);
-    }
-  };
-
   const pauseResumeVideo = () => {
-    if (isVideoPaused) {
-      videoRef.current.play();
-      setIsVideoPaused(false);
-    } else {
-      videoRef.current.pause();
-      setIsVideoPaused(true);
-    }
+    console.log('pauseResumeVideo');
+    player.current.pauseResumeVideo();
   };
 
   const onClickVideoSpeed = (e) => {
     const speed = videoSpeed * 2 > 2.0 ? 0.5 : videoSpeed * 2;
     videoRef.current.playbackRate = parseFloat(speed);
-    setVideoSpeed(speed);
   };
 
   const updateVideoDuration = (e) => {
@@ -159,26 +93,23 @@ export const Main = () => {
     videoRef.current.currentTime = parseFloat(e.target.value);
   };
 
-  function findFps() {
-    var thisLoop = new Date();
-    setFps(1000 / (thisLoop - lastLoopRef.current));
-    lastLoopRef.current = thisLoop;
-  }
-
   const onClickPlay = () => {
-    stopVideo();
-    if (isVideoOn) {
-      setIsVideoOn(false);
-      return;
-    }
-    console.log('onClickPlay');
-    dataType == 'image' ? playImage() : playVideo();
+    player.current.onClickPlay();
+
+    // stopVideo();
+    // if (isVideoOn) {
+    //   setIsVideoOn(false);
+    //   return;
+    // }
+    // console.log('onClickPlay');
+    // dataType == 'image' ? playImage() : playVideo();
   };
 
   const onClickSetDataSource = (url, type) => {
-    stopVideo();
-    setDataUrl(url);
-    setDataType(type);
+    // stopVideo();
+    // setDataUrl(url);
+    // setDataType(type);
+    player.current.setDataUrl(url, type);
   };
 
   const setScoreTHR = (val) => {
