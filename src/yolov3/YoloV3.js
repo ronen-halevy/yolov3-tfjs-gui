@@ -1,18 +1,32 @@
 import * as tf from '@tensorflow/tfjs';
 tf.setBackend('webgl');
 import { decode } from './decode';
-
 import Render from './Render';
 import { createModel } from './createModel';
 import { nms } from './nms';
+import configNms from '../config/configNms.json';
 
 export default class YoloPredictor {
   constructor(canvasRefVideo) {
     this.render = new Render(canvasRefVideo);
+    this.scoreTHR = configNms.scoreThreshold;
+    this.iouTHR = configNms.iouThreshold;
+    this.maxBoxes = configNms.maxBoxes;
   }
 
+  setScoreTHR = (val) => {
+    this.scoreTHR = val;
+  };
+  setIouTHR = (val) => {
+    this.iouTHR = val;
+  };
+
+  setMaxBoxes = (val) => {
+    this.maxBoxes = val;
+  };
+
   // findFps();
-  setModel = (modelUrl, anchorsUrl, classNamesUrl) => {
+  createModel = (modelUrl, anchorsUrl, classNamesUrl) => {
     const promise = createModel(modelUrl, anchorsUrl, classNamesUrl).then(
       (res) => {
         this.model = res[0];
@@ -40,7 +54,7 @@ export default class YoloPredictor {
     return tensor;
   };
 
-  detectFrameVideo = (imageFrame, iouTHR, scoreTHR, maxBoxes) => {
+  detectFrameVideo = (imageFrame) => {
     tf.engine().startScope();
     const imageTensor = this.imagePreprocess(imageFrame);
     const modelOutputGrids = this.model.predict(imageTensor);
@@ -59,23 +73,30 @@ export default class YoloPredictor {
     // clean mem
     classProbs.dispose();
     confidences.dispose();
+    console.log('scoreTHR', this.scoreTHR);
+    console.log('maxBoxes', this.maxBoxes);
 
-    nms(bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes).then(
-      (reasultArrays) => {
-        let [selBboxes, scores, classIndices] = reasultArrays;
-        this.render.renderOnImage(
-          imageFrame,
-          selBboxes,
-          scores,
-          classIndices,
-          this.classNames
-        );
-        if (imageFrame.tagName == 'VIDEO') {
-          this.animationCallback(imageFrame);
-        }
-
-        tf.engine().endScope();
+    nms(
+      bboxes,
+      scores,
+      classIndices,
+      this.iouTHR,
+      this.scoreTHR,
+      this.maxBoxes
+    ).then((reasultArrays) => {
+      let [selBboxes, scores, classIndices] = reasultArrays;
+      this.render.renderOnImage(
+        imageFrame,
+        selBboxes,
+        scores,
+        classIndices,
+        this.classNames
+      );
+      if (imageFrame.tagName == 'VIDEO') {
+        this.animationCallback(imageFrame);
       }
-    );
+
+      tf.engine().endScope();
+    });
   };
 }

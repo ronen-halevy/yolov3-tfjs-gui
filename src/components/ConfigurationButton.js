@@ -4,31 +4,38 @@ export default class ConfigurationButton extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      value: this.props.initVal,
+    };
   }
+  componentDidMount() {}
+
+  onClick = (index) => {
+    console.log('onClick', index);
+    let { min, max, step, ...rest } = this.props;
+    let val = Math.round((this.state.value + step) * 10) / 10;
+    val = val > max ? min : val;
+    this.setState({ value: val }, (value) =>
+      this.props.onClick(this.state.value, index)
+    );
+  };
+
   render() {
-    const { onChange, label, headerBadge, footerBadge, index } = this.props;
+    const { max, label, headerBadge, footerBadge, index } = this.props;
 
     return (
       <span
         className='badge text-bg-dark position-relative  mx-3'
-        key={index}
         onClick={() => {
-          onChange(index);
+          this.onClick(index);
         }}
       >
         {label}
-        <span
-          className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success'
-          key={index + 1}
-        >
-          {headerBadge}
+        <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success'>
+          {this.state.value}
         </span>
-        <span
-          className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'
-          key={index + 2}
-        >
-          max: {footerBadge}{' '}
+        <span className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
+          max: {max}{' '}
         </span>
       </span>
     );

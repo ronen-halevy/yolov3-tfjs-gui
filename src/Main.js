@@ -7,8 +7,6 @@ import ConfigurationsPanel from './components/ConfigurationsPanel';
 import VideoControlPanel from './components/VideoControlPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 
-import configNms from './config/configNms.json';
-
 import YoloPredictor from './yolov3/YoloV3';
 
 export const Main = () => {
@@ -17,16 +15,10 @@ export const Main = () => {
   const yoloPredictor = useRef(null);
   const videoRef = useRef(null);
   // refs affect changes during animation:
-  const scoreTHRRef = useRef(configNms.scoreThreshold);
-  const iouTHRRef = useRef(configNms.iouThreshold);
-  const maxBoxesRef = useRef(configNms.maxBoxes);
+
   const lastLoopRef = useRef(null);
 
   // States:
-
-  const [scoreTHR, setScoreTHR] = useState(configNms.scoreThreshold);
-  const [iouTHR, setIouTHR] = useState(configNms.iouThreshold);
-  const [maxBoxes, setMaxBoxes] = useState(configNms.maxBoxes);
 
   // const [selectedExampleName, setSelectedExampleName] = useState(
 
@@ -46,39 +38,6 @@ export const Main = () => {
 
   const [isReady, setIsReady] = useState(false);
 
-  // data
-  const configItemsList = [
-    {
-      mname: 'Score THLD',
-      min: 0,
-      max: 1,
-      step: 0.1,
-      stateVal: scoreTHR,
-      stateSet: setScoreTHR,
-      refName: scoreTHRRef,
-    },
-
-    {
-      mname: 'Iou THLD',
-      min: 0,
-      max: 1,
-      step: 0.1,
-      stateVal: iouTHR,
-      stateSet: setIouTHR,
-      refName: iouTHRRef,
-    },
-
-    {
-      mname: 'Max Boxes',
-      min: 0,
-      max: 100,
-      step: 1,
-      stateVal: maxBoxes,
-      stateSet: setMaxBoxes,
-      refName: maxBoxesRef,
-    },
-  ];
-
   // useEffects
   useEffect(() => {
     console.log('useEffect');
@@ -94,7 +53,7 @@ export const Main = () => {
 
   const onLoadModel = (modelUrl, anchorsUrl, classNamesUrl) => {
     console.log(yoloPredictor);
-    const resPromise = yoloPredictor.current.setModel(
+    const resPromise = yoloPredictor.current.createModel(
       modelUrl,
       anchorsUrl,
       classNamesUrl
@@ -141,12 +100,7 @@ export const Main = () => {
       const imageObjectURL = URL.createObjectURL(imageBlob);
       imageObject.src = imageObjectURL;
       imageObject.addEventListener('load', async () => {
-        yoloPredictor.current.detectFrameVideo(
-          imageObject,
-          iouTHRRef.current,
-          scoreTHRRef.current,
-          maxBoxesRef.current
-        );
+        yoloPredictor.current.detectFrameVideo(imageObject);
       });
     };
     runAsync();
@@ -168,12 +122,7 @@ export const Main = () => {
       setDurationOfVideo(videoRef.current.duration);
       traceDurationOfVideo();
       yoloPredictor.current.setAnimationCallback(animationControl);
-      yoloPredictor.current.detectFrameVideo(
-        videoRef.current,
-        iouTHRRef.current,
-        scoreTHRRef.current,
-        maxBoxesRef.current
-      );
+      yoloPredictor.current.detectFrameVideo(videoRef.current);
     });
   };
 
@@ -181,12 +130,7 @@ export const Main = () => {
 
   const animationControl = () => {
     var id = window.requestAnimationFrame(function () {
-      yoloPredictor.current.detectFrameVideo(
-        videoRef.current,
-        iouTHRRef.current,
-        scoreTHRRef.current,
-        maxBoxesRef.current
-      );
+      yoloPredictor.current.detectFrameVideo(videoRef.current);
     });
     findFps();
     if (videoRef.current.currentTime >= videoRef.current.duration) {
@@ -223,9 +167,6 @@ export const Main = () => {
   }
 
   const onClickPlay = () => {
-    // if (!isModelLoaded) {
-    //   return;
-    // }
     stopVideo();
     if (isVideoOn) {
       setIsVideoOn(false);
@@ -235,22 +176,23 @@ export const Main = () => {
     dataType == 'image' ? playImage() : playVideo();
   };
 
-  const onChangeConfigNumber = (configItemsList, index) => {
-    let { min, max, stateSet, stateVal, refName, step } =
-      configItemsList[index];
-    let val = Math.round((stateVal + step) * 10) / 10;
-    val = val > max ? min : val;
-    stateSet(val);
-    if (refName != '') {
-      refName.current = val;
-    }
-  };
-
   const onClickSetDataSource = (url, type) => {
     stopVideo();
     setDataUrl(url);
     setDataType(type);
   };
+
+  const setScoreTHR = (val) => {
+    console.log('setScoreTHR', val);
+    yoloPredictor.current.setScoreTHR(val);
+  };
+  const setIouTHR = (val) => {
+    yoloPredictor.current.setIouTHR(val);
+  };
+  const setMaxBoxes = (val) => {
+    yoloPredictor.current.setMaxBoxes(val);
+  };
+
   return (
     <div className='container '>
       <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
@@ -263,8 +205,9 @@ export const Main = () => {
         </span>
         <div className='row mb-2'>
           <ConfigurationsPanel
-            configItemsList={configItemsList}
-            onChangeConfigNumber={onChangeConfigNumber}
+            setScoreTHR={setScoreTHR}
+            setIouTHR={setIouTHR}
+            setMaxBoxes={setMaxBoxes}
           />
         </div>
       </div>
