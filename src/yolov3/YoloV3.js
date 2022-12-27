@@ -73,8 +73,6 @@ export default class YoloPredictor {
     // clean mem
     classProbs.dispose();
     confidences.dispose();
-    console.log('scoreTHR', this.scoreTHR);
-    console.log('maxBoxes', this.maxBoxes);
 
     nms(
       bboxes,
