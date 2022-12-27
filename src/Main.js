@@ -52,7 +52,6 @@ export const Main = () => {
   }, []);
 
   const onLoadModel = (modelUrl, anchorsUrl, classNamesUrl) => {
-    console.log(yoloPredictor);
     const resPromise = yoloPredictor.current.createModel(
       modelUrl,
       anchorsUrl,
