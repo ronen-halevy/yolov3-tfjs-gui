@@ -12,6 +12,10 @@ export default class Player {
   }
 
   setDataUrl = (url, type) => {
+    console.log('setDataUrl');
+    if (url != this.dataUrl) {
+      this.videoObject.currentTime = 0;
+    }
     this.dataUrl = url;
     this.dataType = type;
   };
@@ -79,18 +83,9 @@ export default class Player {
   getAnimationControl = () => {
     return this.animationControl;
   };
-  pauseResumeVideo = () => {
-    if (this.isVideoPaused) {
-      this.videoObject.play();
-      this.isVideoPaused = false;
-    } else {
-      this.videoObject.pause();
-      this.isVideoPaused = true;
-    }
-    return this.isVideoPaused;
-  };
 
   setPlaybackRate = (rate) => {
+    console.log(rate);
     this.videoObject.playbackRate = parseFloat(rate);
   };
 
@@ -118,44 +113,60 @@ export default class Player {
   }
 
   animationControl = () => {
-    var id = window.requestAnimationFrame(() =>
-      this.playCallback(
-        this.videoObject,
-        this.videoObject.currentTime,
-        this.videoObject.duration
-      )
-    );
-    // this.findFps();
-    if (this.videoObject.currentTime >= this.videoObject.duration) {
-      cancelAnimationFrame(id);
-      this.setIsVideoOn(false);
+    // block animation when pause, otherwise last frame sent continuesly
+    if (!this.videoObject.paused) {
+      var id = window.requestAnimationFrame(() =>
+        this.playCallback(
+          this.videoObject,
+          this.videoObject.currentTime,
+          this.videoObject.duration
+        )
+      );
+      // this.findFps();
+      if (this.videoObject.currentTime >= this.videoObject.duration) {
+        cancelAnimationFrame(id);
+        this.setIsVideoOn(false);
+      }
     }
   };
 
   onClickPlay = () => {
-    if (this.isVideoOn) {
-      this.stopVideo();
-      this.setIsVideoOn(false);
+    if (!this.videoObject.paused) {
+      // this.stopVideo();
+      this.videoObject.pause();
+      // this.setIsVideoOn(false);
       return false;
     }
-
-    if (!this.dataUrl) {
-      console.log('Missing input url!');
-      return false;
-    }
-    // this.stopVideo();// prevents sopping now
-
-    console.log('onClickPlay');
-    console.log(this.dataUrl);
-    if (this.dataUrl) {
-      this.dataType == 'image'
-        ? this.playImage(this.dataUrl)
-        : this.playVideo(this.dataUrl);
-    }
-    if (this.dataType == 'image') {
-      return false;
-    } else {
+    if (
+      this.videoObject.currentTime &&
+      this.videoObject.currentTime < this.videoObject.duration
+    ) {
+      this.videoObject.play();
+      this.playCallback(
+        this.videoObject,
+        this.videoObject.currentTime,
+        this.videoObject.duration
+      );
       return true;
+    } else {
+      if (!this.dataUrl) {
+        console.log('Missing input url!');
+        return false;
+      }
+      // this.stopVideo();// prevents sopping now
+
+      console.log('onClickPlay');
+      console.log(this.dataUrl);
+      if (this.dataUrl) {
+        this.dataType == 'image'
+          ? this.playImage(this.dataUrl)
+          : this.playVideo(this.dataUrl);
+      }
+      if (this.dataType == 'image') {
+        return false;
+      } else {
+        return true;
+      }
     }
   };
 

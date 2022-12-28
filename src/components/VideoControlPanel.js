@@ -11,7 +11,6 @@ export default class VideoControlPanel extends Component {
 
     this.state = {
       isVideoOn: false,
-      isVideoPaused: false,
       videoRate: 1,
       fps: 0,
       currentTime: 0.0,
@@ -66,19 +65,11 @@ export default class VideoControlPanel extends Component {
     const isVideoOn = this.player.onClickPlay();
 
     this.setPlayerStates(isVideoOn, false);
-    // const pause = res ? false : true;
   };
-  setPlayerStates = (isVideoOn, isVideoPaused) => {
+  setPlayerStates = (isVideoOn) => {
     this.setState({ isVideoOn: isVideoOn });
-    // const pause = res ? false : true;
-    this.setState({ isVideoPaused: isVideoPaused });
   };
-  pause = () => {
-    console.log('pause!!!!');
-    const res = this.player.pauseResumeVideo();
-    console.log('pause res', res);
-    this.setState({ isVideoPaused: res });
-  };
+
   updateVideoDuration = (e) => {
     this.setState({ currentTime: parseFloat(e.target.value) });
     this.player.setCurrentTime(e.target.value);
@@ -89,49 +80,36 @@ export default class VideoControlPanel extends Component {
     const onClickPlay = this.onClickPlay;
     return (
       <React.Fragment>
-        <div className='controlVideo mt-3 border border-1 border-secondary position-relative'>
+        <div className='controlVideo  border border-1 border-secondary position-relative'>
           <span className=' top-0  start-50 translate-middle badge rounded-pill bg-primary text-center position-absolute'>
             Video Control
           </span>
-          <div className='row'>
-            {/* play-stop button */}
-
-            <div className='col-6  text-center '>
-              <span
-                className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
-                onClick={onClickPlay}
-              >
-                {' '}
-                {!this.state.isVideoOn ? (
-                  <div>play </div>
-                ) : (
-                  <div>
-                    Stop{' '}
-                    <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
-                      Running
-                    </span>
-                  </div>
-                )}
-              </span>
-            </div>
-            {/* Pause resume button */}
-            <div className='col-6 text-center'>
-              <span
-                className='badge text-bg-dark mx-2'
-                onClick={this.state.isVideoOn ? this.pause : () => {}}
-              >
-                {this.state.isVideoPaused ? 'resume' : 'pasue'}
-              </span>
-            </div>
-          </div>
         </div>
 
         <div className='col bg-warning bg-gradient'>
           <div className='container'>
             <div className='row'>
+              <div className='col-3  text-center '>
+                <span
+                  className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
+                  onClick={onClickPlay}
+                >
+                  {' '}
+                  {!this.state.isVideoOn ? (
+                    <div>play </div>
+                  ) : (
+                    <div>
+                      Stop{' '}
+                      <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                        Running
+                      </span>
+                    </div>
+                  )}
+                </span>
+              </div>
               {/* Speed button */}
 
-              <div className='col-4 text-center'>
+              <div className='col-3 text-center'>
                 {' '}
                 <span
                   className='badge text-bg-dark  position-relative'
@@ -144,16 +122,16 @@ export default class VideoControlPanel extends Component {
                   </span>
                 </span>
               </div>
-              <div className='col-4 text-center'>
+
+              <div className='col-3 text-center'>
                 {' '}
                 <span className='badge text-bg-light   position-relative'>
                   <span className=' '>fps: {this.state.fps}</span>
                 </span>
               </div>
-              <div className='col-4 text-center'>
-                {' '}
+              <div className='col-3 text-center'>
                 <span className='badge text-bg-light  position-relative'>
-                  <span className=''>
+                  <span className='text-center'>
                     {this.state.currentTime}/{this.state.duration}
                   </span>
                 </span>
