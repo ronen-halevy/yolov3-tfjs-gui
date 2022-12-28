@@ -40,14 +40,13 @@ export default class Player {
       imageObject.src = imageObjectURL;
       this.stopVideo();
       imageObject.addEventListener('load', async () => {
-        this.playCallback(imageObject);
+        this.playCallback(imageObject, null, null);
       });
     };
     runAsync();
   };
 
   playVideo = (dataUrl) => {
-    console.log('playVideo, setIsVideoOn!!!');
     this.setIsVideoOn(true);
     this.videoObject.preload = 'auto';
     this.videoObject.crossOrigin = 'anonymous';
@@ -67,10 +66,13 @@ export default class Player {
         resolve();
       };
     }).then(() => {
-      console.log('in promise playVideo');
       this.durationOfVideo = this.videoObject.duration;
       this.traceDurationOfVideo();
-      this.playCallback(this.videoObject);
+      this.playCallback(
+        this.videoObject,
+        this.videoObject.currentTime,
+        this.videoObject.duration
+      );
     });
   };
 
@@ -107,12 +109,21 @@ export default class Player {
 
     const clearVideoInterval = () => {
       clearInterval(videoIntervalTime);
+      this.playCallback(null, null, null);
     };
   };
 
+  setCurrentTime(value) {
+    this.videoObject.currentTime = value;
+  }
+
   animationControl = () => {
     var id = window.requestAnimationFrame(() =>
-      this.playCallback(this.videoObject)
+      this.playCallback(
+        this.videoObject,
+        this.videoObject.currentTime,
+        this.videoObject.duration
+      )
     );
     // this.findFps();
     if (this.videoObject.currentTime >= this.videoObject.duration) {
@@ -122,10 +133,14 @@ export default class Player {
   };
 
   onClickPlay = () => {
-    console.log('!!!!!!!!!!!!!!!onClickPlay', this.isVideoOn);
     if (this.isVideoOn) {
       this.stopVideo();
       this.setIsVideoOn(false);
+      return false;
+    }
+
+    if (!this.dataUrl) {
+      console.log('Missing input url!');
       return false;
     }
     // this.stopVideo();// prevents sopping now
@@ -137,10 +152,14 @@ export default class Player {
         ? this.playImage(this.dataUrl)
         : this.playVideo(this.dataUrl);
     }
-    return true;
+    if (this.dataType == 'image') {
+      return false;
+    } else {
+      return true;
+    }
   };
+
   setIsVideoOn(val) {
-    console.log('setIsVideoOn', val);
     this.isVideoOn = val;
   }
 }

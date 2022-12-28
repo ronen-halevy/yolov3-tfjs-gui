@@ -13,17 +13,38 @@ export default class VideoControlPanel extends Component {
       isVideoOn: false,
       isVideoPaused: false,
       videoRate: 1,
+      fps: 0,
+      currentTime: 0.0,
+      duration: 0.0,
     };
   }
 
   findFps() {
     var thisLoop = new Date();
-    this.setFps = 1000 / (thisLoop - this.lastLoop);
+    const fps = (1000 / (thisLoop - this.lastLoop))
+      .toFixed(2)
+      .toString()
+      .padStart(5, '0');
+
     this.lastLoop = thisLoop;
+    return fps;
   }
-  playCallback = (frame) => {
-    this.props.frameCallback(frame);
-    this.findFps();
+  playCallback = (frame, currentTime, duration) => {
+    if (frame) {
+      this.props.frameCallback(frame);
+      // avoid if image:
+      if (duration) {
+        const fps = this.findFps();
+        this.setState({
+          fps: fps,
+          currentTime: currentTime.toFixed(1),
+          duration: duration.toFixed(1),
+        });
+      }
+    } else {
+      // return nulls when completed:
+      this.setPlayerStates(false, false);
+    }
   };
 
   feedAnimationControl = () => {
@@ -43,9 +64,13 @@ export default class VideoControlPanel extends Component {
   onClickPlay = () => {
     this.player.setDataUrl(this.props.dataUrl, this.props.dataType);
     const res = this.player.onClickPlay();
-    this.setState({ isVideoOn: res });
+    this.setPlayerStates(res, false);
     // const pause = res ? false : true;
-    this.setState({ isVideoPaused: false });
+  };
+  setPlayerStates = (isVideoOn, isVideoPaused) => {
+    this.setState({ isVideoOn: isVideoOn });
+    // const pause = res ? false : true;
+    this.setState({ isVideoPaused: isVideoPaused });
   };
   pause = () => {
     console.log('pause!!!!');
@@ -53,11 +78,16 @@ export default class VideoControlPanel extends Component {
     console.log('pause res', res);
     this.setState({ isVideoPaused: res });
   };
+  updateVideoDuration = (e) => {
+    this.setState({ currentTime: parseFloat(e.target.value) });
+    this.player.setCurrentTime(e.target.value);
+    // videoRef.current.currentTime = parseFloat(e.target.value);
+  };
   render() {
     const {
       // onClickVideoSpeed,
       videoSpeed,
-      fps,
+      // fps,
       currentDurationOfVideo,
       durationOfVideo,
       // isVideoOn,
@@ -78,11 +108,9 @@ export default class VideoControlPanel extends Component {
             {' '}
             speed
             <span className='badge text-bg-secondary  position-relative'>
-              <small className=' '>
-                fps: {fps.toFixed(2).toString().padStart(5, '0')}
-              </small>
+              <small className=' '>fps: {this.state.fps}</small>
               <small className=' text-dark'>
-                {currentDurationOfVideo}/{durationOfVideo}
+                {this.state.currentTime}/{this.state.duration}
               </small>
             </span>
             <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
@@ -118,6 +146,20 @@ export default class VideoControlPanel extends Component {
             )}
           </span>
         </div>
+        {this.state.isVideoOn && (
+          <div className='col bg-warning bg-gradient'>
+            <input
+              type='range'
+              className='form-range'
+              min='0'
+              max={this.state.duration}
+              // step='0.5'
+              id='customRange3'
+              value={this.state.currentTime}
+              onChange={this.updateVideoDuration}
+            />
+          </div>
+        )}
       </div>
     );
   }
