@@ -20,6 +20,7 @@ export const Main = () => {
   const lastLoopRef = useRef(null);
 
   const player = useRef(null);
+  const videoControlRef = useRef();
 
   // States:
 
@@ -53,17 +54,20 @@ export const Main = () => {
     yoloPredictor.current = new YoloPredictor(canvasRefVideo.current);
     setIsReady(true);
 
-    const tt = (frame) => {
-      yoloPredictor.current.detectFrameVideo(frame);
-    };
-    console.log(tt);
-    player.current = new Player(tt, canvasHeight, canvasWidth);
+    // player.current = new Player(tt, canvasHeight, canvasWidth);
 
     yoloPredictor.current.setAnimationCallback(
-      player.current.getAnimationControl()
+      videoControlRef.current.feedAnimationControl
     );
   }, []);
 
+  const animationControl = () => {
+    videoControlRef.current.feedAnimationControl();
+  };
+
+  const frameCallback = (frame) => {
+    yoloPredictor.current.detectFrameVideo(frame);
+  };
   const onLoadModel = (modelUrl, anchorsUrl, classNamesUrl) => {
     const resPromise = yoloPredictor.current.createModel(
       modelUrl,
@@ -94,8 +98,7 @@ export const Main = () => {
   };
 
   const onClickPlay = () => {
-    player.current.onClickPlay();
-
+    // player.current.onClickPlay();
     // stopVideo();
     // if (isVideoOn) {
     //   setIsVideoOn(false);
@@ -106,10 +109,11 @@ export const Main = () => {
   };
 
   const onClickSetDataSource = (url, type) => {
+    console.log('!!!!!!!!!!!!!!!!onClickSetDataSource');
     // stopVideo();
-    // setDataUrl(url);
-    // setDataType(type);
-    player.current.setDataUrl(url, type);
+    setDataUrl(url);
+    setDataType(type);
+    // player.current.setDataUrl(url, type);
   };
 
   const setScoreTHR = (val) => {
@@ -164,6 +168,10 @@ export const Main = () => {
             isVideoPaused={isVideoPaused}
             isFileSource={isFileSource}
             onClickPlay={onClickPlay}
+            dataUrl={dataUrl}
+            dataType={dataType}
+            frameCallback={frameCallback}
+            ref={videoControlRef}
           />
         </div>
       </div>

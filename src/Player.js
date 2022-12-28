@@ -7,19 +7,26 @@ export default class Player {
     this.videoObject.width = canvasWidth;
     this.playCallback = playCallback;
     this.dataType = 'video'; // set as a default...
+    this.videoObject.src = 'null';
+    console.log(this.videoObject.src);
   }
 
   setDataUrl = (url, type) => {
-    this.stopVideo();
     this.dataUrl = url;
     this.dataType = type;
   };
 
   stopVideo = () => {
     this.setIsVideoOn(false);
-
-    if (this.videoObject.src != '') {
+    // avoid erros for video not yet activated case - constructor assigned null
+    const src = /[^/]*$/.exec(this.videoObject.src)[0];
+    console.log(src);
+    if (src != 'null') {
+      console.log(src);
       this.videoObject.pause();
+      console.log(src);
+      console.log(this.videoObject.duration);
+
       this.videoObject.currentTime = this.videoObject.duration;
     }
   };
@@ -31,22 +38,22 @@ export default class Player {
       const imageBlob = await res.blob();
       const imageObjectURL = URL.createObjectURL(imageBlob);
       imageObject.src = imageObjectURL;
+      this.stopVideo();
       imageObject.addEventListener('load', async () => {
         this.playCallback(imageObject);
-        // yoloPredictor.current.detectFrameVideo(
-        //   imageObject,
-        // );
       });
     };
     runAsync();
   };
 
   playVideo = (dataUrl) => {
+    console.log('playVideo, setIsVideoOn!!!');
     this.setIsVideoOn(true);
     this.videoObject.preload = 'auto';
     this.videoObject.crossOrigin = 'anonymous';
     this.videoObject.src = dataUrl;
     this.lastLoopRef = new Date();
+    // this.stopVideo(); // todo - commented with component..
     this.videoObject.play();
 
     // new Promise((resolve) => {
@@ -60,17 +67,12 @@ export default class Player {
         resolve();
       };
     }).then(() => {
+      console.log('in promise playVideo');
       this.durationOfVideo = this.videoObject.duration;
       this.traceDurationOfVideo();
       this.playCallback(this.videoObject);
     });
   };
-
-  findFps() {
-    var thisLoop = new Date();
-    this.setFps = 1000 / (thisLoop - this.lastLoop);
-    this.lastLoop = thisLoop;
-  }
 
   getAnimationControl = () => {
     return this.animationControl;
@@ -83,13 +85,12 @@ export default class Player {
       this.videoObject.pause();
       this.isVideoPaused = true;
     }
+    return this.isVideoPaused;
   };
 
-  // onClickVideoSpeed = (e) => {
-  //   const speed = videoSpeed * 2 > 2.0 ? 0.5 : videoSpeed * 2;
-  //  this.videoObject.playbackRate = parseFloat(speed);
-  //   setVideoSpeed(speed);
-  // };
+  setPlaybackRate = (rate) => {
+    this.videoObject.playbackRate = parseFloat(rate);
+  };
 
   traceDurationOfVideo = () => {
     const videoIntervalTime = setInterval(() => {
@@ -113,7 +114,7 @@ export default class Player {
     var id = window.requestAnimationFrame(() =>
       this.playCallback(this.videoObject)
     );
-    this.findFps();
+    // this.findFps();
     if (this.videoObject.currentTime >= this.videoObject.duration) {
       cancelAnimationFrame(id);
       this.setIsVideoOn(false);
@@ -121,18 +122,22 @@ export default class Player {
   };
 
   onClickPlay = () => {
-    console.log('onClickPlay', this.isVideoOn);
+    console.log('!!!!!!!!!!!!!!!onClickPlay', this.isVideoOn);
     if (this.isVideoOn) {
       this.stopVideo();
       this.setIsVideoOn(false);
-      return;
+      return false;
     }
-    this.stopVideo();
+    // this.stopVideo();// prevents sopping now
 
     console.log('onClickPlay');
-    this.dataType == 'image'
-      ? this.playImage(this.dataUrl)
-      : this.playVideo(this.dataUrl);
+    console.log(this.dataUrl);
+    if (this.dataUrl) {
+      this.dataType == 'image'
+        ? this.playImage(this.dataUrl)
+        : this.playVideo(this.dataUrl);
+    }
+    return true;
   };
   setIsVideoOn(val) {
     console.log('setIsVideoOn', val);

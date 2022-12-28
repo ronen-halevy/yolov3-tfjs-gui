@@ -12,6 +12,7 @@ export default class YoloPredictor {
     this.scoreTHR = configNms.scoreThreshold;
     this.iouTHR = configNms.iouThreshold;
     this.maxBoxes = configNms.maxBoxes;
+    this.animationCallback = null;
   }
 
   setScoreTHR = (val) => {
@@ -91,7 +92,11 @@ export default class YoloPredictor {
         this.classNames
       );
       if (imageFrame.tagName == 'VIDEO') {
-        this.animationCallback(imageFrame);
+        if (this.animationCallback) {
+          this.animationCallback(imageFrame);
+        } else {
+          console.log('animationCallback was not set for video');
+        }
       }
 
       tf.engine().endScope();
