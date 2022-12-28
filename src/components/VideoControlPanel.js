@@ -63,8 +63,9 @@ export default class VideoControlPanel extends Component {
 
   onClickPlay = () => {
     this.player.setDataUrl(this.props.dataUrl, this.props.dataType);
-    const res = this.player.onClickPlay();
-    this.setPlayerStates(res, false);
+    const isVideoOn = this.player.onClickPlay();
+
+    this.setPlayerStates(isVideoOn, false);
     // const pause = res ? false : true;
   };
   setPlayerStates = (isVideoOn, isVideoPaused) => {
@@ -100,24 +101,7 @@ export default class VideoControlPanel extends Component {
     return (
       <div className='row'>
         {/* Speed button */}
-        <div className='col-4  text-center position-relative mb-1'>
-          <span
-            className='badge text-bg-dark  '
-            onClick={this.onClickVideoSpeed}
-          >
-            {' '}
-            speed
-            <span className='badge text-bg-secondary  position-relative'>
-              <small className=' '>fps: {this.state.fps}</small>
-              <small className=' text-dark'>
-                {this.state.currentTime}/{this.state.duration}
-              </small>
-            </span>
-            <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-              x{this.state.videoRate}
-            </span>
-          </span>
-        </div>
+        <div className='col-4  text-center position-relative mb-1'></div>
         {/* Pause resume button */}
         <div className='col-4 text-center'>
           <span
@@ -146,8 +130,39 @@ export default class VideoControlPanel extends Component {
             )}
           </span>
         </div>
-        {this.state.isVideoOn && (
+        {true && (
           <div className='col bg-warning bg-gradient'>
+            <div class='container'>
+              <div class='row'>
+                <div class='col-sm text-center'>
+                  {' '}
+                  <span
+                    className='badge text-bg-dark  position-relative'
+                    onClick={this.onClickVideoSpeed}
+                  >
+                    {' '}
+                    speed
+                    <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                      x{this.state.videoRate}
+                    </span>
+                  </span>
+                </div>
+                <div class='col-sm text-center'>
+                  {' '}
+                  <span className='badge text-bg-light   position-relative'>
+                    <span className=' '>fps: {this.state.fps}</span>
+                  </span>
+                </div>
+                <div class='col-sm text-center'>
+                  {' '}
+                  <span className='badge text-bg-light  position-relative'>
+                    <span className=''>
+                      {this.state.currentTime}/{this.state.duration}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
             <input
               type='range'
               className='form-range'
