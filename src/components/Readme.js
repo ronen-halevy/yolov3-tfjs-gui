@@ -28,13 +28,7 @@ export default class Readme extends React.Component {
         <h3>The UI </h3>
         The UI is implemented by ReactJS. It consists of 3 sections: an
         accordion buttons section, a mini-buttons panels section, and the
-        rendering canvas, placed on the bottom. The latter is visible only after
-        pressing play. <br /> <br />
-        <h4>Control Modes</h4>
-        The system can be controlled by either the accordion-arranged buttons or
-        by the mini-button panels. Note: the accordion support was reduced to
-        only a fraction of the controlling functions, and may be completely
-        removed, according to users&rsquo; feedback. <br /> <br />
+        rendering canvas, placed on the bottom. <br /> <br />
         <h4>Mini-buttons panel</h4>
         The interface consists of 4 mini-button panels, described next.
         <br /> <br />
@@ -55,6 +49,11 @@ export default class Readme extends React.Component {
         YoloV3 are only briefly trained, leading to poor accuracy, and weights
         for Tiny are not yet added. The coco weights are loaded from the darknet
         website, converted to Keras format - and then to JS format.
+        <br />
+        <br />
+        <h5>Load button</h5>
+        The selected model and weights are loaded only after pressing this
+        button.
         <br />
         <br />
         <h4>Data Source Selection panel</h4>
@@ -99,27 +98,34 @@ export default class Readme extends React.Component {
         This button sets the max number of bounding boxes.
         <br /> <br />
         <h4>Video Control panel</h4>
-        These buttons are effective for video data only.
-        <br /> <br />
-        <h5>Fps and seconds counter </h5>
-        A small display of fps and running seconds. Fps may vary according to
-        the platform, model type, and data.
-        <br /> <br />
-        <h5>Speed button </h5>
-        Selects between 3 video play speeds.
-        <br /> <br />
         <h5> Play-stop </h5>
-        button Toggles between play and stop.
+        button Toggles between play and stop. Play trigger both image and video
+        process. <br />
+        The rest of panel's buttons are effective for video data only.
         <br /> <br />
         <h5> Pause-replay button </h5>
         Toggles between pause and replay states. The button is effective only
         before the stop button is pressed.
         <br />
         <br />
-        <h4> Canvas panel </h4>
-        This panel is visible only after play. During a video session, a range
+        <br /> <br />
+        <h5>Speed button </h5>
+        Selects between 3 video play speeds.
+        <br /> <br />
+        <h5>Fps and seconds counter </h5>
+        A small display of fps and running seconds. Fps may vary according to
+        the platform, model type, and data.
+        <br /> <br />
+        <h5>Range Progress Bar </h5>
         progress bar appears. It permits manual scrolling over the video, as
         long as it the video is not stopped or ended.
+        <br /> <br />
+        <h5>Speed button </h5>
+        Selects between 3 video play speeds.
+        <br /> <br />
+        <h4> Canvas panel </h4>
+        This Canvas is visible only after play. Both images and videos are
+        rendered on it.
         <br /> <br />
         <h3>The algorithmic engine</h3>
         The algorithmic engine is implemented using Tensorflow JS, the Java
