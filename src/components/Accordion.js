@@ -33,27 +33,6 @@ class Accordion extends React.Component {
             </div>
           </div>
         </div>
-        <div className='accordion-item'>
-          <h2 className='accordion-header' id='panelsStayOpen-headingFour'>
-            <button
-              className='accordion-button collapsed'
-              type='button'
-              data-bs-toggle='collapse'
-              data-bs-target='#panelsStayOpen-collapseTwo'
-              aria-expanded='false'
-              aria-controls='panelsStayOpen-collapseTwo'
-            >
-              Model Setup
-            </button>
-          </h2>
-          <div
-            id='panelsStayOpen-collapseTwo'
-            className='accordion-collapse collapse'
-            aria-labelledby='panelsStayOpen-headingTwo'
-          >
-            <div className='accordion-body'></div>
-          </div>
-        </div>
       </div>
     );
   }
