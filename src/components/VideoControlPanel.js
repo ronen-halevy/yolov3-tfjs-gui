@@ -85,18 +85,7 @@ export default class VideoControlPanel extends Component {
     // videoRef.current.currentTime = parseFloat(e.target.value);
   };
   render() {
-    const {
-      // onClickVideoSpeed,
-      videoSpeed,
-      // fps,
-      currentDurationOfVideo,
-      durationOfVideo,
-      // isVideoOn,
-      // pauseResumeVideo,
-      // isVideoPaused,
-
-      // onClickPlay,
-    } = this.props;
+    const {} = this.props;
     const onClickPlay = this.onClickPlay;
     return (
       <div className='row'>
@@ -130,51 +119,50 @@ export default class VideoControlPanel extends Component {
             )}
           </span>
         </div>
-        {true && (
-          <div className='col bg-warning bg-gradient'>
-            <div class='container'>
-              <div class='row'>
-                <div class='col-sm text-center'>
+
+        <div className='col bg-warning bg-gradient'>
+          <div class='container'>
+            <div class='row'>
+              <div class='col-sm text-center'>
+                {' '}
+                <span
+                  className='badge text-bg-dark  position-relative'
+                  onClick={this.onClickVideoSpeed}
+                >
                   {' '}
-                  <span
-                    className='badge text-bg-dark  position-relative'
-                    onClick={this.onClickVideoSpeed}
-                  >
-                    {' '}
-                    speed
-                    <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-                      x{this.state.videoRate}
-                    </span>
+                  speed
+                  <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                    x{this.state.videoRate}
                   </span>
-                </div>
-                <div class='col-sm text-center'>
-                  {' '}
-                  <span className='badge text-bg-light   position-relative'>
-                    <span className=' '>fps: {this.state.fps}</span>
+                </span>
+              </div>
+              <div class='col-sm text-center'>
+                {' '}
+                <span className='badge text-bg-light   position-relative'>
+                  <span className=' '>fps: {this.state.fps}</span>
+                </span>
+              </div>
+              <div class='col-sm text-center'>
+                {' '}
+                <span className='badge text-bg-light  position-relative'>
+                  <span className=''>
+                    {this.state.currentTime}/{this.state.duration}
                   </span>
-                </div>
-                <div class='col-sm text-center'>
-                  {' '}
-                  <span className='badge text-bg-light  position-relative'>
-                    <span className=''>
-                      {this.state.currentTime}/{this.state.duration}
-                    </span>
-                  </span>
-                </div>
+                </span>
               </div>
             </div>
-            <input
-              type='range'
-              className='form-range'
-              min='0'
-              max={this.state.duration}
-              // step='0.5'
-              id='customRange3'
-              value={this.state.currentTime}
-              onChange={this.updateVideoDuration}
-            />
           </div>
-        )}
+          <input
+            type='range'
+            className='form-range'
+            min='0'
+            max={this.state.duration}
+            // step='0.5'
+            id='customRange3'
+            value={this.state.currentTime}
+            onChange={this.updateVideoDuration}
+          />
+        </div>
       </div>
     );
   }

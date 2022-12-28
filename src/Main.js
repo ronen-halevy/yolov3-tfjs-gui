@@ -7,35 +7,18 @@ import ConfigurationsPanel from './components/ConfigurationsPanel';
 import VideoControlPanel from './components/VideoControlPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 
-import Player from './Player';
 import YoloPredictor from './yolov3/YoloV3';
 
 export const Main = () => {
   // Refs:
   const canvasRefVideo = useRef(null);
   const yoloPredictor = useRef(null);
-  const videoRef = useRef(null);
-  // refs affect changes during animation:
-
-  const lastLoopRef = useRef(null);
-
-  const player = useRef(null);
   const videoControlRef = useRef();
 
   // States:
 
-  // const [selectedExampleName, setSelectedExampleName] = useState(
-
-  const [isVideoOn, setIsVideoOn] = useState(true);
-  const [isVideoPaused, setIsVideoPaused] = useState(false);
   const [canvasWidth, setCanvasWidth] = useState(416);
   const [canvasHeight, setCanvasHeight] = useState(416);
-  const [durationOfVideo, setDurationOfVideo] = useState(0);
-  const [currentDurationOfVideo, setCurrentDurationOfVideo] = useState(0);
-  const [fps, setFps] = useState(0);
-  const [videoSpeed, setVideoSpeed] = useState(1.0);
-
-  const [isFileSource, setIsFileSource] = useState(false);
 
   const [dataUrl, setDataUrl] = useState('');
   const [dataType, setDataType] = useState('');
@@ -45,25 +28,14 @@ export const Main = () => {
   // useEffects
   useEffect(() => {
     console.log('useEffect');
-    videoRef.current = document.createElement('video');
-    videoRef.current.controls = true;
-    videoRef.current.muted = true;
-    videoRef.current.height = canvasHeight; // in px
-    videoRef.current.width = canvasWidth; // in px
-    setIsVideoOn(false);
+
     yoloPredictor.current = new YoloPredictor(canvasRefVideo.current);
     setIsReady(true);
-
-    // player.current = new Player(tt, canvasHeight, canvasWidth);
 
     yoloPredictor.current.setAnimationCallback(
       videoControlRef.current.feedAnimationControl
     );
   }, []);
-
-  const animationControl = () => {
-    videoControlRef.current.feedAnimationControl();
-  };
 
   const frameCallback = (frame) => {
     yoloPredictor.current.detectFrameVideo(frame);
@@ -78,42 +50,10 @@ export const Main = () => {
     return resPromise;
   };
 
-  //  utils
-
   // callBacks:
-
-  const pauseResumeVideo = () => {
-    console.log('pauseResumeVideo');
-    player.current.pauseResumeVideo();
-  };
-
-  const onClickVideoSpeed = (e) => {
-    const speed = videoSpeed * 2 > 2.0 ? 0.5 : videoSpeed * 2;
-    videoRef.current.playbackRate = parseFloat(speed);
-  };
-
-  const updateVideoDuration = (e) => {
-    setCurrentDurationOfVideo(parseFloat(e.target.value));
-    videoRef.current.currentTime = parseFloat(e.target.value);
-  };
-
-  const onClickPlay = () => {
-    // player.current.onClickPlay();
-    // stopVideo();
-    // if (isVideoOn) {
-    //   setIsVideoOn(false);
-    //   return;
-    // }
-    // console.log('onClickPlay');
-    // dataType == 'image' ? playImage() : playVideo();
-  };
-
   const onClickSetDataSource = (url, type) => {
-    console.log('!!!!!!!!!!!!!!!!onClickSetDataSource');
-    // stopVideo();
     setDataUrl(url);
     setDataType(type);
-    // player.current.setDataUrl(url, type);
   };
 
   const setScoreTHR = (val) => {
@@ -158,16 +98,6 @@ export const Main = () => {
 
         <div className=' mt-3 row'>
           <VideoControlPanel
-            onClickVideoSpeed={onClickVideoSpeed}
-            videoSpeed={videoSpeed}
-            fps={fps}
-            currentDurationOfVideo={currentDurationOfVideo}
-            durationOfVideo={durationOfVideo}
-            // isVideoOn={isVideoOn}
-            pauseResumeVideo={pauseResumeVideo}
-            isVideoPaused={isVideoPaused}
-            isFileSource={isFileSource}
-            onClickPlay={onClickPlay}
             dataUrl={dataUrl}
             dataType={dataType}
             frameCallback={frameCallback}
@@ -175,20 +105,7 @@ export const Main = () => {
           />
         </div>
       </div>
-      {isVideoOn && (
-        <div className='col bg-warning bg-gradient'>
-          <input
-            type='range'
-            className='form-range'
-            min='0'
-            max={durationOfVideo}
-            // step='0.5'
-            id='customRange3'
-            value={currentDurationOfVideo}
-            onChange={updateVideoDuration}
-          />
-        </div>
-      )}
+
       <div className='mtj-3 '>
         <canvas className='video' ref={canvasRefVideo} width='' height='' />
       </div>
@@ -196,5 +113,3 @@ export const Main = () => {
     </div>
   );
 };
-
-export default Main;
