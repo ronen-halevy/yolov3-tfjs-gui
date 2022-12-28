@@ -80,11 +80,16 @@ export default class VideoControlPanel extends Component {
     const onClickPlay = this.onClickPlay;
     return (
       <React.Fragment>
-        <div className='controlVideo  border border-1 border-secondary position-relative'>
-          <span className=' top-0  start-50 translate-middle badge rounded-pill bg-primary text-center position-absolute'>
-            Video Control
-          </span>
+        {/* <div className='controlVideo  border border-1 border-secondary position-relative'> */}
+        <div className=' row text-center'>
+          <div className=' col'>
+            <div className=' col-2 text-center badge rounded-pill bg-primary text-center'>
+              Video Control
+            </div>
+          </div>
         </div>
+
+        {/* </div> */}
 
         <div className='col bg-warning bg-gradient'>
           <div className='container'>
