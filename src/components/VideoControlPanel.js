@@ -131,7 +131,7 @@ export default class VideoControlPanel extends Component {
             <div className='row'>
               {/* Speed button */}
 
-              <div className='col-sm text-center'>
+              <div className='col-4 text-center'>
                 {' '}
                 <span
                   className='badge text-bg-dark  position-relative'
@@ -144,13 +144,13 @@ export default class VideoControlPanel extends Component {
                   </span>
                 </span>
               </div>
-              <div className='col-sm text-center'>
+              <div className='col-4 text-center'>
                 {' '}
                 <span className='badge text-bg-light   position-relative'>
                   <span className=' '>fps: {this.state.fps}</span>
                 </span>
               </div>
-              <div className='col-sm text-center'>
+              <div className='col-4 text-center'>
                 {' '}
                 <span className='badge text-bg-light  position-relative'>
                   <span className=''>
