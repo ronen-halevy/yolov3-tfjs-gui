@@ -121,9 +121,9 @@ export default class VideoControlPanel extends Component {
         </div>
 
         <div className='col bg-warning bg-gradient'>
-          <div class='container'>
-            <div class='row'>
-              <div class='col-sm text-center'>
+          <div className='container'>
+            <div className='row'>
+              <div className='col-sm text-center'>
                 {' '}
                 <span
                   className='badge text-bg-dark  position-relative'
@@ -136,13 +136,13 @@ export default class VideoControlPanel extends Component {
                   </span>
                 </span>
               </div>
-              <div class='col-sm text-center'>
+              <div className='col-sm text-center'>
                 {' '}
                 <span className='badge text-bg-light   position-relative'>
                   <span className=' '>fps: {this.state.fps}</span>
                 </span>
               </div>
-              <div class='col-sm text-center'>
+              <div className='col-sm text-center'>
                 {' '}
                 <span className='badge text-bg-light  position-relative'>
                   <span className=''>
