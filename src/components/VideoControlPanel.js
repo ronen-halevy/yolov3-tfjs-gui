@@ -90,20 +90,13 @@ export default class VideoControlPanel extends Component {
     return (
       <React.Fragment>
         <div className='controlVideo mt-3 border border-1 border-secondary position-relative'>
+          <span className=' top-0  start-50 translate-middle badge rounded-pill bg-primary text-center position-absolute'>
+            Video Control
+          </span>
           <div className='row'>
-            {/* Speed button */}
-            <div className='col-4  text-center position-relative mb-1'></div>
-            {/* Pause resume button */}
-            <div className='col-4 text-center'>
-              <span
-                className='badge text-bg-dark mx-2'
-                onClick={this.state.isVideoOn ? this.pause : () => {}}
-              >
-                {this.state.isVideoPaused ? 'resume' : 'pasue'}
-              </span>
-            </div>
-            {/* Run-stop button */}
-            <div className='col-4  text-center'>
+            {/* play-stop button */}
+
+            <div className='col-6  text-center '>
               <span
                 className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
                 onClick={onClickPlay}
@@ -121,50 +114,62 @@ export default class VideoControlPanel extends Component {
                 )}
               </span>
             </div>
+            {/* Pause resume button */}
+            <div className='col-6 text-center'>
+              <span
+                className='badge text-bg-dark mx-2'
+                onClick={this.state.isVideoOn ? this.pause : () => {}}
+              >
+                {this.state.isVideoPaused ? 'resume' : 'pasue'}
+              </span>
+            </div>
           </div>
-          <div className='col bg-warning bg-gradient'>
-            <div className='container'>
-              <div className='row'>
-                <div className='col-sm text-center'>
+        </div>
+
+        <div className='col bg-warning bg-gradient'>
+          <div className='container'>
+            <div className='row'>
+              {/* Speed button */}
+
+              <div className='col-sm text-center'>
+                {' '}
+                <span
+                  className='badge text-bg-dark  position-relative'
+                  onClick={this.onClickVideoSpeed}
+                >
                   {' '}
-                  <span
-                    className='badge text-bg-dark  position-relative'
-                    onClick={this.onClickVideoSpeed}
-                  >
-                    {' '}
-                    speed
-                    <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-                      x{this.state.videoRate}
-                    </span>
+                  speed
+                  <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                    x{this.state.videoRate}
                   </span>
-                </div>
-                <div className='col-sm text-center'>
-                  {' '}
-                  <span className='badge text-bg-light   position-relative'>
-                    <span className=' '>fps: {this.state.fps}</span>
+                </span>
+              </div>
+              <div className='col-sm text-center'>
+                {' '}
+                <span className='badge text-bg-light   position-relative'>
+                  <span className=' '>fps: {this.state.fps}</span>
+                </span>
+              </div>
+              <div className='col-sm text-center'>
+                {' '}
+                <span className='badge text-bg-light  position-relative'>
+                  <span className=''>
+                    {this.state.currentTime}/{this.state.duration}
                   </span>
-                </div>
-                <div className='col-sm text-center'>
-                  {' '}
-                  <span className='badge text-bg-light  position-relative'>
-                    <span className=''>
-                      {this.state.currentTime}/{this.state.duration}
-                    </span>
-                  </span>
-                </div>
+                </span>
               </div>
             </div>
-            <input
-              type='range'
-              className='form-range'
-              min='0'
-              max={this.state.duration}
-              // step='0.5'
-              id='customRange3'
-              value={this.state.currentTime}
-              onChange={this.updateVideoDuration}
-            />
           </div>
+          <input
+            type='range'
+            className='form-range'
+            min='0'
+            max={this.state.duration}
+            // step='0.5'
+            id='customRange3'
+            value={this.state.currentTime}
+            onChange={this.updateVideoDuration}
+          />
         </div>
       </React.Fragment>
     );
