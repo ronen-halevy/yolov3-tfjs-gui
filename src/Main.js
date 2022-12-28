@@ -91,19 +91,18 @@ export const Main = () => {
         </span>
         <DataSourceSelectionPanel onClickSetDataSource={onClickSetDataSource} />
       </div>
-      <div className='controlVideo mt-3 border border-1 border-secondary position-relative'>
-        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
-          Video Control
-        </span>
+      {/* <div className='controlVideo mt-3 border border-1 border-secondary position-relative'> */}
+      <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
+        Video Control
+      </span>
 
-        <div className=' mt-3 row'>
-          <VideoControlPanel
-            dataUrl={dataUrl}
-            dataType={dataType}
-            frameCallback={frameCallback}
-            ref={videoControlRef}
-          />
-        </div>
+      <div className=' mt-3 row'>
+        <VideoControlPanel
+          dataUrl={dataUrl}
+          dataType={dataType}
+          frameCallback={frameCallback}
+          ref={videoControlRef}
+        />
       </div>
 
       <div className='mtj-3 '>

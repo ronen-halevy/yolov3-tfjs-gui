@@ -88,82 +88,85 @@ export default class VideoControlPanel extends Component {
     const {} = this.props;
     const onClickPlay = this.onClickPlay;
     return (
-      <div className='row'>
-        {/* Speed button */}
-        <div className='col-4  text-center position-relative mb-1'></div>
-        {/* Pause resume button */}
-        <div className='col-4 text-center'>
-          <span
-            className='badge text-bg-dark mx-2'
-            onClick={this.state.isVideoOn ? this.pause : () => {}}
-          >
-            {this.state.isVideoPaused ? 'resume' : 'pasue'}
-          </span>
-        </div>
-        {/* Run-stop button */}
-        <div className='col-4  text-center'>
-          <span
-            className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
-            onClick={onClickPlay}
-          >
-            {' '}
-            {!this.state.isVideoOn ? (
-              <div>play </div>
-            ) : (
-              <div>
-                Stop{' '}
-                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
-                  Running
-                </span>
-              </div>
-            )}
-          </span>
-        </div>
-
-        <div className='col bg-warning bg-gradient'>
-          <div className='container'>
-            <div className='row'>
-              <div className='col-sm text-center'>
+      <React.Fragment>
+        <div className='controlVideo mt-3 border border-1 border-secondary position-relative'>
+          <div className='row'>
+            {/* Speed button */}
+            <div className='col-4  text-center position-relative mb-1'></div>
+            {/* Pause resume button */}
+            <div className='col-4 text-center'>
+              <span
+                className='badge text-bg-dark mx-2'
+                onClick={this.state.isVideoOn ? this.pause : () => {}}
+              >
+                {this.state.isVideoPaused ? 'resume' : 'pasue'}
+              </span>
+            </div>
+            {/* Run-stop button */}
+            <div className='col-4  text-center'>
+              <span
+                className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
+                onClick={onClickPlay}
+              >
                 {' '}
-                <span
-                  className='badge text-bg-dark  position-relative'
-                  onClick={this.onClickVideoSpeed}
-                >
-                  {' '}
-                  speed
-                  <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-                    x{this.state.videoRate}
-                  </span>
-                </span>
-              </div>
-              <div className='col-sm text-center'>
-                {' '}
-                <span className='badge text-bg-light   position-relative'>
-                  <span className=' '>fps: {this.state.fps}</span>
-                </span>
-              </div>
-              <div className='col-sm text-center'>
-                {' '}
-                <span className='badge text-bg-light  position-relative'>
-                  <span className=''>
-                    {this.state.currentTime}/{this.state.duration}
-                  </span>
-                </span>
-              </div>
+                {!this.state.isVideoOn ? (
+                  <div>play </div>
+                ) : (
+                  <div>
+                    Stop{' '}
+                    <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                      Running
+                    </span>
+                  </div>
+                )}
+              </span>
             </div>
           </div>
-          <input
-            type='range'
-            className='form-range'
-            min='0'
-            max={this.state.duration}
-            // step='0.5'
-            id='customRange3'
-            value={this.state.currentTime}
-            onChange={this.updateVideoDuration}
-          />
+          <div className='col bg-warning bg-gradient'>
+            <div className='container'>
+              <div className='row'>
+                <div className='col-sm text-center'>
+                  {' '}
+                  <span
+                    className='badge text-bg-dark  position-relative'
+                    onClick={this.onClickVideoSpeed}
+                  >
+                    {' '}
+                    speed
+                    <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                      x{this.state.videoRate}
+                    </span>
+                  </span>
+                </div>
+                <div className='col-sm text-center'>
+                  {' '}
+                  <span className='badge text-bg-light   position-relative'>
+                    <span className=' '>fps: {this.state.fps}</span>
+                  </span>
+                </div>
+                <div className='col-sm text-center'>
+                  {' '}
+                  <span className='badge text-bg-light  position-relative'>
+                    <span className=''>
+                      {this.state.currentTime}/{this.state.duration}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <input
+              type='range'
+              className='form-range'
+              min='0'
+              max={this.state.duration}
+              // step='0.5'
+              id='customRange3'
+              value={this.state.currentTime}
+              onChange={this.updateVideoDuration}
+            />
+          </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }
