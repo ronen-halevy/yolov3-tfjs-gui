@@ -1,4 +1,5 @@
-// import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs';
+
 tf.setBackend('webgl');
 import { decode } from './decode';
 import Render from './Render';
