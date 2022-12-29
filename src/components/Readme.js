@@ -63,16 +63,19 @@ export default class Readme extends React.Component {
         video files. Selection is between uploading from local storage, or
         fetching, (currently videos only), from video sites.
         <br /> <br />
-        <h5>Url button</h5>
-        This button is visible when the url data source is selected. A click on
-        the button cyclically moves the selection to the next video URL on the
-        list. To keep it compact, the URL is not presented, but only a
-        short-form name of the video. The item&rsquo;s index is displayed as a
-        badge in the upper right corner.
-        <br /> <br />
-        <h5>File button </h5>
-        This button is visible when the file data source is selected. Select an
-        image or video file from local storage by clicking on the button.
+        <h5>Input Selection button</h5>
+        According to data source selection, the input selection will present
+        either selection from a url data source or from selection of file from
+        local storage.
+        <br />
+        <strong>Url Selection: </strong> The button cyclically moves the
+        selection to the next video URL on the list. To keep it compact, the URL
+        is not presented, but only a short-form name of the video. The
+        item&rsquo;s index is displayed as a badge in the upper right corner. A
+        blower badge credits the video providor website.
+        <br />
+        <strong>File Selection: </strong> Selects an image or video file from
+        local storage.
         <br /> <br />
         <h4>Configuration Panel</h4>
         The panel consists of 3 configuration buttons. The buttons&rsquo; effect
