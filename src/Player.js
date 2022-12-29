@@ -13,6 +13,7 @@ export default class Player {
 
   setDataUrl = (url, type) => {
     console.log('setDataUrl');
+    // force 'play' intead of resume if a new url assigned:
     if (url != this.dataUrl) {
       this.videoObject.currentTime = 0;
     }
@@ -58,12 +59,6 @@ export default class Player {
     this.lastLoopRef = new Date();
     // this.stopVideo(); // todo - commented with component..
     this.videoObject.play();
-
-    // new Promise((resolve) => {
-    //   videoRef.current.onloadedmetadata = () => {
-    //     resolve();
-    //   };
-    // }).then(() => {
 
     new Promise((resolve) => {
       this.videoObject.onloadedmetadata = () => {
@@ -132,15 +127,11 @@ export default class Player {
 
   onClickPlay = () => {
     if (!this.videoObject.paused) {
-      // this.stopVideo();
       this.videoObject.pause();
-      // this.setIsVideoOn(false);
       return false;
     }
-    if (
-      this.videoObject.currentTime &&
-      this.videoObject.currentTime < this.videoObject.duration
-    ) {
+    // resume play if time is not 0:
+    if (this.videoObject.currentTime) {
       this.videoObject.play();
       this.playCallback(
         this.videoObject,
@@ -153,7 +144,6 @@ export default class Player {
         console.log('Missing input url!');
         return false;
       }
-      // this.stopVideo();// prevents sopping now
 
       console.log('onClickPlay');
       console.log(this.dataUrl);

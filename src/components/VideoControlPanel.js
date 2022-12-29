@@ -10,7 +10,7 @@ export default class VideoControlPanel extends Component {
     this.player = new Player(this.playCallback, height, width);
 
     this.state = {
-      isVideoOn: false,
+      isVideoPlaying: false,
       videoRate: 1,
       fps: 0,
       currentTime: 0.0,
@@ -42,7 +42,7 @@ export default class VideoControlPanel extends Component {
       }
     } else {
       // return nulls when completed:
-      this.setPlayerStates(false, false);
+      this.setState({ isVideoPlaying: false });
     }
   };
 
@@ -62,12 +62,9 @@ export default class VideoControlPanel extends Component {
 
   onClickPlay = () => {
     this.player.setDataUrl(this.props.dataUrl, this.props.dataType);
-    const isVideoOn = this.player.onClickPlay();
 
-    this.setPlayerStates(isVideoOn, false);
-  };
-  setPlayerStates = (isVideoOn) => {
-    this.setState({ isVideoOn: isVideoOn });
+    const isVideoPlaying = this.player.onClickPlay();
+    this.setState({ isVideoPlaying: isVideoPlaying });
   };
 
   updateVideoDuration = (e) => {
@@ -79,7 +76,7 @@ export default class VideoControlPanel extends Component {
     const {} = this.props;
     const onClickPlay = this.onClickPlay;
     return (
-      <React.Fragment>
+      <div className='container '>
         {/* <div className='controlVideo  border border-1 border-secondary position-relative'> */}
         <div className=' row text-center'>
           <div className=' col'>
@@ -100,7 +97,7 @@ export default class VideoControlPanel extends Component {
                   onClick={onClickPlay}
                 >
                   {' '}
-                  {!this.state.isVideoOn ? (
+                  {!this.state.isVideoPlaying ? (
                     <div>play </div>
                   ) : (
                     <div>
@@ -154,7 +151,7 @@ export default class VideoControlPanel extends Component {
             onChange={this.updateVideoDuration}
           />
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

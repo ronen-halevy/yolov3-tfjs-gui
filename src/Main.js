@@ -103,9 +103,8 @@ export const Main = () => {
       </div>
 
       <div className='mtj-3 '>
-        <canvas className='video' ref={canvasRefVideo} width='' height='' />
+        <canvas className='' ref={canvasRefVideo} width='' height='' />
       </div>
-      <div className='col'></div>
     </div>
   );
 };
