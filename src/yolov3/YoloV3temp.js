@@ -1,12 +1,3 @@
-// import * as tf from '@tensorflow/tfjs';
-
-// import { decode } from './decode';
-// import Render from './Render';
-// import { createModel } from './createModel';
-// import { nms } from './nms';
-// import configNms from '../config/configNms.json';
-// import configRender from '../config/configRender.json';
-
 const configNms = {
   maxBoxes: 100,
   iouThreshold: 0.5,
