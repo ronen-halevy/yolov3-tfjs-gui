@@ -331,4 +331,3 @@ class Render {
     );
   };
 }
-<script src='https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.14.1/dist/tf.min.js'></script>;
