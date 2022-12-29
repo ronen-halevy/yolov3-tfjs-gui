@@ -4,8 +4,22 @@
 // import Render from './Render';
 // import { createModel } from './createModel';
 // import { nms } from './nms';
-import configNms from '../config/configNms.json';
-import isVideoPlaying from '../config/configRender.json';
+// import configNms from '../config/configNms.json';
+// import configRender from '../config/configRender.json';
+
+const configNms = {
+  maxBoxes: 100,
+  iouThreshold: 0.5,
+  scoreThreshold: 0.1,
+};
+
+const configRender = {
+  font: '20px serif',
+  lineWidth: 3,
+  lineColor: 'yellow',
+  textColor: 'blue',
+  textBackgoundColor: 'white',
+};
 // tf.setBackend('webgl');
 
 export default class YoloPredictor {
@@ -241,11 +255,11 @@ export const createModel = (modelUrl, anchorsUrl, classNamesUrl) => {
 class Render {
   constructor(canvas) {
     this.canvas = canvas;
-    this.font = isVideoPlaying.font;
-    this.lineWidth = isVideoPlaying.lineWidth;
-    this.lineColor = isVideoPlaying.lineColor;
-    this.textColor = isVideoPlaying.textColor;
-    this.textBackgoundColor = isVideoPlaying.textBackgoundColor;
+    this.font = configRender.font;
+    this.lineWidth = configRender.lineWidth;
+    this.lineColor = configRender.lineColor;
+    this.textColor = configRender.textColor;
+    this.textBackgoundColor = configRender.textBackgoundColor;
   }
   /**
    * @summary renders a bounding box and text annotations for a detection
@@ -326,3 +340,4 @@ class Render {
     );
   };
 }
+<script src='https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.14.1/dist/tf.min.js'></script>;
