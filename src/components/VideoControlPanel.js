@@ -83,7 +83,7 @@ export default class VideoControlPanel extends Component {
         {/* <div className='controlVideo  border border-1 border-secondary position-relative'> */}
         <div className=' row text-center'>
           <div className=' col'>
-            <div className=' col-2 text-center badge rounded-pill bg-primary text-center'>
+            <div className=' col-sm text-center badge rounded-pill bg-primary text-center'>
               Video Control
             </div>
           </div>

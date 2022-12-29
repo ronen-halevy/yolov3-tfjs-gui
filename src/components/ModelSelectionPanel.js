@@ -57,7 +57,7 @@ export default class ModelSelectionPanel extends Component {
       <div>
         <div className=' row text-center'>
           <div className=' col'>
-            <div className=' col-2 text-center badge rounded-pill bg-primary text-center'>
+            <div className=' col-sm text-center badge rounded-pill bg-primary text-center'>
               Model Selection
             </div>
           </div>
