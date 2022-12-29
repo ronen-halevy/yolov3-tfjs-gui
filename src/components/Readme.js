@@ -99,13 +99,9 @@ export default class Readme extends React.Component {
         <br /> <br />
         <h4>Video Control panel</h4>
         <h5> Play-stop </h5>
-        button Toggles between play and stop. Play trigger both image and video
+        button Toggles between play and stop. Play trigger both image and video.
         process. <br />
         The rest of panel's buttons are effective for video data only.
-        <br /> <br />
-        <h5> Pause-replay button </h5>
-        Toggles between pause and replay states. The button is effective only
-        before the stop button is pressed.
         <br />
         <br />
         <br /> <br />
@@ -117,8 +113,7 @@ export default class Readme extends React.Component {
         the platform, model type, and data.
         <br /> <br />
         <h5>Range Progress Bar </h5>
-        progress bar appears. It permits manual scrolling over the video, as
-        long as it the video is not stopped or ended.
+        Permits manual skips through.
         <br /> <br />
         <h5>Speed button </h5>
         Selects between 3 video play speeds.
