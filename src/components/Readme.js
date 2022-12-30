@@ -36,10 +36,11 @@ export default class Readme extends React.Component {
         <br />
         <h5>Model button</h5>
         Currently, the selection is between YoloV3 and its lightweight version,
-        YoloV3-Tiny. The first performs better in terms of detection accuracy
-        but consumes more computing resources. The full Yolov3 may be too heavy
-        for some devices. Actually, YoloV3-Tiny may also be too heavy for some
-        devices, or may not be able to run at all. <br /> <br />
+        YoloV3-Tiny. Full scale YoloV3 performs better in terms of detection
+        accuracy but consumes more computing resources. The full Yolov3 may be
+        too heavy for some devices, especially for running videos. It may be
+        good for stills. YoloV3-Tiny may also be too heavy for video on some
+        devices, or may be for images too. <br /> <br />
         <h5>Weights button</h5>
         The model should be loaded with pre-trained weights. Currently, the
         selection is between the Coco weights, produced by training with the 80
