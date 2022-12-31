@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Player from '../Player';
+import AnimationPlayer from '../AnimationPlayer';
 
 export default class VideoControlPanel extends Component {
   constructor(props) {
@@ -7,7 +7,7 @@ export default class VideoControlPanel extends Component {
     // todo add to config
     const height = 416;
     const width = 416;
-    this.player = new Player(this.playCallback, height, width);
+    this.animPlayer = new AnimationPlayer(this.playCallback, height, width);
 
     this.state = {
       isVideoPlaying: false,
@@ -47,30 +47,30 @@ export default class VideoControlPanel extends Component {
   };
 
   feedAnimationControl = () => {
-    this.player.getAnimationControl()();
+    this.animPlayer.getAnimationControl()();
   };
   onClickVideoSpeed = (e) => {
     const rate =
       this.state.videoRate * 2 > 2.0 ? 0.5 : this.state.videoRate * 2;
-    this.player.setPlaybackRate(rate);
+    this.animPlayer.setPlaybackRate(rate);
     this.setState({ videoRate: rate });
   };
 
   onClickPlay = () => {
     if (this.props.dataType == 'video') {
-      var isVideoPlaying = this.player.playVideo(
+      var isVideoPlaying = this.animPlayer.playVideo(
         this.props.dataUrl
         // this.props.dataType
       );
     } else {
-      var isVideoPlaying = this.player.playImage(this.props.dataUrl);
+      var isVideoPlaying = this.animPlayer.playImage(this.props.dataUrl);
     }
     this.setState({ isVideoPlaying: isVideoPlaying });
   };
 
   updateVideoDuration = (e) => {
     this.setState({ currentTime: parseFloat(e.target.value) });
-    this.player.setCurrentTime(e.target.value);
+    this.animPlayer.setCurrentTime(e.target.value);
     // videoRef.current.currentTime = parseFloat(e.target.value);
   };
   render() {
@@ -146,7 +146,7 @@ export default class VideoControlPanel extends Component {
             className='form-range'
             min='0'
             max={this.state.duration}
-            // step='0.5'
+            step='0.1'
             id='customRange3'
             value={this.state.currentTime}
             onChange={this.updateVideoDuration}
