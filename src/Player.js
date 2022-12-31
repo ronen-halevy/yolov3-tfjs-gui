@@ -12,22 +12,8 @@ export default class Player {
   }
 
   stopVideo = () => {
-    if (this.videoObject.played) {
+    if (this.videoObject.played.length) {
       this.videoObject.pause();
-      this.videoObject.currentTime = this.videoObject.duration;
-    }
-
-    // ronen todo change this to if played - check
-    this.setIsVideoOn(false);
-    // avoid erros for video not yet activated case - constructor assigned null
-    const src = /[^/]*$/.exec(this.videoObject.src)[0];
-    console.log(src);
-    if (src != 'null') {
-      console.log(src);
-      this.videoObject.pause();
-      console.log(src);
-      console.log(this.videoObject.duration);
-
       this.videoObject.currentTime = this.videoObject.duration;
     }
   };
@@ -48,31 +34,6 @@ export default class Player {
     return false;
   };
 
-  // playVideo = (dataUrl) => {
-  //   console.log('playVideo!!!!!!!!!!!!');
-  //   this.setIsVideoOn(true);
-  //   this.videoObject.preload = 'auto';
-  //   this.videoObject.crossOrigin = 'anonymous';
-  //   this.videoObject.src = dataUrl;
-  //   // this.lastLoopRef = new Date();
-  //   // this.stopVideo(); // todo - commented with component..
-  //   this.videoObject.play();
-
-  //   new Promise((resolve) => {
-  //     this.videoObject.onloadedmetadata = () => {
-  //       resolve();
-  //     };
-  //   }).then(() => {
-  //     this.durationOfVideo = this.videoObject.duration;
-  //     this.traceDurationOfVideo();
-  //     this.playCallback(
-  //       this.videoObject,
-  //       this.videoObject.currentTime,
-  //       this.videoObject.duration
-  //     );
-  //   });
-  // };
-
   getAnimationControl = () => {
     return this.animationControl;
   };
@@ -82,50 +43,36 @@ export default class Player {
     this.videoObject.playbackRate = parseFloat(rate);
   };
 
-  traceDurationOfVideo = () => {
-    console.log(this.videoObject.currentTime, this.videoObject.duration);
-
-    this.videoIntervalTime = setInterval(() => {
-      console.log(this.videoObject.currentTime, this.videoObject.duration);
-      if (this.videoObject.currentTime >= this.videoObject.duration) {
-        clearVideoInterval();
-      }
-    }, 1000);
-    const clearVideoInterval = () => {
-      clearInterval(this.videoIntervalTime);
-      this.videoObject.currentTime = 0;
-      this.playCallback(null, null, null);
-    };
-  };
-
   setCurrentTime(value) {
     this.videoObject.currentTime = value;
   }
 
   animationControl = () => {
     // block animation when pause, otherwise last frame sent continuesly
-    if (!this.videoObject.paused) {
-      var id = window.requestAnimationFrame(() =>
-        this.playCallback(
-          this.videoObject,
-          this.videoObject.currentTime,
-          this.videoObject.duration
-        )
-      );
-      // this.findFps();
-      // console.log('b', this.videoObject.currentTime);
+    // if (!this.videoObject.paused) {
+    var id = window.requestAnimationFrame(() =>
+      this.playCallback(
+        this.videoObject,
+        this.videoObject.currentTime,
+        this.videoObject.duration
+      )
+    );
+    // this.findFps();
+    console.log('b', this.videoObject.currentTime, this.videoObject.duration);
 
-      if (this.videoObject.currentTime >= this.videoObject.duration) {
-        cancelAnimationFrame(id);
-        this.setIsVideoOn(false);
-      }
+    if (
+      this.videoObject.currentTime >= this.videoObject.duration ||
+      this.videoObject.paused
+    ) {
+      cancelAnimationFrame(id);
+      this.setIsVideoOn(false);
+      this.playCallback(null, null, null);
     }
   };
 
   playVideo = (url) => {
     if (!this.videoObject.paused) {
       this.videoObject.pause();
-      clearInterval(this.videoIntervalTime);
 
       return false;
     }
@@ -135,8 +82,6 @@ export default class Player {
     this.dataUrl = url;
 
     if (this.videoObject.currentTime) {
-      this.traceDurationOfVideo();
-
       this.videoObject.play();
       this.playCallback(
         this.videoObject,
@@ -149,8 +94,6 @@ export default class Player {
       this.videoObject.preload = 'auto';
       this.videoObject.crossOrigin = 'anonymous';
       this.videoObject.src = url;
-      // this.lastLoopRef = new Date();
-      // this.stopVideo(); // todo - commented with component..
       this.videoObject.play();
 
       new Promise((resolve) => {
@@ -159,7 +102,6 @@ export default class Player {
         };
       }).then(() => {
         this.durationOfVideo = this.videoObject.duration;
-        this.traceDurationOfVideo();
         this.playCallback(
           this.videoObject,
           this.videoObject.currentTime,
@@ -167,22 +109,7 @@ export default class Player {
         );
       });
 
-      // if (!this.dataUrl) {
-      //   return false;
-      // }
-
-      // if (this.dataUrl) {
-      //   this.dataType = 'video';
-      //   this.dataType == 'image'
-      //     ? this.playImage(this.dataUrl)
-      // this.playVideo(this.dataUrl);
-      // }
       return true;
-      if (this.dataType == 'image') {
-        return false;
-      } else {
-        return true;
-      }
     }
   };
 
