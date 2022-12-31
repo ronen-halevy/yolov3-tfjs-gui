@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import AnimationPlayer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/AnimationPlayer.js';
-
+// import AnimationPlayer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/AnimationPlayer.js';
+//import VfbfStreamer5 from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/AnimationPlayer.js';
+import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer@latest/VfbfStreamer.js';
+//import Player from '../AnimationPlayer.js';
 export default class VideoControlPanel extends Component {
   constructor(props) {
     super(props);
     // todo add to config
     const height = 416;
     const width = 416;
-    this.animPlayer = new AnimationPlayer(this.playCallback, height, width);
+    this.vfbfStreamer = new VfbfStreamer(this.playCallback, height, width);
 
     this.state = {
       isVideoPlaying: false,
@@ -47,30 +49,30 @@ export default class VideoControlPanel extends Component {
   };
 
   feedAnimationControl = () => {
-    this.animPlayer.getAnimationControl()();
+    this.vfbfStreamer.getAnimationControl()();
   };
   onClickVideoSpeed = (e) => {
     const rate =
       this.state.videoRate * 2 > 2.0 ? 0.5 : this.state.videoRate * 2;
-    this.animPlayer.setPlaybackRate(rate);
+    this.vfbfStreamer.setPlaybackRate(rate);
     this.setState({ videoRate: rate });
   };
 
   onClickPlay = () => {
     if (this.props.dataType == 'video') {
-      var isVideoPlaying = this.animPlayer.playVideo(
+      var isVideoPlaying = this.vfbfStreamer.playVideo(
         this.props.dataUrl
         // this.props.dataType
       );
     } else {
-      var isVideoPlaying = this.animPlayer.playImage(this.props.dataUrl);
+      var isVideoPlaying = this.vfbfStreamer.playImage(this.props.dataUrl);
     }
     this.setState({ isVideoPlaying: isVideoPlaying });
   };
 
   updateVideoDuration = (e) => {
     this.setState({ currentTime: parseFloat(e.target.value) });
-    this.animPlayer.setCurrentTime(e.target.value);
+    this.vfbfStreamer.setCurrentTime(e.target.value);
     // videoRef.current.currentTime = parseFloat(e.target.value);
   };
   render() {
