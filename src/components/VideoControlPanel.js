@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import AnimationPlayer from '../AnimationPlayer';
+import AnimationPlayer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/AnimationPlayer.js';
 
 export default class VideoControlPanel extends Component {
   constructor(props) {
