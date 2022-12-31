@@ -42,9 +42,6 @@ export default class VideoControlPanel extends Component {
         });
       }
     } else {
-      // return nulls when completed:
-      console.log('???done???');
-
       this.setState({ isVideoPlaying: false });
     }
   };
@@ -58,10 +55,6 @@ export default class VideoControlPanel extends Component {
     this.player.setPlaybackRate(rate);
     this.setState({ videoRate: rate });
   };
-  // onClickVideoSpeed1 = (e) => {
-  //   const speed = videoRate * 2 > 2.0 ? 0.5 : videoRate * 2;
-  //   playbackRate = parseFloat(speed);
-  // };
 
   onClickPlay = () => {
     if (this.props.dataType == 'video') {

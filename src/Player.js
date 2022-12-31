@@ -1,45 +1,42 @@
 export default class Player {
+  /**
+   * Brief description of the class here
+   * @extends ParentClassNameHereIfAny
+   */
   constructor(playCallback, canvasHeight, canvasWidth) {
     this.videoObject = document.createElement('video');
-    this.videoObject.controls = true;
-    this.videoObject.muted = true;
     this.videoObject.height = canvasHeight; // in px
     this.videoObject.width = canvasWidth;
     this.playCallback = playCallback;
-    this.dataType = 'video'; // set as a default...
-    this.videoObject.src = 'null';
-    console.log(this.videoObject.src);
   }
 
   stopVideo = () => {
-    if (this.videoObject.played.length) {
-      this.videoObject.pause();
-      this.videoObject.currentTime = this.videoObject.duration;
-    }
+    this.videoObject.pause();
+    this.videoObject.currentTime = 0;
   };
 
   playImage = (dataUrl) => {
     var imageObject = new window.Image();
-    const runAsync = async () => {
+    //
+    this.stopVideo();
+    const fetchImage = async () => {
       const res = await fetch(dataUrl);
       const imageBlob = await res.blob();
       const imageObjectURL = URL.createObjectURL(imageBlob);
       imageObject.src = imageObjectURL;
-      this.stopVideo();
       imageObject.addEventListener('load', async () => {
         this.playCallback(imageObject, null, null);
       });
     };
-    runAsync();
+    fetchImage();
     return false;
   };
 
   getAnimationControl = () => {
-    return this.animationControl;
+    return this.#animationControl;
   };
 
   setPlaybackRate = (rate) => {
-    console.log(rate);
     this.videoObject.playbackRate = parseFloat(rate);
   };
 
@@ -47,9 +44,7 @@ export default class Player {
     this.videoObject.currentTime = value;
   }
 
-  animationControl = () => {
-    // block animation when pause, otherwise last frame sent continuesly
-    // if (!this.videoObject.paused) {
+  #animationControl = () => {
     var id = window.requestAnimationFrame(() =>
       this.playCallback(
         this.videoObject,
@@ -57,31 +52,30 @@ export default class Player {
         this.videoObject.duration
       )
     );
-    // this.findFps();
-    console.log('b', this.videoObject.currentTime, this.videoObject.duration);
-
     if (
       this.videoObject.currentTime >= this.videoObject.duration ||
       this.videoObject.paused
     ) {
       cancelAnimationFrame(id);
-      this.setIsVideoOn(false);
       this.playCallback(null, null, null);
     }
   };
 
   playVideo = (url) => {
     if (!this.videoObject.paused) {
+      // pause if playing
       this.videoObject.pause();
-
       return false;
     }
+
     if (url != this.dataUrl) {
+      // if new video - restart.
       this.videoObject.currentTime = 0;
     }
     this.dataUrl = url;
 
     if (this.videoObject.currentTime) {
+      // resume
       this.videoObject.play();
       this.playCallback(
         this.videoObject,
@@ -90,7 +84,7 @@ export default class Player {
       );
       return true;
     } else {
-      this.setIsVideoOn(true);
+      // start new video
       this.videoObject.preload = 'auto';
       this.videoObject.crossOrigin = 'anonymous';
       this.videoObject.src = url;
@@ -108,12 +102,7 @@ export default class Player {
           this.videoObject.duration
         );
       });
-
       return true;
     }
   };
-
-  setIsVideoOn(val) {
-    this.isVideoOn = val;
-  }
 }
