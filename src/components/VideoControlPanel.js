@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import AnimationPlayer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/AnimationPlayer.js';
+// import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/VfbfStreamer.js';
 //import VfbfStreamer5 from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/AnimationPlayer.js';
 import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer@latest/VfbfStreamer.js';
 //import Player from '../AnimationPlayer.js';

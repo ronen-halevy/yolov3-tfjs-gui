@@ -94,7 +94,7 @@ export default class YoloPredictor {
       );
       if (imageFrame.tagName == 'VIDEO') {
         if (this.animationCallback) {
-          this.animationCallback(imageFrame);
+          this.animationCallback();
         } else {
           console.log('animationCallback was not set for video');
         }
