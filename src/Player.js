@@ -11,17 +11,13 @@ export default class Player {
     console.log(this.videoObject.src);
   }
 
-  setDataUrl = (url, type) => {
-    console.log('setDataUrl');
-    // force 'play' intead of resume if a new url assigned:
-    if (url != this.dataUrl) {
-      this.videoObject.currentTime = 0;
-    }
-    this.dataUrl = url;
-    this.dataType = type;
-  };
-
   stopVideo = () => {
+    if (this.videoObject.played) {
+      this.videoObject.pause();
+      this.videoObject.currentTime = this.videoObject.duration;
+    }
+
+    // ronen todo change this to if played - check
     this.setIsVideoOn(false);
     // avoid erros for video not yet activated case - constructor assigned null
     const src = /[^/]*$/.exec(this.videoObject.src)[0];
@@ -49,31 +45,33 @@ export default class Player {
       });
     };
     runAsync();
+    return false;
   };
 
-  playVideo = (dataUrl) => {
-    this.setIsVideoOn(true);
-    this.videoObject.preload = 'auto';
-    this.videoObject.crossOrigin = 'anonymous';
-    this.videoObject.src = dataUrl;
-    this.lastLoopRef = new Date();
-    // this.stopVideo(); // todo - commented with component..
-    this.videoObject.play();
+  // playVideo = (dataUrl) => {
+  //   console.log('playVideo!!!!!!!!!!!!');
+  //   this.setIsVideoOn(true);
+  //   this.videoObject.preload = 'auto';
+  //   this.videoObject.crossOrigin = 'anonymous';
+  //   this.videoObject.src = dataUrl;
+  //   // this.lastLoopRef = new Date();
+  //   // this.stopVideo(); // todo - commented with component..
+  //   this.videoObject.play();
 
-    new Promise((resolve) => {
-      this.videoObject.onloadedmetadata = () => {
-        resolve();
-      };
-    }).then(() => {
-      this.durationOfVideo = this.videoObject.duration;
-      this.traceDurationOfVideo();
-      this.playCallback(
-        this.videoObject,
-        this.videoObject.currentTime,
-        this.videoObject.duration
-      );
-    });
-  };
+  //   new Promise((resolve) => {
+  //     this.videoObject.onloadedmetadata = () => {
+  //       resolve();
+  //     };
+  //   }).then(() => {
+  //     this.durationOfVideo = this.videoObject.duration;
+  //     this.traceDurationOfVideo();
+  //     this.playCallback(
+  //       this.videoObject,
+  //       this.videoObject.currentTime,
+  //       this.videoObject.duration
+  //     );
+  //   });
+  // };
 
   getAnimationControl = () => {
     return this.animationControl;
@@ -85,20 +83,17 @@ export default class Player {
   };
 
   traceDurationOfVideo = () => {
-    const videoIntervalTime = setInterval(() => {
-      this.currentDurationOfVideo = parseFloat(
-        this.videoObject.currentTime
-      ).toFixed(1);
+    console.log(this.videoObject.currentTime, this.videoObject.duration);
 
-      if (
-        parseFloat(this.videoObject.currentTime) >= this.videoObject.duration
-      ) {
+    this.videoIntervalTime = setInterval(() => {
+      console.log(this.videoObject.currentTime, this.videoObject.duration);
+      if (this.videoObject.currentTime >= this.videoObject.duration) {
         clearVideoInterval();
       }
-    }, 500);
-
+    }, 1000);
     const clearVideoInterval = () => {
-      clearInterval(videoIntervalTime);
+      clearInterval(this.videoIntervalTime);
+      this.videoObject.currentTime = 0;
       this.playCallback(null, null, null);
     };
   };
@@ -118,6 +113,8 @@ export default class Player {
         )
       );
       // this.findFps();
+      // console.log('b', this.videoObject.currentTime);
+
       if (this.videoObject.currentTime >= this.videoObject.duration) {
         cancelAnimationFrame(id);
         this.setIsVideoOn(false);
@@ -125,13 +122,21 @@ export default class Player {
     }
   };
 
-  onClickPlay = () => {
+  playVideo = (url) => {
     if (!this.videoObject.paused) {
       this.videoObject.pause();
+      clearInterval(this.videoIntervalTime);
+
       return false;
     }
-    // resume play if time is not 0:
+    if (url != this.dataUrl) {
+      this.videoObject.currentTime = 0;
+    }
+    this.dataUrl = url;
+
     if (this.videoObject.currentTime) {
+      this.traceDurationOfVideo();
+
       this.videoObject.play();
       this.playCallback(
         this.videoObject,
@@ -140,18 +145,39 @@ export default class Player {
       );
       return true;
     } else {
-      if (!this.dataUrl) {
-        console.log('Missing input url!');
-        return false;
-      }
+      this.setIsVideoOn(true);
+      this.videoObject.preload = 'auto';
+      this.videoObject.crossOrigin = 'anonymous';
+      this.videoObject.src = url;
+      // this.lastLoopRef = new Date();
+      // this.stopVideo(); // todo - commented with component..
+      this.videoObject.play();
 
-      console.log('onClickPlay');
-      console.log(this.dataUrl);
-      if (this.dataUrl) {
-        this.dataType == 'image'
-          ? this.playImage(this.dataUrl)
-          : this.playVideo(this.dataUrl);
-      }
+      new Promise((resolve) => {
+        this.videoObject.onloadedmetadata = () => {
+          resolve();
+        };
+      }).then(() => {
+        this.durationOfVideo = this.videoObject.duration;
+        this.traceDurationOfVideo();
+        this.playCallback(
+          this.videoObject,
+          this.videoObject.currentTime,
+          this.videoObject.duration
+        );
+      });
+
+      // if (!this.dataUrl) {
+      //   return false;
+      // }
+
+      // if (this.dataUrl) {
+      //   this.dataType = 'video';
+      //   this.dataType == 'image'
+      //     ? this.playImage(this.dataUrl)
+      // this.playVideo(this.dataUrl);
+      // }
+      return true;
       if (this.dataType == 'image') {
         return false;
       } else {

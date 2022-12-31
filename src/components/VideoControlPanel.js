@@ -29,6 +29,7 @@ export default class VideoControlPanel extends Component {
     return fps;
   }
   playCallback = (frame, currentTime, duration) => {
+    // console.log(currentTime, duration);
     if (frame) {
       this.props.frameCallback(frame);
       // avoid if image:
@@ -42,6 +43,8 @@ export default class VideoControlPanel extends Component {
       }
     } else {
       // return nulls when completed:
+      console.log('???done???');
+
       this.setState({ isVideoPlaying: false });
     }
   };
@@ -61,9 +64,14 @@ export default class VideoControlPanel extends Component {
   // };
 
   onClickPlay = () => {
-    this.player.setDataUrl(this.props.dataUrl, this.props.dataType);
-
-    const isVideoPlaying = this.player.onClickPlay();
+    if (this.props.dataType == 'video') {
+      var isVideoPlaying = this.player.playVideo(
+        this.props.dataUrl
+        // this.props.dataType
+      );
+    } else {
+      var isVideoPlaying = this.player.playImage(this.props.dataUrl);
+    }
     this.setState({ isVideoPlaying: isVideoPlaying });
   };
 
