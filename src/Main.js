@@ -8,7 +8,7 @@ import VideoControlPanel from './components/VideoControlPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 
 //import YoloPredictor from './yolov3/YoloV3temp.js';
-import YoloPredictor from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/yolov3/YoloV3temp.js';
+import YoloPredictor from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs@latest/src/yolov3/YoloV3temp.js';
 
 export const Main = () => {
   // Refs:
