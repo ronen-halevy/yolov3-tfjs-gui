@@ -312,8 +312,8 @@ class Render {
   renderOnImage = async (image, bboxes, scores, classIndices, classNames) => {
     const context = this.canvas.getContext('2d');
 
-    const imageWidth = image.width;
-    const imageHeight = image.height;
+    const imageWidth = image.videoWidth;
+    const imageHeight = image.videoHeight;
 
     this.canvas.width = imageWidth;
     this.canvas.height = imageHeight;

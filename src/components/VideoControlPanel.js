@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 // import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/VfbfStreamer.js';
 //import VfbfStreamer5 from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/AnimationPlayer.js';
-import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer@latest/VfbfStreamer.js';
-//import Player from '../AnimationPlayer.js';
+//import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer@latest/VfbfStreamer.js';
+import VfbfStreamer from '../VfbfStreamer.js';
 export default class VideoControlPanel extends Component {
   constructor(props) {
     super(props);
     // todo add to config
     const height = 416;
     const width = 416;
-    this.vfbfStreamer = new VfbfStreamer(this.playCallback, height, width);
+    this.vfbfStreamer = new VfbfStreamer(
+      this.playCallback,
+      this.videoEndedCallback
+    );
 
     this.state = {
       isVideoPlaying: false,
@@ -30,21 +33,21 @@ export default class VideoControlPanel extends Component {
     this.lastLoop = thisLoop;
     return fps;
   }
+  videoEndedCallback = () => {
+    this.setState({ isVideoPlaying: false });
+  };
+
   playCallback = (frame, currentTime, duration) => {
     // console.log(currentTime, duration);
-    if (frame) {
-      this.props.frameCallback(frame);
-      // avoid if image:
-      if (duration) {
-        const fps = this.findFps();
-        this.setState({
-          fps: fps,
-          currentTime: currentTime.toFixed(1),
-          duration: duration.toFixed(1),
-        });
-      }
-    } else {
-      this.setState({ isVideoPlaying: false });
+    this.props.frameCallback(frame);
+    // avoid if image (not a video):
+    if (duration) {
+      const fps = this.findFps();
+      this.setState({
+        fps: fps,
+        currentTime: currentTime.toFixed(1),
+        duration: duration.toFixed(1),
+      });
     }
   };
 
