@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ModelSelectionPanel from './ModelSelectionPanel';
+import ConfigurationsPanel from './ConfigurationsPanel';
 
 //import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer/VfbfStreamer.min.js';
 import VfbfStreamer from '../VfbfStreamer.js';
@@ -50,7 +51,6 @@ export default class VideoControlPanel extends Component {
 
   playCallback = (frame, currentTime, duration) => {
     this.yoloPredictor.detectFrameVideo(frame);
-    // this.props.frameCallback(frame);
     // avoid if image (not a video):
     if (duration) {
       const fps = this.findFps();
@@ -100,104 +100,124 @@ export default class VideoControlPanel extends Component {
     return resPromise;
   };
 
+  setScoreTHR = (val) => {
+    // console.log('setScoreTHR', val);
+    this.yoloPredictor.setScoreTHR(val);
+  };
+  setIouTHR = (val) => {
+    this.yoloPredictor.setIouTHR(val);
+  };
+  setMaxBoxes = (val) => {
+    this.yoloPredictor.setMaxBoxes(val);
+  };
+
   render() {
     const {} = this.props;
     const onClickPlay = this.onClickPlay;
     return (
       <div className='container '>
-        {this.isReady && <ModelSelectionPanel onLoadModel={this.onLoadModel} />}
+        <div className='col '>
+          {this.isReady && (
+            <ModelSelectionPanel onLoadModel={this.onLoadModel} />
+          )}
 
-        {/* <div className='controlVideo  border border-1 border-secondary position-relative'> */}
-        <div className=' row text-center'>
-          <div className=' col'>
-            <div className=' col-sm text-center badge rounded-pill bg-primary text-center'>
-              Video Control
+          <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
+              Configurations
+            </span>
+            <div className='row mb-2'>
+              <ConfigurationsPanel
+                setScoreTHR={this.setScoreTHR}
+                setIouTHR={this.setIouTHR}
+                setMaxBoxes={this.setMaxBoxes}
+              />
             </div>
           </div>
-        </div>
+          {/* <div className='controlVideo  border border-1 border-secondary position-relative'> */}
+          <div className=' row text-center'>
+            <div className=' col'>
+              <div className=' col-sm text-center badge rounded-pill bg-primary text-center'>
+                Video Control
+              </div>
+            </div>
+          </div>
 
-        {/* </div> */}
+          {/* </div> */}
 
-        <div className='col bg-warning bg-gradient'>
-          <div className='container'>
-            <div className='row'>
-              <div className='col-3  text-center '>
-                <div className='col  text-center '>
+          <div className='col bg-warning bg-gradient'>
+            <div className='container'>
+              <div className='row'>
+                <div className='col-3  text-center '>
+                  <div className='col  text-center '>
+                    <span
+                      className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
+                      onClick={onClickPlay}
+                    >
+                      {' '}
+                      {!this.state.isVideoPlaying ? (
+                        <div>play</div>
+                      ) : (
+                        <div>
+                          Stop{' '}
+                          <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                            Running
+                          </span>
+                        </div>
+                      )}
+                    </span>
+                  </div>
+                </div>
+                {/* Speed button */}
+
+                <div className='col-3 text-center'>
+                  {' '}
                   <span
-                    className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
-                    onClick={onClickPlay}
+                    className='badge text-bg-dark  position-relative'
+                    onClick={this.onClickVideoSpeed}
                   >
                     {' '}
-                    {!this.state.isVideoPlaying ? (
-                      <div>play </div>
-                    ) : (
-                      <div>
-                        Stop{' '}
-                        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
-                          Running
-                        </span>
-                      </div>
-                    )}
+                    speed
+                    <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                      x{this.state.videoRate}
+                    </span>
                   </span>
                 </div>
 
-                <div className='col '>
-                  <label className='position-absolute  top-10  translate-middle badge rounded-pill bg-secondary'>
-                    +clickable canvas!
-                  </label>
-                </div>
-              </div>
-              {/* Speed button */}
-
-              <div className='col-3 text-center'>
-                {' '}
-                <span
-                  className='badge text-bg-dark  position-relative'
-                  onClick={this.onClickVideoSpeed}
-                >
+                <div className='col-3 text-center'>
                   {' '}
-                  speed
-                  <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-                    x{this.state.videoRate}
+                  <span className='badge text-bg-light   position-relative'>
+                    <span className=' '>fps: {this.state.fps}</span>
                   </span>
-                </span>
-              </div>
-
-              <div className='col-3 text-center'>
-                {' '}
-                <span className='badge text-bg-light   position-relative'>
-                  <span className=' '>fps: {this.state.fps}</span>
-                </span>
-              </div>
-              <div className='col-3 text-center'>
-                <span className='badge text-bg-light  position-relative'>
-                  <span className='text-center'>
-                    {this.state.currentTime}/{this.state.duration}
+                </div>
+                <div className='col-3 text-center'>
+                  <span className='badge text-bg-light  position-relative'>
+                    <span className='text-center'>
+                      {this.state.currentTime}/{this.state.duration}
+                    </span>
                   </span>
-                </span>
+                </div>
               </div>
+              <input
+                type='range'
+                className='form-range'
+                min='0'
+                max={this.state.duration}
+                step='0.1'
+                id='customRange3'
+                value={this.state.currentTime}
+                onChange={this.updateVideoDuration}
+              />
             </div>
           </div>
-          <input
-            type='range'
-            className='form-range'
-            min='0'
-            max={this.state.duration}
-            step='0.1'
-            id='customRange3'
-            value={this.state.currentTime}
-            onChange={this.updateVideoDuration}
-          />
-        </div>
-        <div className='mtj-3 '>
-          <button className='invisible' onClick={this.onClickPlay}>
+          <label className='btn btn-dark   badge ' onClick={this.onClickPlay}>
+            {!this.state.isVideoPlaying ? 'Play' : 'Stop'}
             <canvas
               className='visible'
               ref={this.canvasRefVideo}
               width=''
               height=''
             />
-          </button>
+          </label>
         </div>
       </div>
     );
