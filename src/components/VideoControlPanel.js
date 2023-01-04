@@ -186,29 +186,7 @@ export default class VideoControlPanel extends Component {
           <div className='col bg-warning bg-gradient'>
             <div className='container'>
               <div className='row'>
-                <div className='col-3  text-center '>
-                  <div className='col  text-center '>
-                    <span
-                      className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
-                      onClick={onClickPlay}
-                    >
-                      {' '}
-                      {!this.state.isVideoPlaying ? (
-                        <div>play</div>
-                      ) : (
-                        <div>
-                          Stop{' '}
-                          <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
-                            Running
-                          </span>
-                        </div>
-                      )}
-                    </span>
-                  </div>
-                </div>
-                {/* scale button */}
-
-                <div className='col-2 text-center'>
+                <div className='col-3 text-center'>
                   {' '}
                   <span
                     className='badge text-bg-dark  position-relative'
@@ -237,7 +215,7 @@ export default class VideoControlPanel extends Component {
                   </span>
                 </div>
 
-                <div className='col-2 text-center'>
+                <div className='col-3 text-center'>
                   {' '}
                   <span className='badge text-bg-light   position-relative'>
                     <span className=' '>fps: {this.state.fps}</span>
@@ -261,10 +239,13 @@ export default class VideoControlPanel extends Component {
                 value={this.state.currentTime}
                 onChange={this.updateVideoDuration}
               />
+              <label>
+                <b>{!this.state.isVideoPlaying ? 'Play' : 'Stop'}</b>{' '}
+                <span>TouchCanvas</span>
+              </label>
             </div>
           </div>
           <label className='btn btn-dark   badge ' onClick={this.onClickPlay}>
-            {!this.state.isVideoPlaying ? 'Play' : 'Stop'}
             <canvas
               className='visible'
               ref={this.canvasRefVideo}
