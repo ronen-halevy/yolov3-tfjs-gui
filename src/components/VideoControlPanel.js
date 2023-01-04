@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ModelSelectionPanel from './ModelSelectionPanel';
 import ConfigurationsPanel from './ConfigurationsPanel';
+import DataSourceSelectionPanel from './DataSourceSelectionPanel';
 
 //import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer/VfbfStreamer.min.js';
 import VfbfStreamer from '../VfbfStreamer.js';
@@ -94,14 +95,14 @@ export default class VideoControlPanel extends Component {
     this.setState({ videoRate: rate });
   };
   onClickScale = (e) => {
-    const scale = this.state.scale * 2 > 2.0 ? 0.5 : this.state.scale * 2;
+    const scale = this.state.scale * 2 > 2.0 ? 0.125 : this.state.scale * 2;
     this.setState({ scale: scale });
   };
 
   onClickPlay = () => {
-    if (this.props.dataType == 'video') {
+    if (this.dataType == 'video') {
       var isVideoPlaying = this.vfbfStreamer.playVideo(
-        this.props.dataUrl
+        this.dataUrl
         // this.props.dataType
       );
     } else {
@@ -122,7 +123,6 @@ export default class VideoControlPanel extends Component {
   };
 
   setScoreTHR = (val) => {
-    // console.log('setScoreTHR', val);
     this.yoloPredictor.setScoreTHR(val);
   };
   setIouTHR = (val) => {
@@ -130,6 +130,11 @@ export default class VideoControlPanel extends Component {
   };
   setMaxBoxes = (val) => {
     this.yoloPredictor.setMaxBoxes(val);
+  };
+
+  onClickSetDataSource = (url, type) => {
+    this.dataUrl = url;
+    this.dataType = type;
   };
 
   render() {
@@ -154,6 +159,16 @@ export default class VideoControlPanel extends Component {
               />
             </div>
           </div>
+
+          <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
+              Data Source Selection
+            </span>
+            <DataSourceSelectionPanel
+              onClickSetDataSource={this.onClickSetDataSource}
+            />
+          </div>
+
           {/* <div className='controlVideo  border border-1 border-secondary position-relative'> */}
           <div className=' row text-center'>
             <div className=' col'>
@@ -190,7 +205,7 @@ export default class VideoControlPanel extends Component {
                 </div>
                 {/* scale button */}
 
-                <div className='col-3 text-center'>
+                <div className='col-2 text-center'>
                   {' '}
                   <span
                     className='badge text-bg-dark  position-relative'
@@ -205,7 +220,7 @@ export default class VideoControlPanel extends Component {
                 </div>
                 {/* Speed button */}
 
-                <div className='col-3 text-center'>
+                <div className='col-2 text-center'>
                   {' '}
                   <span
                     className='badge text-bg-dark  position-relative'
@@ -219,7 +234,7 @@ export default class VideoControlPanel extends Component {
                   </span>
                 </div>
 
-                <div className='col-3 text-center'>
+                <div className='col-2 text-center'>
                   {' '}
                   <span className='badge text-bg-light   position-relative'>
                     <span className=' '>fps: {this.state.fps}</span>
