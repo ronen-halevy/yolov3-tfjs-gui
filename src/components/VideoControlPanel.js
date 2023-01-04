@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer/VfbfStreamer.min.js';
-// import VfbfStreamer from '../VfbfStreamer.js';
+// import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer/VfbfStreamer.min.js';
+import VfbfStreamer from '../VfbfStreamer.js';
 export default class VideoControlPanel extends Component {
   constructor(props) {
     super(props);
