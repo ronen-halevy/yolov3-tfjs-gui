@@ -67,45 +67,41 @@ export const Main = () => {
 
   return (
     <div className='container '>
-      <div className='col '>
-        <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
-        <Accordion />
-        {/* Module triggers model loading on start so load it not before yolo is ready: */}
-        {isReady && <ModelSelectionPanel onLoadModel={onLoadModel} />}
-        <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
-          <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
-            Configurations
-          </span>
-          <div className='row mb-2'>
-            <ConfigurationsPanel
-              setScoreTHR={setScoreTHR}
-              setIouTHR={setIouTHR}
-              setMaxBoxes={setMaxBoxes}
-            />
-          </div>
-        </div>
-        <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
-          <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
-            Data Source Selection
-          </span>
-          <DataSourceSelectionPanel
-            onClickSetDataSource={onClickSetDataSource}
+      <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
+      <Accordion />
+      {/* Module triggers model loading on start so load it not before yolo is ready: */}
+      {isReady && <ModelSelectionPanel onLoadModel={onLoadModel} />}
+      <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
+        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
+          Configurations
+        </span>
+        <div className='row mb-2'>
+          <ConfigurationsPanel
+            setScoreTHR={setScoreTHR}
+            setIouTHR={setIouTHR}
+            setMaxBoxes={setMaxBoxes}
           />
         </div>
-        {/* <div className='controlVideo mt-3 border border-1 border-secondary position-relative'> */}
+      </div>
+      <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
+        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
+          Data Source Selection
+        </span>
+        <DataSourceSelectionPanel onClickSetDataSource={onClickSetDataSource} />
+      </div>
+      {/* <div className='controlVideo mt-3 border border-1 border-secondary position-relative'> */}
 
-        <div className=' mt-3 row'>
-          <VideoControlPanel
-            dataUrl={dataUrl}
-            dataType={dataType}
-            frameCallback={frameCallback}
-            ref={videoControlRef}
-          />
-        </div>
+      <div className=' mt-3 row'>
+        <VideoControlPanel
+          dataUrl={dataUrl}
+          dataType={dataType}
+          frameCallback={frameCallback}
+          ref={videoControlRef}
+        />
+      </div>
 
-        <div className='mtj-3 '>
-          <canvas className='' ref={canvasRefVideo} width='' height='' />
-        </div>
+      <div className='mtj-3 '>
+        <canvas className='' ref={canvasRefVideo} width='' height='' />
       </div>
     </div>
   );
