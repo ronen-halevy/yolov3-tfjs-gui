@@ -27,10 +27,10 @@ export default class VideoControlPanel extends Component {
       currentTime: 0.0,
       duration: 0.0,
       scale: 0.25,
+      isReady: false,
     };
     this.canvasRefVideo = React.createRef();
-    this.setState({ isReady: false });
-    // this.isReady = false;
+    // this.setState({ isReady: false });
   }
 
   componentDidMount() {
@@ -39,8 +39,6 @@ export default class VideoControlPanel extends Component {
 
     this.draw = new Render(this.canvasRefVideo.current);
     this.setState({ isReady: true });
-
-    // this.isReady = ;
   }
   findFps() {
     var thisLoop = new Date();
@@ -146,10 +144,10 @@ export default class VideoControlPanel extends Component {
     return (
       <div className='container '>
         <div className='col '>
+          // enable after detector is ready
           {this.state.isReady && (
             <ModelSelectionPanel onLoadModel={this.onLoadModel} />
           )}
-
           <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
             <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
               Configurations
@@ -162,7 +160,6 @@ export default class VideoControlPanel extends Component {
               />
             </div>
           </div>
-
           <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
             <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
               Data Source Selection
@@ -171,7 +168,6 @@ export default class VideoControlPanel extends Component {
               onClickSetDataSource={this.onClickSetDataSource}
             />
           </div>
-
           {/* <div className='controlVideo  border border-1 border-secondary position-relative'> */}
           <div className=' row text-center'>
             <div className=' col'>
@@ -180,9 +176,7 @@ export default class VideoControlPanel extends Component {
               </div>
             </div>
           </div>
-
           {/* </div> */}
-
           <div className='col bg-warning bg-gradient'>
             <div className='container'>
               <div className='row'>
@@ -201,7 +195,7 @@ export default class VideoControlPanel extends Component {
                 </div>
                 {/* Speed button */}
 
-                <div className='col-2 text-center'>
+                <div className='col-3 text-center'>
                   {' '}
                   <span
                     className='badge text-bg-dark  position-relative'
