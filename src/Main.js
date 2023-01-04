@@ -18,9 +18,6 @@ export const Main = () => {
 
   // States:
 
-  const [canvasWidth, setCanvasWidth] = useState(416);
-  const [canvasHeight, setCanvasHeight] = useState(416);
-
   const [dataUrl, setDataUrl] = useState('');
   const [dataType, setDataType] = useState('');
 
