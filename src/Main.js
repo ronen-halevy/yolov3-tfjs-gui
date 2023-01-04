@@ -2,13 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import Accordion from './components/Accordion';
 
-import ModelSelectionPanel from './components/ModelSelectionPanel';
 import ConfigurationsPanel from './components/ConfigurationsPanel';
 import VideoControlPanel from './components/VideoControlPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 
-import YoloPredictor from './yolov3/YoloV3temp.js';
-// import YoloPredictor from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/yolov3/YoloV3temp.min.js';
+// import YoloPredictor from './yolov3/YoloV3temp.js';
+import YoloPredictor from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/yolov3/YoloV3temp.min.js';
 
 export const Main = () => {
   // Refs:
@@ -24,29 +23,7 @@ export const Main = () => {
   const [isReady, setIsReady] = useState(false);
 
   // useEffects
-  useEffect(() => {
-    console.log('useEffect');
-
-    yoloPredictor.current = new YoloPredictor(canvasRefVideo.current);
-    setIsReady(true);
-
-    yoloPredictor.current.setAnimationCallback(
-      videoControlRef.current.feedAnimationControl
-    );
-  }, []);
-
-  const frameCallback = (frame) => {
-    yoloPredictor.current.detectFrameVideo(frame);
-  };
-  const onLoadModel = (modelUrl, anchorsUrl, classNamesUrl) => {
-    const resPromise = yoloPredictor.current.createModel(
-      modelUrl,
-      anchorsUrl,
-      classNamesUrl
-    );
-
-    return resPromise;
-  };
+  useEffect(() => {}, []);
 
   // callBacks:
   const onClickSetDataSource = (url, type) => {
@@ -69,8 +46,6 @@ export const Main = () => {
     <div className='container '>
       <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
       <Accordion />
-      {/* Module triggers model loading on start so load it not before yolo is ready: */}
-      {isReady && <ModelSelectionPanel onLoadModel={onLoadModel} />}
       <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
         <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
           Configurations
@@ -95,13 +70,8 @@ export const Main = () => {
         <VideoControlPanel
           dataUrl={dataUrl}
           dataType={dataType}
-          frameCallback={frameCallback}
           ref={videoControlRef}
         />
-      </div>
-
-      <div className='mtj-3 '>
-        <canvas className='' ref={canvasRefVideo} width='' height='' />
       </div>
     </div>
   );

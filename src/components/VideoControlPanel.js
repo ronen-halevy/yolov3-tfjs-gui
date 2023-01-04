@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
+import ModelSelectionPanel from './ModelSelectionPanel';
+
 //import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer/VfbfStreamer.min.js';
 import VfbfStreamer from '../VfbfStreamer.js';
+
+import YoloPredictor from '../yolov3/YoloV3temp.js';
+// import YoloPredictor from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/yolov3/YoloV3temp.min.js';
+
 export default class VideoControlPanel extends Component {
   constructor(props) {
     super(props);
@@ -19,8 +25,15 @@ export default class VideoControlPanel extends Component {
       currentTime: 0.0,
       duration: 0.0,
     };
+    this.canvasRefVideo = React.createRef();
+    this.isReady = false;
   }
 
+  componentDidMount() {
+    this.yoloPredictor = new YoloPredictor(this.canvasRefVideo.current);
+    this.yoloPredictor.setAnimationCallback(this.feedAnimationControl);
+    this.isReady = true;
+  }
   findFps() {
     var thisLoop = new Date();
     const fps = (1000 / (thisLoop - this.lastLoop))
@@ -36,8 +49,8 @@ export default class VideoControlPanel extends Component {
   };
 
   playCallback = (frame, currentTime, duration) => {
-    // console.log(currentTime, duration);
-    this.props.frameCallback(frame);
+    this.yoloPredictor.detectFrameVideo(frame);
+    // this.props.frameCallback(frame);
     // avoid if image (not a video):
     if (duration) {
       const fps = this.findFps();
@@ -76,11 +89,24 @@ export default class VideoControlPanel extends Component {
     this.vfbfStreamer.setCurrentTime(e.target.value);
     // videoRef.current.currentTime = parseFloat(e.target.value);
   };
+
+  onLoadModel = (modelUrl, anchorsUrl, classNamesUrl) => {
+    const resPromise = this.yoloPredictor.createModel(
+      modelUrl,
+      anchorsUrl,
+      classNamesUrl
+    );
+
+    return resPromise;
+  };
+
   render() {
     const {} = this.props;
     const onClickPlay = this.onClickPlay;
     return (
       <div className='container '>
+        {this.isReady && <ModelSelectionPanel onLoadModel={this.onLoadModel} />}
+
         {/* <div className='controlVideo  border border-1 border-secondary position-relative'> */}
         <div className=' row text-center'>
           <div className=' col'>
@@ -96,22 +122,30 @@ export default class VideoControlPanel extends Component {
           <div className='container'>
             <div className='row'>
               <div className='col-3  text-center '>
-                <span
-                  className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
-                  onClick={onClickPlay}
-                >
-                  {' '}
-                  {!this.state.isVideoPlaying ? (
-                    <div>play </div>
-                  ) : (
-                    <div>
-                      Stop{' '}
-                      <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
-                        Running
-                      </span>
-                    </div>
-                  )}
-                </span>
+                <div className='col  text-center '>
+                  <span
+                    className='btn btn btn-dark  btn-lg  mb-1 position-relative badge '
+                    onClick={onClickPlay}
+                  >
+                    {' '}
+                    {!this.state.isVideoPlaying ? (
+                      <div>play </div>
+                    ) : (
+                      <div>
+                        Stop{' '}
+                        <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                          Running
+                        </span>
+                      </div>
+                    )}
+                  </span>
+                </div>
+
+                <div className='col '>
+                  <label className='position-absolute  top-10  translate-middle badge rounded-pill bg-secondary'>
+                    +clickable canvas!
+                  </label>
+                </div>
               </div>
               {/* Speed button */}
 
@@ -154,6 +188,16 @@ export default class VideoControlPanel extends Component {
             value={this.state.currentTime}
             onChange={this.updateVideoDuration}
           />
+        </div>
+        <div className='mtj-3 '>
+          <button className='invisible' onClick={this.onClickPlay}>
+            <canvas
+              className='visible'
+              ref={this.canvasRefVideo}
+              width=''
+              height=''
+            />
+          </button>
         </div>
       </div>
     );
