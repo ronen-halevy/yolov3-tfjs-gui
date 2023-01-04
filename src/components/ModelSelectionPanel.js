@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import SelectModelButtons from './SelectModelButtons';
 
 import configModel from '../config/configModel.json';
+import { createModel } from '../yolov3/createModel.js';
 
 export default class ModelSelectionPanel extends Component {
   constructor(props) {
@@ -40,7 +41,7 @@ export default class ModelSelectionPanel extends Component {
       this.modelsTable[this.selectedModel][this.selectedWeights];
     const { modelUrl, anchorsUrl, classNamesUrl, ...rest } = modelConfig;
 
-    this.props.onLoadModel(modelUrl, anchorsUrl, classNamesUrl).then(() => {
+    createModel(modelUrl, anchorsUrl, classNamesUrl).then((res) => {
       this.setState({
         loadedModel: this.selectedModel,
         loadedWeights: this.selectedWeights,
@@ -49,6 +50,11 @@ export default class ModelSelectionPanel extends Component {
           this.selectedModel + ' + ' + this.selectedWeights + ' is ready!',
         loadSpinner: false,
       });
+      this.model = res[0];
+      this.anchors = res[1].anchor;
+      this.classNames = res[2].split(/\r?\n/);
+      this.nclasses = this.classNames.length;
+      this.props.onLoadModel(this.model, this.anchors, this.classNames);
     });
   };
 

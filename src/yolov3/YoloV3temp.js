@@ -14,8 +14,7 @@ const configRender = {
 // tf.setBackend('webgl');
 
 export default class YoloPredictor {
-  constructor(canvasRefVideo) {
-    this.render = new Render(canvasRefVideo);
+  constructor() {
     this.scoreTHR = configNms.scoreThreshold;
     this.iouTHR = configNms.iouThreshold;
     this.maxBoxes = configNms.maxBoxes;
@@ -32,20 +31,11 @@ export default class YoloPredictor {
   setMaxBoxes = (val) => {
     this.maxBoxes = val;
   };
-
-  // findFps();
-  createModel = (modelUrl, anchorsUrl, classNamesUrl) => {
-    const promise = createModel(modelUrl, anchorsUrl, classNamesUrl).then(
-      (res) => {
-        this.model = res[0];
-        this.anchors = res[1].anchor;
-        this.classNames = res[2].split(/\r?\n/);
-        this.nclasses = this.classNames.length;
-        return res;
-      }
-    );
-    return promise;
-  };
+  setModelParams(model, anchors, nClasses) {
+    this.model = model;
+    this.anchors = anchors;
+    this.nClasses = nClasses;
+  }
 
   setAnimationCallback = (animationCallback_) => {
     this.animationCallback = animationCallback_;
@@ -70,7 +60,7 @@ export default class YoloPredictor {
     // Decode predictions: combines all grids detection results
     let [bboxes, confidences, classProbs] = decode(
       modelOutputGrids,
-      this.nclasses,
+      this.nClasses,
       this.anchors
     );
     let axis = -1;
@@ -82,7 +72,7 @@ export default class YoloPredictor {
     classProbs.dispose();
     confidences.dispose();
 
-    nms(
+    const nmsPromise = nms(
       bboxes,
       scores,
       classIndices,
@@ -90,24 +80,11 @@ export default class YoloPredictor {
       this.scoreTHR,
       this.maxBoxes
     ).then((reasultArrays) => {
-      let [selBboxes, scores, classIndices] = reasultArrays;
-      this.render.renderOnImage(
-        imageFrame,
-        selBboxes,
-        scores,
-        classIndices,
-        this.classNames
-      );
-      if (imageFrame.tagName == 'VIDEO') {
-        if (this.animationCallback) {
-          this.animationCallback();
-        } else {
-          console.log('animationCallback was not set for video');
-        }
-      }
-
       tf.engine().endScope();
+
+      return reasultArrays;
     });
+    return nmsPromise;
   };
 }
 
@@ -144,7 +121,7 @@ const nms = (bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes) => {
   return nmsPromise;
 };
 
-export function decode(grids_outputs, nclasses, anchors) {
+export function decode(gridsOutputs, nClasses, anchors) {
   const nanchors_per_scale = 3; // Large, Medium, Small
   const anchor_entry_size = 2; // width, height
   let anchors_table = tf.reshape(anchors, [
@@ -156,11 +133,11 @@ export function decode(grids_outputs, nclasses, anchors) {
   let bboxes = [];
   let confidences = [];
   let classProbs = [];
-  for (let idx = 0; idx < grids_outputs.length; idx++) {
+  for (let idx = 0; idx < gridsOutputs.length; idx++) {
     let axis = -1;
     let [xy, wh, obj, class_prob] = tf.split(
-      grids_outputs[idx],
-      [2, 2, 1, nclasses],
+      gridsOutputs[idx],
+      [2, 2, 1, nClasses],
       axis
     );
     let anchors = tf.slice(anchors_table, [idx], 1);
@@ -239,95 +216,3 @@ export const createModel = (modelUrl, anchorsUrl, classNamesUrl) => {
   ]);
   return promise;
 };
-
-/**
- * Contains methods to render bounding boxes and text annotations on an image's (same as a single frame) detection.
- */
-class Render {
-  constructor(canvas) {
-    this.canvas = canvas;
-    this.font = configRender.font;
-    this.lineWidth = configRender.lineWidth;
-    this.lineColor = configRender.lineColor;
-    this.textColor = configRender.textColor;
-    this.textBackgoundColor = configRender.textBackgoundColor;
-  }
-  /**
-   * @summary renders a bounding box and text annotations for a detection
-   * @param {contextType} context - THe canvas context to render on.
-   * @param {Array<float>} bbox - A normalized to [0,1] bbox: [xmin, ymon, xmax, ymax].
-   * @param {float} score - Detections's  score value, val range [0,1].
-   * @param {float} classId - Class's index.
-   * @param {float} imageWidth - Input image's original width.
-   * @param {float} imageHeight - Input image's original height.
-   */
-
-  renderBox = (context, bbox, score, className, imageWidth, imageHeight) => {
-    context.beginPath();
-
-    // render bounding box
-    context.rect(
-      bbox[0] * imageWidth,
-      bbox[1] * imageHeight,
-      (bbox[2] - bbox[0]) * imageWidth,
-      (bbox[3] - bbox[1]) * imageHeight
-    );
-    context.fillStyle = this.lineColor;
-    context.lineWidth = this.lineWidth;
-    context.strokeStyle = this.lineColor;
-    context.stroke();
-    const annotationText = className + ' ' + (100 * score).toFixed(2) + '%';
-
-    context.fillStyle = this.textBackgoundColor;
-    const textHeight = parseInt(this.font, 10); // base 10
-    context.font = this.font;
-    const textWidth = context.measureText(annotationText).width;
-
-    // render text background.
-    const textX =
-      bbox[0] * imageWidth + textWidth < imageWidth
-        ? bbox[0] * imageWidth
-        : imageWidth - textWidth;
-    const textY =
-      bbox[1] * imageHeight - textHeight > 0
-        ? bbox[1] * imageHeight
-        : bbox[1] * imageHeight + textHeight;
-
-    context.fillRect(textX, textY - textHeight, textWidth, textHeight);
-
-    // render text
-    context.fillStyle = this.textColor;
-
-    context.fillText(annotationText, textX, textY);
-  };
-
-  /**
-   * @summary renders a bounding box and text annotations for an array of detections
-   * @param {img} image - An element to render into the context. The specification permits any canvas image source,.
-   * @param {Array<Array<float>>} bboxes - An array with a bbox array per a detection. A bbox is 4 element array which holds normalized to [0,1] bbox: [xmin, ymon, xmax, ymax].
-   * @param {Array<float>} scores - An array with a score value per a detectiono.
-   * @param {Array<float>} classIndices - An array with a class index per a detectiono.
-   */
-
-  renderOnImage = async (image, bboxes, scores, classIndices, classNames) => {
-    const context = this.canvas.getContext('2d');
-
-    const imageWidth = image.videoWidth;
-    const imageHeight = image.videoHeight;
-
-    this.canvas.width = imageWidth;
-    this.canvas.height = imageHeight;
-
-    context.drawImage(image, 0, 0, imageWidth, imageHeight);
-    bboxes.forEach((box, idx) =>
-      this.renderBox(
-        context,
-        box,
-        scores[idx],
-        classNames[classIndices[idx]],
-        imageWidth,
-        imageHeight
-      )
-    );
-  };
-}

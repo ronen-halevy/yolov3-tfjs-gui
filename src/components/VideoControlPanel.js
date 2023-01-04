@@ -6,14 +6,14 @@ import ConfigurationsPanel from './ConfigurationsPanel';
 import VfbfStreamer from '../VfbfStreamer.js';
 
 import YoloPredictor from '../yolov3/YoloV3temp.js';
+import Render from '../yolov3/Render.js';
+
 // import YoloPredictor from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/yolov3/YoloV3temp.min.js';
 
 export default class VideoControlPanel extends Component {
   constructor(props) {
     super(props);
-    // todo add to config
-    const height = 416;
-    const width = 416;
+
     this.vfbfStreamer = new VfbfStreamer(
       this.playCallback,
       this.videoEndedCallback
@@ -31,8 +31,10 @@ export default class VideoControlPanel extends Component {
   }
 
   componentDidMount() {
-    this.yoloPredictor = new YoloPredictor(this.canvasRefVideo.current);
+    this.yoloPredictor = new YoloPredictor();
     this.yoloPredictor.setAnimationCallback(this.feedAnimationControl);
+
+    this.draw = new Render(this.canvasRefVideo.current);
     this.isReady = true;
   }
   findFps() {
@@ -50,16 +52,35 @@ export default class VideoControlPanel extends Component {
   };
 
   playCallback = (frame, currentTime, duration) => {
-    this.yoloPredictor.detectFrameVideo(frame);
-    // avoid if image (not a video):
-    if (duration) {
-      const fps = this.findFps();
-      this.setState({
-        fps: fps,
-        currentTime: currentTime.toFixed(1),
-        duration: duration.toFixed(1),
-      });
-    }
+    this.yoloPredictor.detectFrameVideo(frame).then((reasultArrays) => {
+      if (duration) {
+        var imageHeight = frame.videoHeight;
+        var imageWidth = frame.videoWidth;
+      } else {
+        var imageHeight = frame.height;
+        var imageWidth = frame.width;
+      }
+      let [selBboxes, scores, classIndices] = reasultArrays;
+      this.draw.renderOnImage(
+        frame,
+        selBboxes,
+        scores,
+        classIndices,
+        this.classNames,
+        imageWidth,
+        imageHeight
+      );
+      // avoid if image (not a video):
+      if (duration) {
+        const fps = this.findFps();
+        this.setState({
+          fps: fps,
+          currentTime: currentTime.toFixed(1),
+          duration: duration.toFixed(1),
+        });
+        this.feedAnimationControl();
+      }
+    });
   };
 
   feedAnimationControl = () => {
@@ -87,17 +108,12 @@ export default class VideoControlPanel extends Component {
   updateVideoDuration = (e) => {
     this.setState({ currentTime: parseFloat(e.target.value) });
     this.vfbfStreamer.setCurrentTime(e.target.value);
-    // videoRef.current.currentTime = parseFloat(e.target.value);
   };
 
-  onLoadModel = (modelUrl, anchorsUrl, classNamesUrl) => {
-    const resPromise = this.yoloPredictor.createModel(
-      modelUrl,
-      anchorsUrl,
-      classNamesUrl
-    );
+  onLoadModel = (model, anchors, classNames) => {
+    this.yoloPredictor.setModelParams(model, anchors, classNames.length);
 
-    return resPromise;
+    this.classNames = classNames;
   };
 
   setScoreTHR = (val) => {

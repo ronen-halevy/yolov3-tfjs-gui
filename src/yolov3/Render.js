@@ -69,16 +69,22 @@ export default class Render {
    * @param {Array<float>} classIndices - An array with a class index per a detectiono.
    */
 
-  renderOnImage = async (image, bboxes, scores, classIndices, classNames) => {
+  renderOnImage = async (
+    image,
+    bboxes,
+    scores,
+    classIndices,
+    classNames,
+    imageWidth,
+    imageHeight
+  ) => {
     const context = this.canvas.getContext('2d');
-
-    const imageWidth = image.width;
-    const imageHeight = image.height;
 
     this.canvas.width = imageWidth;
     this.canvas.height = imageHeight;
 
     context.drawImage(image, 0, 0, imageWidth, imageHeight);
+
     bboxes.forEach((box, idx) =>
       this.renderBox(
         context,
