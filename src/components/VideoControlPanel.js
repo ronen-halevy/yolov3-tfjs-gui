@@ -29,7 +29,8 @@ export default class VideoControlPanel extends Component {
       scale: 0.5,
     };
     this.canvasRefVideo = React.createRef();
-    this.isReady = false;
+    this.setState({ isReady: false });
+    // this.isReady = false;
   }
 
   componentDidMount() {
@@ -37,7 +38,9 @@ export default class VideoControlPanel extends Component {
     this.yoloPredictor.setAnimationCallback(this.feedAnimationControl);
 
     this.draw = new Render(this.canvasRefVideo.current);
-    this.isReady = true;
+    this.setState({ isReady: true });
+
+    // this.isReady = ;
   }
   findFps() {
     var thisLoop = new Date();
@@ -143,7 +146,7 @@ export default class VideoControlPanel extends Component {
     return (
       <div className='container '>
         <div className='col '>
-          {this.isReady && (
+          {this.state.isReady && (
             <ModelSelectionPanel onLoadModel={this.onLoadModel} />
           )}
 
