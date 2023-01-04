@@ -26,7 +26,7 @@ export default class VideoControlPanel extends Component {
       fps: 0,
       currentTime: 0.0,
       duration: 0.0,
-      scale: 0.5,
+      scale: 0.25,
     };
     this.canvasRefVideo = React.createRef();
     this.setState({ isReady: false });
