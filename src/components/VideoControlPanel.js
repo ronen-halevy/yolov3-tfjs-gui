@@ -25,6 +25,7 @@ export default class VideoControlPanel extends Component {
       fps: 0,
       currentTime: 0.0,
       duration: 0.0,
+      scale: 0.5,
     };
     this.canvasRefVideo = React.createRef();
     this.isReady = false;
@@ -54,11 +55,11 @@ export default class VideoControlPanel extends Component {
   playCallback = (frame, currentTime, duration) => {
     this.yoloPredictor.detectFrameVideo(frame).then((reasultArrays) => {
       if (duration) {
-        var imageHeight = frame.videoHeight;
-        var imageWidth = frame.videoWidth;
+        var imageHeight = frame.videoHeight * this.state.scale;
+        var imageWidth = frame.videoWidth * this.state.scale;
       } else {
-        var imageHeight = frame.height;
-        var imageWidth = frame.width;
+        var imageHeight = frame.height * this.state.scale;
+        var imageWidth = frame.width * this.state.scale;
       }
       let [selBboxes, scores, classIndices] = reasultArrays;
       this.draw.renderOnImage(
@@ -91,6 +92,10 @@ export default class VideoControlPanel extends Component {
       this.state.videoRate * 2 > 2.0 ? 0.5 : this.state.videoRate * 2;
     this.vfbfStreamer.setPlaybackRate(rate);
     this.setState({ videoRate: rate });
+  };
+  onClickScale = (e) => {
+    const scale = this.state.scale * 2 > 2.0 ? 0.5 : this.state.scale * 2;
+    this.setState({ scale: scale });
   };
 
   onClickPlay = () => {
@@ -182,6 +187,21 @@ export default class VideoControlPanel extends Component {
                       )}
                     </span>
                   </div>
+                </div>
+                {/* scale button */}
+
+                <div className='col-3 text-center'>
+                  {' '}
+                  <span
+                    className='badge text-bg-dark  position-relative'
+                    onClick={this.onClickScale}
+                  >
+                    {' '}
+                    scale
+                    <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                      x{this.state.scale}
+                    </span>
+                  </span>
                 </div>
                 {/* Speed button */}
 
