@@ -144,7 +144,7 @@ export default class VideoControlPanel extends Component {
     return (
       <div className='container '>
         <div className='col '>
-          // enable after detector is ready
+          {/* enable after detector is ready */}
           {this.state.isReady && (
             <ModelSelectionPanel onLoadModel={this.onLoadModel} />
           )}
