@@ -69,7 +69,7 @@ export const Main = () => {
   };
 
   return (
-    <div className='container '>
+    <div className='col '>
       <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
       <Accordion />
       {/* Module triggers model loading on start so load it not before yolo is ready: */}
