@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import ModelSelectionPanel from './ModelSelectionPanel';
-import ConfigurationsPanel from './ConfigurationsPanel';
-import DataSourceSelectionPanel from './DataSourceSelectionPanel';
+import Accordion from './components/Accordion';
+import ModelSelectionPanel from './components/ModelSelectionPanel';
+import ConfigurationsPanel from './components/ConfigurationsPanel';
+import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 
 //import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer/VfbfStreamer.min.js';
-import VfbfStreamer from '../VfbfStreamer.js';
+import VfbfStreamer from './VfbfStreamer.js';
 
-import YoloPredictor from '../yolov3/YoloV3temp.js';
-import Render from '../utils/Render.js';
+import YoloPredictor from './yolov3/YoloV3temp.js';
+import Render from './utils/Render.js';
 
 // import YoloPredictor from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/yolov3/YoloV3temp.min.js';
 
@@ -237,6 +238,8 @@ export default class VideoControlPanel extends Component {
     const onClickPlay = this.onClickPlay;
     return (
       <div className='container '>
+        <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
+        <Accordion />
         <div className='col '>
           {/* enable after detector is ready */}
           {this.state.isReady && (
