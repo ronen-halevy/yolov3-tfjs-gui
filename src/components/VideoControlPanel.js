@@ -55,7 +55,7 @@ export default class VideoControlPanel extends Component {
   };
 
   playCallback = (frame, currentTime, duration) => {
-    this.yoloPredictor.detectFrameVideo(frame).then((reasultArrays) => {
+    this.yoloPredictor.detectFrame(frame).then((reasultArrays) => {
       if (duration) {
         var imageHeight = frame.videoHeight * this.state.scale;
         var imageWidth = frame.videoWidth * this.state.scale;
@@ -138,6 +138,98 @@ export default class VideoControlPanel extends Component {
     this.dataType = type;
   };
 
+  VideoControlPanel = (props) => {
+    return (
+      <div>
+        <div className=' row text-center'>
+          <div className=' col'>
+            <div className=' col-sm text-center badge rounded-pill bg-primary text-center'>
+              Video Control
+            </div>
+          </div>
+        </div>
+        <div className='col bg-warning bg-gradient'>
+          <div className='container'>
+            <div className='row'>
+              <div className='col-3 text-center'>
+                {' '}
+                {/* Scale button */}
+                <span
+                  className='badge text-bg-dark  position-relative'
+                  onClick={this.onClickScale}
+                >
+                  {' '}
+                  scale
+                  <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                    x{this.state.scale}
+                  </span>
+                </span>
+              </div>
+              {/* Speed button */}
+
+              <div className='col-3 text-center'>
+                {' '}
+                <span
+                  className='badge text-bg-dark  position-relative'
+                  onClick={this.onClickVideoSpeed}
+                >
+                  {' '}
+                  speed
+                  <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                    x{this.state.videoRate}
+                  </span>
+                </span>
+              </div>
+              {/* fps display */}
+
+              <div className='col-3 text-center'>
+                {' '}
+                <span className='badge text-bg-light   position-relative'>
+                  <span className=' '>fps: {this.state.fps}</span>
+                </span>
+              </div>
+              {/* time display */}
+
+              <div className='col-3 text-center'>
+                <span className='badge text-bg-light  position-relative'>
+                  <span className='text-center'>
+                    {this.state.currentTime}/{this.state.duration}
+                  </span>
+                </span>
+              </div>
+            </div>
+            {/* range bar */}
+
+            <input
+              type='range'
+              className='form-range'
+              min='0'
+              max={this.state.duration}
+              step='0.1'
+              id='customRange3'
+              value={this.state.currentTime}
+              onChange={this.updateVideoDuration}
+            />
+            <label>
+              <b>{!this.state.isVideoPlaying ? 'Play' : 'Stop'}</b>{' '}
+              <span>TouchCanvas</span>
+            </label>
+          </div>
+        </div>
+        {/* canvas */}
+
+        <label className='btn btn-dark   badge ' onClick={this.onClickPlay}>
+          <canvas
+            className='visible'
+            ref={this.canvasRefVideo}
+            width=''
+            height=''
+          />
+        </label>
+      </div>
+    );
+  };
+
   render() {
     const {} = this.props;
     const onClickPlay = this.onClickPlay;
@@ -169,85 +261,8 @@ export default class VideoControlPanel extends Component {
             />
           </div>
           {/* <div className='controlVideo  border border-1 border-secondary position-relative'> */}
-          <div className=' row text-center'>
-            <div className=' col'>
-              <div className=' col-sm text-center badge rounded-pill bg-primary text-center'>
-                Video Control
-              </div>
-            </div>
-          </div>
-          {/* </div> */}
-          <div className='col bg-warning bg-gradient'>
-            <div className='container'>
-              <div className='row'>
-                <div className='col-3 text-center'>
-                  {' '}
-                  <span
-                    className='badge text-bg-dark  position-relative'
-                    onClick={this.onClickScale}
-                  >
-                    {' '}
-                    scale
-                    <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-                      x{this.state.scale}
-                    </span>
-                  </span>
-                </div>
-                {/* Speed button */}
-
-                <div className='col-3 text-center'>
-                  {' '}
-                  <span
-                    className='badge text-bg-dark  position-relative'
-                    onClick={this.onClickVideoSpeed}
-                  >
-                    {' '}
-                    speed
-                    <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-                      x{this.state.videoRate}
-                    </span>
-                  </span>
-                </div>
-
-                <div className='col-3 text-center'>
-                  {' '}
-                  <span className='badge text-bg-light   position-relative'>
-                    <span className=' '>fps: {this.state.fps}</span>
-                  </span>
-                </div>
-                <div className='col-3 text-center'>
-                  <span className='badge text-bg-light  position-relative'>
-                    <span className='text-center'>
-                      {this.state.currentTime}/{this.state.duration}
-                    </span>
-                  </span>
-                </div>
-              </div>
-              <input
-                type='range'
-                className='form-range'
-                min='0'
-                max={this.state.duration}
-                step='0.1'
-                id='customRange3'
-                value={this.state.currentTime}
-                onChange={this.updateVideoDuration}
-              />
-              <label>
-                <b>{!this.state.isVideoPlaying ? 'Play' : 'Stop'}</b>{' '}
-                <span>TouchCanvas</span>
-              </label>
-            </div>
-          </div>
-          <label className='btn btn-dark   badge ' onClick={this.onClickPlay}>
-            <canvas
-              className='visible'
-              ref={this.canvasRefVideo}
-              width=''
-              height=''
-            />
-          </label>
         </div>
+        <this.VideoControlPanel />
       </div>
     );
   }
