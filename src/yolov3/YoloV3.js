@@ -56,7 +56,7 @@ export default class YoloPredictor {
     return tensor;
   };
 
-  detectFrameVideo = (imageFrame) => {
+  detectFrame = (imageFrame) => {
     tf.engine().startScope();
     const imageTensor = this.imagePreprocess(imageFrame);
     const modelOutputGrids = this.model.predict(imageTensor);
