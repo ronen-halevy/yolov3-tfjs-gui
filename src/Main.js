@@ -195,11 +195,11 @@ export class Main extends Component {
               value={this.state.currentTime}
               onChange={this.updateVideoDuration}
             />
-            <label>
-              <b className='mx-1 '>TouchCanvas</b>
+            <label className='mb-1'>
+              Touch<b className=''>Canvas</b>
               {/* Scale button */}
               <span
-                className='badge text-bg-dark  position-relative mx-1 mb-1'
+                className='badge text-bg-dark  position-relative mx-1 '
                 onClick={this.onClickScale}
               >
                 {' '}
@@ -208,11 +208,14 @@ export class Main extends Component {
                   x{this.state.scale}
                 </span>
               </span>
-              <span className=''>
+              {/* on off indicator */}
+              <span className='mx-1 '>
                 {!this.state.isVideoPlaying ? (
-                  <span>Play </span>
+                  <span className='  ' role='status'></span>
                 ) : (
-                  <span className='text-bg-danger'>Stop </span>
+                  <span className=' bg-light ' role='status'>
+                    running...
+                  </span>
                 )}
               </span>{' '}
             </label>
