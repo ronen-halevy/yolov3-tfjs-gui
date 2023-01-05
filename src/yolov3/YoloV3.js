@@ -2,8 +2,8 @@
 
 tf.setBackend('webgl');
 import { decode } from './decode';
-import Render from './Render';
-import { createModel } from './createModel';
+import Render from '../utils/Render';
+import { createModel } from '../utils/createModel';
 import { nms } from './nms';
 import configNms from '../config/configNms.json';
 

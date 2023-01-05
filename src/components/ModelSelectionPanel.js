@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import SelectModelButtons from './SelectModelButtons';
 
 import configModel from '../config/configModel.json';
-import { createModel } from '../yolov3/createModel.js';
+import { createModel } from '../utils/createModel.js';
 
 export default class ModelSelectionPanel extends Component {
   constructor(props) {

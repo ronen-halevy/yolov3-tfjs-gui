@@ -7,7 +7,7 @@ import DataSourceSelectionPanel from './DataSourceSelectionPanel';
 import VfbfStreamer from '../VfbfStreamer.js';
 
 import YoloPredictor from '../yolov3/YoloV3temp.js';
-import Render from '../yolov3/Render.js';
+import Render from '../utils/Render.js';
 
 // import YoloPredictor from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/yolov3/YoloV3temp.min.js';
 
