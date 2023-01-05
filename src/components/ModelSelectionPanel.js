@@ -68,9 +68,9 @@ export default class ModelSelectionPanel extends Component {
             </div>
           </div>
         </div>
-        <div className='model mb-2 border border-1 border-secondary position-relative'>
+        <div className='model  border border-1 border-secondary position-relative'>
           <div className='selectModelAndDataset row mt-2'>
-            <div className='col-4  text-center mb-3'>
+            <div className='col-4  text-center '>
               <span
                 className='btn btn-dark btn-lg  position-relative badge start-0'
                 onClick={this.onLoadModel}

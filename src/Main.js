@@ -136,7 +136,7 @@ export class Main extends Component {
     const {} = this.props;
     return (
       <div className='container '>
-        <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
+        <h2 className='text-center mb-1 mt-2'>Yolo TfJs Demo</h2>
         <Accordion />
         <div className='col '>
           {/* enable after detector is ready */}

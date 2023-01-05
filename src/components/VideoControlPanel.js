@@ -12,16 +12,12 @@ export const VideoControlPanel = (props) => {
 
   const onClickScale = () => {
     const [min, max, stride] = [0.125, 2, 2];
-    console.log(min, max, stride);
     const newScale = scale * stride > max ? min : scale * stride;
-    console.log(newScale);
-
     setScale(newScale);
     props.onClickScale(newScale);
   };
   const onClickVideoSpeed = () => {
     const [min, max, stride] = [0.5, 2, 2];
-
     const newRate = videoRate * stride > max ? min : videoRate * stride;
     setVideoRate(newRate);
     props.onClickVideoSpeed(newRate);
