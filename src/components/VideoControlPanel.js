@@ -14,7 +14,6 @@ import Render from '../yolov3/Render.js';
 export default class VideoControlPanel extends Component {
   constructor(props) {
     super(props);
-
     this.vfbfStreamer = new VfbfStreamer(
       this.playCallback,
       this.videoEndedCallback
@@ -151,23 +150,9 @@ export default class VideoControlPanel extends Component {
         <div className='col bg-warning bg-gradient'>
           <div className='container'>
             <div className='row'>
-              <div className='col-3 text-center'>
-                {' '}
-                {/* Scale button */}
-                <span
-                  className='badge text-bg-dark  position-relative'
-                  onClick={this.onClickScale}
-                >
-                  {' '}
-                  scale
-                  <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-                    x{this.state.scale}
-                  </span>
-                </span>
-              </div>
               {/* Speed button */}
 
-              <div className='col-3 text-center'>
+              <div className='col-4 text-center'>
                 {' '}
                 <span
                   className='badge text-bg-dark  position-relative'
@@ -182,7 +167,7 @@ export default class VideoControlPanel extends Component {
               </div>
               {/* fps display */}
 
-              <div className='col-3 text-center'>
+              <div className='col-4 text-center'>
                 {' '}
                 <span className='badge text-bg-light   position-relative'>
                   <span className=' '>fps: {this.state.fps}</span>
@@ -190,7 +175,7 @@ export default class VideoControlPanel extends Component {
               </div>
               {/* time display */}
 
-              <div className='col-3 text-center'>
+              <div className='col-4 text-center'>
                 <span className='badge text-bg-light  position-relative'>
                   <span className='text-center'>
                     {this.state.currentTime}/{this.state.duration}
@@ -211,8 +196,25 @@ export default class VideoControlPanel extends Component {
               onChange={this.updateVideoDuration}
             />
             <label>
-              <b>{!this.state.isVideoPlaying ? 'Play' : 'Stop'}</b>{' '}
-              <span>TouchCanvas</span>
+              <b className='mx-1 '>TouchCanvas</b>
+              {/* Scale button */}
+              <span
+                className='badge text-bg-dark  position-relative mx-1 mb-1'
+                onClick={this.onClickScale}
+              >
+                {' '}
+                scale
+                <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success'>
+                  x{this.state.scale}
+                </span>
+              </span>
+              <span className=''>
+                {!this.state.isVideoPlaying ? (
+                  <span>Play </span>
+                ) : (
+                  <span className='text-bg-danger'>Stop </span>
+                )}
+              </span>{' '}
             </label>
           </div>
         </div>
@@ -240,6 +242,14 @@ export default class VideoControlPanel extends Component {
           {this.state.isReady && (
             <ModelSelectionPanel onLoadModel={this.onLoadModel} />
           )}
+          <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
+              Data Source Selection
+            </span>
+            <DataSourceSelectionPanel
+              onClickSetDataSource={this.onClickSetDataSource}
+            />
+          </div>
           <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
             <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
               Configurations
@@ -252,14 +262,7 @@ export default class VideoControlPanel extends Component {
               />
             </div>
           </div>
-          <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
-            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
-              Data Source Selection
-            </span>
-            <DataSourceSelectionPanel
-              onClickSetDataSource={this.onClickSetDataSource}
-            />
-          </div>
+
           {/* <div className='controlVideo  border border-1 border-secondary position-relative'> */}
         </div>
         <this.VideoControlPanel />

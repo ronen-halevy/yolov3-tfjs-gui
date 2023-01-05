@@ -36,7 +36,6 @@ export default class ConfigurationsPanel extends Component {
   }
 
   onClick = (value, index) => {
-    console.log('onClick', value);
     this.configItemsList[index].callBack(value);
   };
   render = () => {

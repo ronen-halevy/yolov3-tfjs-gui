@@ -11,7 +11,6 @@ export default class ConfigurationButton extends Component {
   componentDidMount() {}
 
   onClick = (index) => {
-    console.log('onClick', index);
     let { min, max, step, ...rest } = this.props;
     let val = Math.round((this.state.value + step) * 10) / 10;
     val = val > max ? min : val;
