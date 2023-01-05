@@ -1,6 +1,4 @@
 import React from 'react';
-import LoadModel from './LoadModel';
-import RadioSelect from './RadioSelect';
 import Readme from './Readme';
 
 class Accordion extends React.Component {
