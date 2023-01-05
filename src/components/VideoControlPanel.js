@@ -142,7 +142,7 @@ export default class VideoControlPanel extends Component {
       <div>
         <div className=' row text-center'>
           <div className=' col'>
-            <div className=' col-sm text-center badge rounded-pill bg-primary text-center'>
+            <div className=' col-sm text-center badge rounded-pill bg-secondary text-dark text-center'>
               Video Control
             </div>
           </div>
@@ -243,7 +243,7 @@ export default class VideoControlPanel extends Component {
             <ModelSelectionPanel onLoadModel={this.onLoadModel} />
           )}
           <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
-            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary  '>
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-secondary text-dark  '>
               Data Source Selection
             </span>
             <DataSourceSelectionPanel
@@ -251,7 +251,7 @@ export default class VideoControlPanel extends Component {
             />
           </div>
           <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
-            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-primary'>
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-secondary text-dark'>
               Configurations
             </span>
             <div className='row mb-2'>

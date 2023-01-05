@@ -41,10 +41,10 @@ export default class ConfigurationsPanel extends Component {
   render = () => {
     const {} = this.props;
     return (
-      <div className='row mb-2'>
+      <div className='row mb-2 '>
         {this.configItemsList.map(
           ({ mname, stateVal, min, max, step, initVal, ...rest }, index) => (
-            <div className='col-4 mb-3 text-center mt-3' key={index}>
+            <div className='col-4 mb-1  mt-3 text-center' key={index}>
               <ConfigurationButton
                 onClick={this.onClick}
                 label={mname}

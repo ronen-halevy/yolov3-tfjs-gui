@@ -72,7 +72,7 @@ export default class DataSourceSelectionPanel extends Component {
             </span>
           </span>
         </div>
-        <div className=' col-4 text-center'></div>
+        <div className=' col-4 '></div>
 
         <div className=' col-4 text-center'>
           {this.state.isFileSource ? (
