@@ -214,7 +214,7 @@ export class Main extends Component {
                   <span className='  ' role='status'></span>
                 ) : (
                   <span className=' bg-light ' role='status'>
-                    running...
+                    running
                   </span>
                 )}
               </span>{' '}
