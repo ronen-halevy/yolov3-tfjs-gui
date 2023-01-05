@@ -63,15 +63,12 @@ export default class ModelSelectionPanel extends Component {
       <div>
         <div className=' row text-center'>
           <div className=' col'>
-            <div className=' col-sm text-center badge rounded-pill bg-secondary text-dark text-center'>
+            <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
               Model Selection
             </div>
           </div>
         </div>
         <div className='model mb-2 border border-1 border-secondary position-relative'>
-          {/* <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-secondary '>
-            Model Selection
-          </span> */}
           <div className='selectModelAndDataset row mt-2'>
             <div className='col-4  text-center mb-3'>
               <span

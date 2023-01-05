@@ -143,7 +143,7 @@ export class Main extends Component {
       <div>
         <div className=' row text-center'>
           <div className=' col'>
-            <div className=' col-sm text-center badge rounded-pill bg-secondary text-dark text-center'>
+            <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
               Video Control
             </div>
           </div>
@@ -246,18 +246,28 @@ export class Main extends Component {
           {this.state.isReady && (
             <ModelSelectionPanel onLoadModel={this.onLoadModel} />
           )}
-          <div className='dataSource mt-3 border border-1 border-secondary position-relative '>
-            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-secondary text-dark  '>
-              Data Source Selection
-            </span>
+          <div className=' row text-center'>
+            <div className=' col'>
+              <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
+                Data Source Selection{' '}
+              </div>
+            </div>
+          </div>
+
+          <div className='dataSource border border-1 border-secondary position-relative '>
             <DataSourceSelectionPanel
               onClickSetDataSource={this.onClickSetDataSource}
             />
           </div>
-          <div className='configButtons mt-3 border border-1 border-secondary position-relative'>
-            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-secondary text-dark'>
-              Configurations
-            </span>
+
+          <div className=' row text-center'>
+            <div className=' col'>
+              <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
+                Configurations{' '}
+              </div>
+            </div>
+          </div>
+          <div className='configButtons border border-1 border-secondary position-relative'>
             <div className='row mb-2'>
               <ConfigurationsPanel
                 setScoreTHR={this.setScoreTHR}
