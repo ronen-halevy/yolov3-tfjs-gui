@@ -3,6 +3,7 @@ import Accordion from './components/Accordion';
 import ModelSelectionPanel from './components/ModelSelectionPanel';
 import ConfigurationsPanel from './components/ConfigurationsPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
+import { VideoControlPanel } from './components/VideoControlPanel';
 
 //import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer/VfbfStreamer.min.js';
 import VfbfStreamer from './VfbfStreamer.js';
@@ -22,15 +23,12 @@ export class Main extends Component {
 
     this.state = {
       isVideoPlaying: false,
-      videoRate: 1,
       fps: 0,
       currentTime: 0.0,
       duration: 0.0,
-      scale: 0.25,
       isReady: false,
     };
     this.canvasRefVideo = React.createRef();
-    // this.setState({ isReady: false });
   }
 
   componentDidMount() {
@@ -57,11 +55,11 @@ export class Main extends Component {
   playCallback = (frame, currentTime, duration) => {
     this.yoloPredictor.detectFrame(frame).then((reasultArrays) => {
       if (duration) {
-        var imageHeight = frame.videoHeight * this.state.scale;
-        var imageWidth = frame.videoWidth * this.state.scale;
+        var imageHeight = frame.videoHeight * this.scale;
+        var imageWidth = frame.videoWidth * this.scale;
       } else {
-        var imageHeight = frame.height * this.state.scale;
-        var imageWidth = frame.width * this.state.scale;
+        var imageHeight = frame.height * this.scale;
+        var imageWidth = frame.width * this.scale;
       }
       let [selBboxes, scores, classIndices] = reasultArrays;
       this.draw.renderOnImage(
@@ -89,15 +87,11 @@ export class Main extends Component {
   feedAnimationControl = () => {
     this.vfbfStreamer.getAnimationControl()();
   };
-  onClickVideoSpeed = (e) => {
-    const rate =
-      this.state.videoRate * 2 > 2.0 ? 0.5 : this.state.videoRate * 2;
-    this.vfbfStreamer.setPlaybackRate(rate);
-    this.setState({ videoRate: rate });
+  onClickVideoSpeed = (videoRate) => {
+    this.vfbfStreamer.setPlaybackRate(videoRate);
   };
-  onClickScale = (e) => {
-    const scale = this.state.scale * 2 > 2.0 ? 0.125 : this.state.scale * 2;
-    this.setState({ scale: scale });
+  onClickScale = (scale) => {
+    this.scale = scale;
   };
 
   onClickPlay = () => {
@@ -112,7 +106,7 @@ export class Main extends Component {
     this.setState({ isVideoPlaying: isVideoPlaying });
   };
 
-  updateVideoDuration = (e) => {
+  onChangeCurrentTime = (e) => {
     this.setState({ currentTime: parseFloat(e.target.value) });
     this.vfbfStreamer.setCurrentTime(e.target.value);
   };
@@ -138,105 +132,8 @@ export class Main extends Component {
     this.dataType = type;
   };
 
-  VideoControlPanel = (props) => {
-    return (
-      <div>
-        <div className=' row text-center'>
-          <div className=' col'>
-            <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
-              Video Control
-            </div>
-          </div>
-        </div>
-        <div className='col bg-warning bg-gradient'>
-          <div className='container'>
-            <div className='row'>
-              {/* Speed button */}
-
-              <div className='col-4 text-center'>
-                {' '}
-                <span
-                  className='badge text-bg-dark  position-relative'
-                  onClick={this.onClickVideoSpeed}
-                >
-                  {' '}
-                  speed
-                  <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
-                    x{this.state.videoRate}
-                  </span>
-                </span>
-              </div>
-              {/* fps display */}
-
-              <div className='col-4 text-center'>
-                {' '}
-                <span className='badge text-bg-light   position-relative'>
-                  <span className=' '>fps: {this.state.fps}</span>
-                </span>
-              </div>
-              {/* time display */}
-
-              <div className='col-4 text-center'>
-                <span className='badge text-bg-light  position-relative'>
-                  <span className='text-center'>
-                    {this.state.currentTime}/{this.state.duration}
-                  </span>
-                </span>
-              </div>
-            </div>
-            {/* range bar */}
-            <input
-              type='range'
-              className='form-range'
-              min='0'
-              max={this.state.duration}
-              step='0.1'
-              id='customRange3'
-              value={this.state.currentTime}
-              onChange={this.updateVideoDuration}
-            />
-            <label className='mb-1'>
-              Touch<b className=''>Canvas</b>
-              {/* Scale button */}
-              <span
-                className='badge text-bg-dark  position-relative mx-1 '
-                onClick={this.onClickScale}
-              >
-                {' '}
-                scale
-                <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success'>
-                  x{this.state.scale}
-                </span>
-              </span>
-              {/* on off indicator */}
-              <span className='mx-1 '>
-                {!this.state.isVideoPlaying ? (
-                  <span className='  ' role='status'></span>
-                ) : (
-                  <span className=' bg-light ' role='status'>
-                    running
-                  </span>
-                )}
-              </span>{' '}
-            </label>
-          </div>
-        </div>
-        {/* canvas */}
-        <label className='btn btn-dark   badge ' onClick={this.onClickPlay}>
-          <canvas
-            className='visible'
-            ref={this.canvasRefVideo}
-            width=''
-            height=''
-          />
-        </label>
-      </div>
-    );
-  };
-
   render() {
     const {} = this.props;
-    const onClickPlay = this.onClickPlay;
     return (
       <div className='container '>
         <h2 className='text-center mb-5 mt-5'>Yolo TfJs Demo</h2>
@@ -276,10 +173,27 @@ export class Main extends Component {
               />
             </div>
           </div>
-
-          {/* <div className='controlVideo  border border-1 border-secondary position-relative'> */}
         </div>
-        <this.VideoControlPanel />
+        {this.state.isReady && (
+          <VideoControlPanel
+            onClickVideoSpeed={this.onClickVideoSpeed}
+            fps={this.state.fps}
+            currentTime={this.state.currentTime}
+            duration={this.state.duration}
+            onChangeCurrentTime={this.onChangeCurrentTime}
+            onClickScale={this.onClickScale}
+            isVideoPlaying={this.state.isVideoPlaying}
+          />
+        )}
+        {/* canvas */}
+        <label className='btn btn-dark   badge ' onClick={this.onClickPlay}>
+          <canvas
+            className='visible'
+            ref={this.canvasRefVideo}
+            width=''
+            height=''
+          />
+        </label>
       </div>
     );
   }

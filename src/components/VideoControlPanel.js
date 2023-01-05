@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const VideoControlPanel = (props) => {
   const [scale, setScale] = useState(0.25);
   const [videoRate, setVideoRate] = useState(1);
+
+  useEffect(() => {
+    // init on start:
+    props.onClickScale(scale);
+    props.onClickVideoSpeed(videoRate);
+  }, []);
 
   const onClickScale = () => {
     const [min, max, stride] = [0.125, 2, 2];
@@ -11,6 +17,7 @@ export const VideoControlPanel = (props) => {
     console.log(newScale);
 
     setScale(newScale);
+    props.onClickScale(newScale);
   };
   const onClickVideoSpeed = () => {
     const [min, max, stride] = [0.5, 2, 2];
@@ -20,15 +27,8 @@ export const VideoControlPanel = (props) => {
     props.onClickVideoSpeed(newRate);
   };
 
-  const {
-    fps,
-    currentTime,
-    duration,
-    updateVideoDuration,
-    isVideoPlaying,
-    onClickPlay,
-    canvasRefVideo,
-  } = props;
+  const { fps, duration, currentTime, onChangeCurrentTime, isVideoPlaying } =
+    props;
   return (
     <div>
       <div className=' row text-center'>
@@ -83,7 +83,7 @@ export const VideoControlPanel = (props) => {
             step='0.1'
             id='customRange3'
             value={currentTime}
-            onChange={updateVideoDuration}
+            onChange={onChangeCurrentTime}
           />
           <label className='mb-1'>
             Touch<b className=''>Canvas</b>
@@ -111,10 +111,6 @@ export const VideoControlPanel = (props) => {
           </label>
         </div>
       </div>
-      {/* canvas */}
-      <label className='btn btn-dark   badge ' onClick={onClickPlay}>
-        <canvas className='visible' ref={canvasRefVideo} width='' height='' />
-      </label>
     </div>
   );
 };
