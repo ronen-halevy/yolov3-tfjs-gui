@@ -27,7 +27,7 @@ export default class UrlSelectButton extends Component {
       {
         selectedExampleIndex: selectedExampleIndex,
       },
-      () => this.props.onChange(url, type)
+      () => this.props.onChange(url, type, selection.title)
     );
   };
 
@@ -41,7 +41,7 @@ export default class UrlSelectButton extends Component {
       >
         Select a url
         <span className='position-absolute top-0  start-0 translate-middle badge rounded-pill bg-success'>
-          {this.videoExamplesList[this.state.selectedExampleIndex].name}
+          {this.videoExamplesList[this.state.selectedExampleIndex].title}
         </span>
         <span className='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
           https://mixkit.co/

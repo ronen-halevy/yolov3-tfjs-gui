@@ -27,6 +27,7 @@ export class Main extends Component {
       currentTime: 0.0,
       duration: 0.0,
       isReady: false,
+      title: '',
     };
     this.canvasRefVideo = React.createRef();
   }
@@ -127,9 +128,10 @@ export class Main extends Component {
     this.yoloPredictor.setMaxBoxes(val);
   };
 
-  onClickSetDataSource = (url, type) => {
+  onClickSetDataSource = (url, type, title) => {
     this.dataUrl = url;
     this.dataType = type;
+    this.setState({ title: title });
   };
 
   render() {
@@ -180,6 +182,7 @@ export class Main extends Component {
             fps={this.state.fps}
             currentTime={this.state.currentTime}
             duration={this.state.duration}
+            title={this.state.title}
             onChangeCurrentTime={this.onChangeCurrentTime}
             onClickScale={this.onClickScale}
             isVideoPlaying={this.state.isVideoPlaying}

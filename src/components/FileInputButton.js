@@ -13,12 +13,12 @@ export default class FileInputButton extends React.Component {
     const URL = window.URL || window.webkitURL;
     const fileUrl = URL.createObjectURL(file);
     const type = file.name.match(/\.(jpg|jpeg|png|gif)$/i) ? 'image' : 'video';
-
+    const title = file.name;
     this.setState(
       {
         fileName: file.name,
       },
-      () => this.props.onChange(fileUrl, type)
+      () => this.props.onChange(fileUrl, type, title)
     );
   };
 

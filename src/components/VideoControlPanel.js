@@ -23,8 +23,15 @@ export const VideoControlPanel = (props) => {
     props.onClickVideoSpeed(newRate);
   };
 
-  const { fps, duration, currentTime, onChangeCurrentTime, isVideoPlaying } =
-    props;
+  const {
+    fps,
+    duration,
+    currentTime,
+    title,
+    onChangeCurrentTime,
+    isVideoPlaying,
+  } = props;
+  console.log(title);
   return (
     <div>
       <div className=' row text-center'>
@@ -81,29 +88,37 @@ export const VideoControlPanel = (props) => {
             value={currentTime}
             onChange={onChangeCurrentTime}
           />
-          <label className='mb-1'>
-            Touch<b className=''>Canvas</b>
-            {/* Scale button */}
-            <span
-              className='badge text-bg-dark  position-relative mx-1 '
-              onClick={onClickScale}
-            >
-              {' '}
-              Scale
-              <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success'>
-                x{scale}
+          <label className='mb-1 row'>
+            <span className='col'>
+              Touch<b className=''>Canvas</b>
+              {/* Scale button */}
+              <span
+                className='badge text-bg-dark  position-relative mx-1 '
+                onClick={onClickScale}
+              >
+                {' '}
+                Scale
+                <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success'>
+                  x{scale}
+                </span>
+              </span>
+              {/* on off indicator */}
+              <span className='mx-1 '>
+                {!isVideoPlaying ? (
+                  <span className='  ' role='status'></span>
+                ) : (
+                  <span className=' bg-light ' role='status'>
+                    running
+                  </span>
+                )}
+              </span>{' '}
+            </span>
+            <span className='col'>
+              {/* title */}
+              <span className=' ' role='status'>
+                selected title: <b>{title}</b>
               </span>
             </span>
-            {/* on off indicator */}
-            <span className='mx-1 '>
-              {!isVideoPlaying ? (
-                <span className='  ' role='status'></span>
-              ) : (
-                <span className=' bg-light ' role='status'>
-                  running
-                </span>
-              )}
-            </span>{' '}
           </label>
         </div>
       </div>

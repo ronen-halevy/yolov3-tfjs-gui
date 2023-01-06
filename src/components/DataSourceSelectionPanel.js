@@ -26,20 +26,20 @@ export default class DataSourceSelectionPanel extends Component {
     this.props.onClickSetDataSource(url, type);
   };
 
-  onChangeFile = (url, type) => {
+  onChangeFile = (url, type, title) => {
     this.setState({
       fileUrl: url,
       fileType: type,
     });
-    this.props.onClickSetDataSource(url, type);
+    this.props.onClickSetDataSource(url, type, title);
   };
 
-  onChangeUrl = (url, type) => {
+  onChangeUrl = (url, type, title) => {
     this.setState({
       selectedUrl: url,
       selectedUrlType: type,
     });
-    this.props.onClickSetDataSource(url, type);
+    this.props.onClickSetDataSource(url, type, title);
   };
 
   onClickSetDataSource = () => {
