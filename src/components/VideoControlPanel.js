@@ -46,7 +46,7 @@ export const VideoControlPanel = (props) => {
                 onClick={onClickVideoSpeed}
               >
                 {' '}
-                speed
+                Speed
                 <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
                   x{videoRate}
                 </span>
@@ -89,7 +89,7 @@ export const VideoControlPanel = (props) => {
               onClick={onClickScale}
             >
               {' '}
-              scale
+              Scale
               <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success'>
                 x{scale}
               </span>

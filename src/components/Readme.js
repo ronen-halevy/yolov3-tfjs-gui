@@ -103,12 +103,14 @@ export default class Readme extends React.Component {
         <br /> <br />
         <h4>Video Control panel</h4>
         <h5> Play-stop </h5>
-        button Toggles between play and stop. Play trigger both image and video.
-        process. <br />
+        Touch canvas to toggle between play and stop. Play triggers both image
+        and video detection. process. <br /> <br />
+        <h5>Scale button </h5>
+        Scales canvas size.
+        <br /> <br />
         The rest of panel's buttons are effective for video data only.
         <br />
         <br />
-        <br /> <br />
         <h5>Speed button </h5>
         Selects between 3 video play speeds.
         <br /> <br />
@@ -123,8 +125,9 @@ export default class Readme extends React.Component {
         Selects between 3 video play speeds.
         <br /> <br />
         <h4> Canvas panel </h4>
-        This Canvas is visible only after play. Both images and videos are
-        rendered on it.
+        Both images and videos are rendered on the same canvas. Touching (or
+        clicking) the canvas surface triggers <b>play</b> and <b>stop</b> of
+        process.
         <br /> <br />
         <h3>The algorithmic engine</h3>
         The algorithmic engine is implemented using Tensorflow JS, the Java
