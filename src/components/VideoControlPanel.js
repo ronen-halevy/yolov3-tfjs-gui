@@ -116,7 +116,7 @@ export const VideoControlPanel = (props) => {
             <span className='col'>
               {/* title */}
               <span className=' ' role='status'>
-                selected title: <b>{title}</b>
+                <b>{title}</b>
               </span>
             </span>
           </label>
