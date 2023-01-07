@@ -11,11 +11,12 @@ export default class Readme extends React.Component {
         <h3>A brief description</h3> <br />
         The app demonstrates an original implementation of the YoloV3 object
         detection algorithm, based on the paper by Joseph Redmon, and Ali
-        Farhadi. Yolov3 is the 3rd version of the algorithm. <br />
-        Yolo is a CNN-based deep learning algorithm, which classifies images'
-        objects and bounds them with boxes. The app renders predicted bounding
-        boxes orround the detected objects, annotated with predicted
-        objects&rsquo;s names and prediction&rsquo;s confidence scores. <br />{' '}
+        Farhadi. <br />
+        Yolo is a deep learning CNN-based object detetion algorithm. It
+        classifies objects within images and bounds them with boxes. The app
+        renders predicted bounding boxes arround the detected objects, with
+        objects&rsquo;s names and prediction&rsquo;s confidence scores
+        annotations. <br /> Yolov3 is the 3rd version of Yolo.
         <br />
         <h3>A brief user's guide</h3> The app is set with default
         configurations, so you are ready to press play and run the default video
