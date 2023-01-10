@@ -1,4 +1,4 @@
-export default class VfbfStreamer {
+class VfbfStreamer {
   /**
    * Brief description of the class here
    * @extends ParentClassNameHereIfAny
@@ -105,3 +105,9 @@ export default class VfbfStreamer {
     }
   };
 }
+
+const streamer = {
+  VfbfStreamer: VfbfStreamer,
+};
+
+module.exports = streamer;
