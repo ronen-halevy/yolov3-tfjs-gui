@@ -13,7 +13,7 @@ const configRender = {
 };
 // tf.setBackend('webgl');
 
-export default class YoloPredictor {
+class YoloPredictor {
   constructor() {
     this.scoreTHR = configNms.scoreThreshold;
     this.iouTHR = configNms.iouThreshold;
@@ -121,7 +121,7 @@ const nms = (bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes) => {
   return nmsPromise;
 };
 
-export function decode(gridsOutputs, nClasses, anchors) {
+function decode(gridsOutputs, nClasses, anchors) {
   const nanchors_per_scale = 3; // Large, Medium, Small
   const anchor_entry_size = 2; // width, height
   let anchors_table = tf.reshape(anchors, [
@@ -204,15 +204,21 @@ function arrange_bbox(xy, wh) {
   return bbox;
 }
 
-export const createModel = (modelUrl, anchorsUrl, classNamesUrl) => {
-  const modelPromise = tf.loadLayersModel(modelUrl);
-  const anchorsPromise = fetch(anchorsUrl).then((response) => response.json());
-  const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
+// const createModel = (modelUrl, anchorsUrl, classNamesUrl) => {
+//   const modelPromise = tf.loadLayersModel(modelUrl);
+//   const anchorsPromise = fetch(anchorsUrl).then((response) => response.json());
+//   const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
 
-  const promise = Promise.all([
-    modelPromise,
-    anchorsPromise,
-    classNamesPromise,
-  ]);
-  return promise;
+//   const promise = Promise.all([
+//     modelPromise,
+//     anchorsPromise,
+//     classNamesPromise,
+//   ]);
+//   return promise;
+// };
+
+const yolo = {
+  YoloPredictor: YoloPredictor,
 };
+
+module.exports = yolo;
