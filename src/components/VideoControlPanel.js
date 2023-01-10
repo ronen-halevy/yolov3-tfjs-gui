@@ -31,7 +31,6 @@ export const VideoControlPanel = (props) => {
     onChangeCurrentTime,
     isVideoPlaying,
   } = props;
-  console.log(title);
   return (
     <div>
       <div className=' row text-center'>
