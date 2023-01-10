@@ -8,15 +8,25 @@ import { VideoControlPanel } from './components/VideoControlPanel';
 //import VfbfStreamer from 'https://cdn.jsdelivr.net/gh/ronen-halevy/vfbf-streamer/VfbfStreamer.min.js';
 import VfbfStreamer from './VfbfStreamer.js';
 
-import YoloPredictor from './yolov3/YoloV3temp.js';
+// import YoloPredictor from './yolov3/YoloV3temp.js';
 import Render from './utils/Render.js';
+// import { hh } from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/math.js';
 
 // import YoloPredictor from 'https://cdn.jsdelivr.net/gh/ronen-halevy/yolov3-tfjs/src/yolov3/YoloV3temp.min.js';
-import { app } from './app1.js';
+
+import { app1 } from './app1.js';
 
 export class Main extends Component {
   render() {
-    app();
+    // const yoloPredictor = new YoloPredictor();
+    // console.log(yoloPredictor);
+
+    console.log(square);
+    console.log(square(9));
+    console.log(add(9, 8));
+    console.log(PI);
+
+    // app1();
 
     return <div></div>;
   }
