@@ -54,13 +54,6 @@ export class Main extends Component {
         (isVideoFrame ? frame.videoHeight : frame.height) * this.scale;
       var imageWidth =
         (isVideoFrame ? frame.videoWidth : frame.width) * this.scale;
-      // if (isVideoFrame) {
-      //   var imageHeight = frame.videoHeight * this.scale;
-      //   var imageWidth = frame.videoWidth * this.scale;
-      // } else {
-      //   var imageHeight = frame.height * this.scale;
-      //   var imageWidth = frame.width * this.scale;
-      // }
       let [selBboxes, scores, classIndices] = reasultArrays;
       this.renderDetections(
         frame,
