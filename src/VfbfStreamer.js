@@ -3,9 +3,9 @@ class VfbfStreamer {
    * Brief description of the class here
    * @extends ParentClassNameHereIfAny
    */
-  constructor(playCallback, endedCallback) {
+  constructor(frameCallback, endedCallback) {
     this.videoObject = document.createElement('video');
-    this.playCallback = playCallback;
+    this.frameCallback = frameCallback;
     this.endedCallback = endedCallback;
   }
 
@@ -24,7 +24,7 @@ class VfbfStreamer {
       const imageObjectURL = URL.createObjectURL(imageBlob);
       imageObject.src = imageObjectURL;
       imageObject.addEventListener('load', async () => {
-        this.playCallback(imageObject, 0, 0);
+        this.frameCallback(imageObject, 0, 0);
       });
     };
     fetchImage();
@@ -41,7 +41,7 @@ class VfbfStreamer {
 
   animationControl = () => {
     var id = window.requestAnimationFrame(() =>
-      this.playCallback(
+      this.frameCallback(
         this.videoObject,
         this.videoObject.currentTime,
         this.videoObject.duration
@@ -72,7 +72,7 @@ class VfbfStreamer {
     if (this.videoObject.currentTime) {
       // resume
       this.videoObject.play();
-      this.playCallback(
+      this.frameCallback(
         this.videoObject,
         this.videoObject.currentTime,
         this.videoObject.duration
@@ -91,7 +91,7 @@ class VfbfStreamer {
         };
       }).then(() => {
         this.durationOfVideo = this.videoObject.duration;
-        this.playCallback(
+        this.frameCallback(
           this.videoObject,
           this.videoObject.currentTime,
           this.videoObject.duration
