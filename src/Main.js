@@ -4,6 +4,8 @@ import ModelSelectionPanel from './components/ModelSelectionPanel';
 import ConfigurationsPanel from './components/ConfigurationsPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 import { VideoControlPanel } from './components/VideoControlPanel';
+// import VfbfStreamer from './VfbfStreamer';
+const { VfbfStreamer } = require('./VfbfStreamer');
 
 import Render from './utils/Render.js';
 export class Main extends Component {
@@ -68,17 +70,46 @@ export class Main extends Component {
           currentTime: currentTime.toFixed(1),
           duration: duration.toFixed(1),
         });
-        this.feedAnimationControl();
+        this.vfbfStreamer.animationControl();
       }
     });
+
+    // avoid if image (not a video):
+    // if (duration) {
+    //   const fps = this.findFps();
+    //   this.setState({
+    //     fps: fps,
+    //     currentTime: currentTime.toFixed(1),
+    //     duration: duration.toFixed(1),
+    //   });
+    //   this.vfbfStreamer.animationControl();
+    // }
+    // }
   };
+
+  // renderDetections = (
+  //   frame,
+  //   imageWidth,
+  //   imageHeight,
+  //   selBboxes,
+  //   scores,
+  //   classIndices
+  // ) => {
+  //   this.draw.renderOnImage(
+  //     frame,
+  //     selBboxes,
+  //     scores,
+  //     classIndices,
+  //     this.classNames,
+  //     imageWidth,
+  //     imageHeight
+  //   );
+  // };
+
   vfbfStreamerEndedCallback = () => {
     this.setState({ isVideoPlaying: false });
   };
 
-  feedAnimationControl = () => {
-    this.vfbfStreamer.getAnimationControl()();
-  };
   onClickVideoSpeed = (videoRate) => {
     this.vfbfStreamer.setPlaybackRate(videoRate);
   };
