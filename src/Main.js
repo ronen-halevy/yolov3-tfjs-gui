@@ -32,6 +32,11 @@ export class Main extends Component {
     this.draw = new Render(this.canvasRefVideo.current);
     this.setState({ isReady: true });
   }
+
+  doD = (frame, currentTime, duration) => {
+    return this.yoloPredictor.detectFrame(frame);
+  };
+
   findFps() {
     var thisLoop = new Date();
     const fps = (1000 / (thisLoop - this.lastLoop))
@@ -42,40 +47,59 @@ export class Main extends Component {
     this.lastLoop = thisLoop;
     return fps;
   }
-
   vfbfStreamerFrameCallBack = (frame, currentTime, duration) => {
-    this.doDetection(frame, currentTime, duration);
-  };
-
-  doDetection = (frame, currentTime, duration) => {
-    this.yoloPredictor.detectFrame(frame).then((reasultArrays) => {
-      const isVideoFrame = duration != 0;
-      var imageHeight =
-        (isVideoFrame ? frame.videoHeight : frame.height) * this.scale;
-      var imageWidth =
-        (isVideoFrame ? frame.videoWidth : frame.width) * this.scale;
+    const pr = this.doD(frame, currentTime, duration);
+    pr.then((reasultArrays) => {
       let [selBboxes, scores, classIndices] = reasultArrays;
-      this.renderDetections(
+
+      this.doDetection(
         frame,
         selBboxes,
         scores,
         classIndices,
-        imageWidth,
-        imageHeight
+        currentTime,
+        duration
       );
-
-      // avoid if image (not a video):
-      if (isVideoFrame) {
-        const fps = this.findFps();
-        this.setState({
-          fps: fps,
-          currentTime: currentTime.toFixed(1),
-          duration: duration.toFixed(1),
-        });
-        this.vfbfStreamer.animationControl();
-        console.log('anima');
-      }
     });
+
+    // this.doDetection(frame, currentTime, duration);
+  };
+  doDetection = (
+    frame,
+    selBboxes,
+    scores,
+    classIndices,
+    currentTime,
+    duration
+  ) => {
+    // this.yoloPredictor.detectFrame(frame).then((reasultArrays) => {
+    const isVideoFrame = duration != 0;
+    var imageHeight =
+      (isVideoFrame ? frame.videoHeight : frame.height) * this.scale;
+    var imageWidth =
+      (isVideoFrame ? frame.videoWidth : frame.width) * this.scale;
+    // let [selBboxes, scores, classIndices] = reasultArrays;
+    this.renderDetections(
+      frame,
+      selBboxes,
+      scores,
+      classIndices,
+      imageWidth,
+      imageHeight
+    );
+
+    // avoid if image (not a video):
+    if (isVideoFrame) {
+      const fps = this.findFps();
+      this.setState({
+        fps: fps,
+        currentTime: currentTime.toFixed(1),
+        duration: duration.toFixed(1),
+      });
+      this.vfbfStreamer.animationControl();
+      console.log('anima');
+    }
+    // });
   };
 
   renderDetections = (
