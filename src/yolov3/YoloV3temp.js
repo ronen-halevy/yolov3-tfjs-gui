@@ -18,7 +18,6 @@ class YoloPredictor {
     this.scoreTHR = configNms.scoreThreshold;
     this.iouTHR = configNms.iouThreshold;
     this.maxBoxes = configNms.maxBoxes;
-    this.animationCallback = null;
   }
 
   setScoreTHR = (val) => {
@@ -36,10 +35,6 @@ class YoloPredictor {
     this.anchors = anchors;
     this.nClasses = nClasses;
   }
-
-  setAnimationCallback = (animationCallback_) => {
-    this.animationCallback = animationCallback_;
-  };
 
   imagePreprocess = (image) => {
     const imgTensor = tf.browser.fromPixels(image);

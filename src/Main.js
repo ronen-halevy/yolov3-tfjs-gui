@@ -10,8 +10,8 @@ export class Main extends Component {
   constructor(props) {
     super(props);
     this.vfbfStreamer = new VfbfStreamer(
-      this.playCallback,
-      this.videoEndedCallback
+      this.vfbfStreamerFrameCallBack,
+      this.vfbfStreamerEndedCallback
     );
 
     this.state = {
@@ -27,8 +27,6 @@ export class Main extends Component {
 
   componentDidMount() {
     this.yoloPredictor = new YoloPredictor();
-    this.yoloPredictor.setAnimationCallback(this.feedAnimationControl);
-
     this.draw = new Render(this.canvasRefVideo.current);
     this.setState({ isReady: true });
   }
@@ -42,11 +40,8 @@ export class Main extends Component {
     this.lastLoop = thisLoop;
     return fps;
   }
-  videoEndedCallback = () => {
-    this.setState({ isVideoPlaying: false });
-  };
 
-  playCallback = (frame, currentTime, duration) => {
+  vfbfStreamerFrameCallBack = (frame, currentTime, duration) => {
     this.yoloPredictor.detectFrame(frame).then((reasultArrays) => {
       if (duration) {
         var imageHeight = frame.videoHeight * this.scale;
@@ -76,6 +71,9 @@ export class Main extends Component {
         this.feedAnimationControl();
       }
     });
+  };
+  vfbfStreamerEndedCallback = () => {
+    this.setState({ isVideoPlaying: false });
   };
 
   feedAnimationControl = () => {
