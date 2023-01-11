@@ -44,26 +44,35 @@ export class Main extends Component {
   }
 
   vfbfStreamerFrameCallBack = (frame, currentTime, duration) => {
+    this.doDetection(frame, currentTime, duration);
+  };
+
+  doDetection = (frame, currentTime, duration) => {
     this.yoloPredictor.detectFrame(frame).then((reasultArrays) => {
-      if (duration) {
-        var imageHeight = frame.videoHeight * this.scale;
-        var imageWidth = frame.videoWidth * this.scale;
-      } else {
-        var imageHeight = frame.height * this.scale;
-        var imageWidth = frame.width * this.scale;
-      }
+      const isVideoFrame = duration != 0;
+      var imageHeight =
+        (isVideoFrame ? frame.videoHeight : frame.height) * this.scale;
+      var imageWidth =
+        (isVideoFrame ? frame.videoWidth : frame.width) * this.scale;
+      // if (isVideoFrame) {
+      //   var imageHeight = frame.videoHeight * this.scale;
+      //   var imageWidth = frame.videoWidth * this.scale;
+      // } else {
+      //   var imageHeight = frame.height * this.scale;
+      //   var imageWidth = frame.width * this.scale;
+      // }
       let [selBboxes, scores, classIndices] = reasultArrays;
-      this.draw.renderOnImage(
+      this.renderDetections(
         frame,
         selBboxes,
         scores,
         classIndices,
-        this.classNames,
         imageWidth,
         imageHeight
       );
+
       // avoid if image (not a video):
-      if (duration) {
+      if (isVideoFrame) {
         const fps = this.findFps();
         this.setState({
           fps: fps,
@@ -71,40 +80,29 @@ export class Main extends Component {
           duration: duration.toFixed(1),
         });
         this.vfbfStreamer.animationControl();
+        console.log('anima');
       }
     });
-
-    // avoid if image (not a video):
-    // if (duration) {
-    //   const fps = this.findFps();
-    //   this.setState({
-    //     fps: fps,
-    //     currentTime: currentTime.toFixed(1),
-    //     duration: duration.toFixed(1),
-    //   });
-    //   this.vfbfStreamer.animationControl();
-    // }
-    // }
   };
 
-  // renderDetections = (
-  //   frame,
-  //   imageWidth,
-  //   imageHeight,
-  //   selBboxes,
-  //   scores,
-  //   classIndices
-  // ) => {
-  //   this.draw.renderOnImage(
-  //     frame,
-  //     selBboxes,
-  //     scores,
-  //     classIndices,
-  //     this.classNames,
-  //     imageWidth,
-  //     imageHeight
-  //   );
-  // };
+  renderDetections = (
+    frame,
+    selBboxes,
+    scores,
+    classIndices,
+    imageWidth,
+    imageHeight
+  ) => {
+    this.draw.renderOnImage(
+      frame,
+      selBboxes,
+      scores,
+      classIndices,
+      this.classNames,
+      imageWidth,
+      imageHeight
+    );
+  };
 
   vfbfStreamerEndedCallback = () => {
     this.setState({ isVideoPlaying: false });
