@@ -14,6 +14,7 @@ export class VideoControlPanel extends Component {
       scale: 0.25,
       videoRate: 1,
       currentTime: 0,
+      duration: 0,
     };
     this.canvasRefVideo = React.createRef();
   }
@@ -190,6 +191,7 @@ export class VideoControlPanel extends Component {
           </div>
         </div>
         {/* canvas */}
+        {/* <div className='col'> */}
         <label className='btn btn-dark   badge ' onClick={this.onClickPlay}>
           <canvas
             className='visible'
@@ -198,6 +200,7 @@ export class VideoControlPanel extends Component {
             height=''
           />
         </label>
+        {/* </div> */}
       </div>
     );
   }
