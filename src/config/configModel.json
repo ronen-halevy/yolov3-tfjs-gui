@@ -3,20 +3,20 @@
     "YoloV3Tiny": {
       "coco": {
         "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs-gui/master/models/coco-tiny/model.json",
-        "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjss-gui/master/data/cocoTinyAnchors.json",
-        "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjss-gui/master/data/cocoClassNames.txt"
+        "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs-gui/master/data/cocoTinyAnchors.json",
+        "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs-gui/master/data/cocoClassNames.txt"
       }
     },
     "YoloV3": {
       "coco": {
-        "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjss-gui/master/models/coco/model.json",
-        "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjss-gui/master/data/cocoAnchors.json",
-        "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjss-gui/master/data/cocoClassNames.txt"
+        "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs-gui/master/models/coco/model.json",
+        "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs-gui/master/data/cocoAnchors.json",
+        "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs-gui/master/data/cocoClassNames.txt"
       },
       "shapes": {
-        "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjss-gui/master/models/shapes/model.json",
-        "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjss-gui/master/data/shapesAnchors.json",
-        "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjss-gui/master/data/shapesClassNames.txt"
+        "modelUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs-gui/master/models/shapes/model.json",
+        "anchorsUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs-gui/master/data/shapesAnchors.json",
+        "classNamesUrl": "https://raw.githubusercontent.com/ronen-halevy/yolov3-tfjs-gui/master/data/shapesClassNames.txt"
       }
     }
   }
