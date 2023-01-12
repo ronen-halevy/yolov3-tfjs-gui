@@ -137,14 +137,14 @@ export class VideoControlPanel extends Component {
 
               <div className='col-4 text-center'>
                 {' '}
-                <span className='badge text-bg-light   position-relative'>
+                <span className='badge text-bg-secondary   position-relative'>
                   <span className=' '>fps: {this.state.fps}</span>
                 </span>
               </div>
               {/* time display */}
 
               <div className='col-4 text-center'>
-                <span className='badge text-bg-light  position-relative'>
+                <span className='badge text-bg-secondary  position-relative'>
                   <span className='text-center'>
                     {this.state.currentTime}/{this.state.duration}
                   </span>

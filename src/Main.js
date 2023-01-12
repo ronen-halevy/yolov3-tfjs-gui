@@ -84,11 +84,13 @@ export class Main extends Component {
             </div>
           </div>
         </div>
-        <VideoControlPanel
-          detectFrame={this.detectFrame}
-          classNames={this.state.classNames}
-          inputUrl={{ url: this.dataUrl, type: this.dataType }}
-        />
+        <div className='row mb-2'>
+          <VideoControlPanel
+            detectFrame={this.detectFrame}
+            classNames={this.state.classNames}
+            inputUrl={{ url: this.dataUrl, type: this.dataType }}
+          />
+        </div>
       </div>
     );
   }
