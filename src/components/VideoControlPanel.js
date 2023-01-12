@@ -14,6 +14,7 @@ export class VideoControlPanel extends Component {
       videoRate: 1,
       currentTime: 0,
       duration: 0,
+      fps: 0,
     };
     this.canvasRefVideo = React.createRef();
   }
