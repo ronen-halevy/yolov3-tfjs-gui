@@ -61,36 +61,27 @@ export default class ModelSelectionPanel extends Component {
   render() {
     return (
       <div>
-        <div className=' row text-center'>
-          <div className=' col'>
-            <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
-              Model Selection
-            </div>
-          </div>
-        </div>
-        <div className='model  border border-1 border-secondary position-relative'>
-          <div className='selectModelAndDataset row mt-2'>
-            <div className='col-4  text-center '>
-              <span
-                className='btn btn-dark btn-lg  position-relative badge start-0'
-                onClick={this.onLoadModel}
-              >
-                Load
-                <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
-                  {this.state.loadedModel}+{this.state.loadedWeights}
-                </span>
-                {this.state.loadSpinner && (
-                  <div className='spinner-border' role='status'>
-                    <span className='sr-only'></span>
-                  </div>
-                )}
+        <div className='selectModelAndDataset row mt-2'>
+          <div className='col-4  text-center '>
+            <span
+              className='btn btn-dark btn-lg  position-relative badge start-0'
+              onClick={this.onLoadModel}
+            >
+              Load
+              <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+                {this.state.loadedModel}+{this.state.loadedWeights}
               </span>
-            </div>
-            <SelectModelButtons
-              modelsTable={this.modelsTable}
-              setModelAndWeights={this.setModelAndWeights}
-            />
+              {this.state.loadSpinner && (
+                <div className='spinner-border' role='status'>
+                  <span className='sr-only'></span>
+                </div>
+              )}
+            </span>
           </div>
+          <SelectModelButtons
+            modelsTable={this.modelsTable}
+            setModelAndWeights={this.setModelAndWeights}
+          />
         </div>
       </div>
     );

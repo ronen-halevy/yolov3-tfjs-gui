@@ -51,8 +51,19 @@ export class Main extends Component {
       <div className='container '>
         <h2 className='text-center mb-1 mt-2'>Yolo TfJs Demo</h2>
         <Accordion />
+
         <div className='col '>
-          <ModelSelectionPanel onLoadModel={this.onLoadModel} />
+          <div className=' row text-center'>
+            <div className=' col'>
+              <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
+                Model Selection
+              </div>
+            </div>
+          </div>
+          <div className='model  border border-1 border-secondary position-relative bg-secondary'>
+            <ModelSelectionPanel onLoadModel={this.onLoadModel} />
+          </div>
+
           <div className=' row text-center'>
             <div className=' col'>
               <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
@@ -61,7 +72,7 @@ export class Main extends Component {
             </div>
           </div>
 
-          <div className='dataSource border border-1 border-secondary position-relative '>
+          <div className='dataSource border border-1 border-secondary position-relative bg-secondary'>
             <DataSourceSelectionPanel
               onClickSetDataSource={this.onClickSetDataSource}
             />
@@ -74,7 +85,7 @@ export class Main extends Component {
               </div>
             </div>
           </div>
-          <div className='configButtons border border-1 border-secondary position-relative'>
+          <div className='configButtons border border-1 border-secondary position-relative  bg-secondary'>
             <div className='row mb-2'>
               <ConfigurationsPanel
                 setScoreTHR={this.setScoreTHR}
@@ -84,12 +95,21 @@ export class Main extends Component {
             </div>
           </div>
         </div>
-        <div className='row mb-2'>
-          <VideoControlPanel
-            detectFrame={this.detectFrame}
-            classNames={this.state.classNames}
-            inputUrl={{ url: this.dataUrl, type: this.dataType }}
-          />
+        <div className=' row text-center'>
+          <div className=' col'>
+            <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
+              Video Control
+            </div>
+          </div>
+        </div>
+        <div className='col  border border-1 border-secondary bg-secondary '>
+          <div className='row mb-2'>
+            <VideoControlPanel
+              detectFrame={this.detectFrame}
+              classNames={this.state.classNames}
+              inputUrl={{ url: this.dataUrl, type: this.dataType }}
+            />
+          </div>
         </div>
       </div>
     );
