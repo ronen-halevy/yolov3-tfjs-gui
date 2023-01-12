@@ -199,19 +199,7 @@ function arrange_bbox(xy, wh) {
   return bbox;
 }
 
-// const createModel = (modelUrl, anchorsUrl, classNamesUrl) => {
-//   const modelPromise = tf.loadLayersModel(modelUrl);
-//   const anchorsPromise = fetch(anchorsUrl).then((response) => response.json());
-//   const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
-
-//   const promise = Promise.all([
-//     modelPromise,
-//     anchorsPromise,
-//     classNamesPromise,
-//   ]);
-//   return promise;
-// };
-
+export default YoloPredictor;
 const yolo = {
   YoloPredictor: YoloPredictor,
 };

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-const { VfbfStreamer } = require('../VfbfStreamer');
 import Render from '../utils/Render.js';
 
 export class VideoControlPanel extends Component {
