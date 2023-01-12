@@ -33,7 +33,7 @@ export default class ConfigurationButton extends Component {
         <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success'>
           {this.state.value}
         </span>
-        <span className='  badge rounded-pill  start-50 top-100 text-bg-light position-absolute'>
+        <span className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
           max: {max}{' '}
         </span>
       </span>

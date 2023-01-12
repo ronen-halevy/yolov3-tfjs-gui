@@ -66,7 +66,7 @@ export default class DataSourceSelectionPanel extends Component {
                   : 'fetch by urls'}
               </span>{' '}
               Data source
-              <span className='  badge rounded-pill  start-50 top-100 text-bg-light position-absolute'>
+              <span className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
                 file or url
               </span>
             </span>

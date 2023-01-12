@@ -54,38 +54,26 @@ export class Main extends Component {
 
         <div className='col '>
           <div className=' row text-center'>
-            <div className=' col'>
-              <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
-                Model Selection
-              </div>
-            </div>
+            <div className=' col'>Model Selection</div>
           </div>
-          <div className='model  border border-1 border-secondary position-relative bg-secondary'>
+          <div className='model  border border-1 border-secondary position-relative bg-light'>
             <ModelSelectionPanel onLoadModel={this.onLoadModel} />
           </div>
 
           <div className=' row text-center'>
-            <div className=' col'>
-              <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
-                Data Source Selection{' '}
-              </div>
-            </div>
+            <div className=' col'>Data Source Selection </div>
           </div>
 
-          <div className='dataSource border border-1 border-secondary position-relative bg-secondary'>
+          <div className='dataSource border border-1 border-secondary position-relative bg-light'>
             <DataSourceSelectionPanel
               onClickSetDataSource={this.onClickSetDataSource}
             />
           </div>
 
           <div className=' row text-center'>
-            <div className=' col'>
-              <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
-                Configurations{' '}
-              </div>
-            </div>
+            <div className=' col'>Configurations </div>
           </div>
-          <div className='configButtons border border-1 border-secondary position-relative  bg-secondary'>
+          <div className='configButtons border border-1 border-secondary position-relative  bg-light'>
             <div className='row mb-2'>
               <ConfigurationsPanel
                 setScoreTHR={this.setScoreTHR}
@@ -96,13 +84,9 @@ export class Main extends Component {
           </div>
         </div>
         <div className=' row text-center'>
-          <div className=' col'>
-            <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
-              Video Control
-            </div>
-          </div>
+          <div className=' col'>Video Control</div>
         </div>
-        <div className='col  border border-1 border-secondary bg-secondary '>
+        <div className='col  border border-1 border-secondary bg-light '>
           <div className='row mb-2'>
             <VideoControlPanel
               detectFrame={this.detectFrame}
