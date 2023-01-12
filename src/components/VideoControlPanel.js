@@ -115,7 +115,7 @@ export class VideoControlPanel extends Component {
             </div>
           </div>
         </div>
-        <div className='col bg-warning bg-gradient'>
+        <div className='col  border border-1 border-secondary '>
           <div className='container'>
             <div className='row'>
               {/* Speed button */}
