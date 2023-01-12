@@ -21,15 +21,17 @@ export class Main extends Component {
       fps: 0,
       currentTime: 0.0,
       duration: 0.0,
+
+      duration: 0.0,
       isReady: false,
       title: '',
     };
-    this.canvasRefVideo = React.createRef();
+    // this.canvasRefVideo = React.createRef();
   }
 
   componentDidMount() {
     this.yoloPredictor = new YoloPredictor();
-    this.draw = new Render(this.canvasRefVideo.current);
+    // this.draw = new Render(this.canvasRefVideo.current);
     this.setState({ isReady: true });
   }
 
@@ -37,121 +39,9 @@ export class Main extends Component {
     return this.yoloPredictor.detectFrame(frame);
   };
 
-  findFps() {
-    var thisLoop = new Date();
-    const fps = (1000 / (thisLoop - this.lastLoop))
-      .toFixed(2)
-      .toString()
-      .padStart(5, '0');
-
-    this.lastLoop = thisLoop;
-    return fps;
-  }
-  vfbfStreamerFrameCallBack = (frame, currentTime, duration) => {
-    const pr = this.doD(frame, currentTime, duration);
-    pr.then((reasultArrays) => {
-      let [selBboxes, scores, classIndices] = reasultArrays;
-
-      this.doDetection(
-        frame,
-        selBboxes,
-        scores,
-        classIndices,
-        currentTime,
-        duration
-      );
-    });
-
-    // this.doDetection(frame, currentTime, duration);
-  };
-  doDetection = (
-    frame,
-    selBboxes,
-    scores,
-    classIndices,
-    currentTime,
-    duration
-  ) => {
-    // this.yoloPredictor.detectFrame(frame).then((reasultArrays) => {
-    const isVideoFrame = duration != 0;
-    var imageHeight =
-      (isVideoFrame ? frame.videoHeight : frame.height) * this.scale;
-    var imageWidth =
-      (isVideoFrame ? frame.videoWidth : frame.width) * this.scale;
-    // let [selBboxes, scores, classIndices] = reasultArrays;
-    this.renderDetections(
-      frame,
-      selBboxes,
-      scores,
-      classIndices,
-      imageWidth,
-      imageHeight
-    );
-
-    // avoid if image (not a video):
-    if (isVideoFrame) {
-      const fps = this.findFps();
-      this.setState({
-        fps: fps,
-        currentTime: currentTime.toFixed(1),
-        duration: duration.toFixed(1),
-      });
-      this.vfbfStreamer.animationControl();
-      console.log('anima');
-    }
-    // });
-  };
-
-  renderDetections = (
-    frame,
-    selBboxes,
-    scores,
-    classIndices,
-    imageWidth,
-    imageHeight
-  ) => {
-    this.draw.renderOnImage(
-      frame,
-      selBboxes,
-      scores,
-      classIndices,
-      this.classNames,
-      imageWidth,
-      imageHeight
-    );
-  };
-
-  vfbfStreamerEndedCallback = () => {
-    this.setState({ isVideoPlaying: false });
-  };
-
-  onClickVideoSpeed = (videoRate) => {
-    this.vfbfStreamer.setPlaybackRate(videoRate);
-  };
-  onClickScale = (scale) => {
-    this.scale = scale;
-  };
-
-  onClickPlay = () => {
-    if (this.dataType == 'video') {
-      var isVideoPlaying = this.vfbfStreamer.playVideo(
-        this.dataUrl
-        // this.props.dataType
-      );
-    } else {
-      var isVideoPlaying = this.vfbfStreamer.playImage(this.props.dataUrl);
-    }
-    this.setState({ isVideoPlaying: isVideoPlaying });
-  };
-
-  onChangeCurrentTime = (e) => {
-    this.setState({ currentTime: parseFloat(e.target.value) });
-    this.vfbfStreamer.setCurrentTime(e.target.value);
-  };
-
   onLoadModel = (model, anchors, classNames) => {
     this.yoloPredictor.setModelParams(model, anchors, classNames.length);
-
+    this.setState({ classNames: classNames });
     this.classNames = classNames;
   };
 
@@ -166,9 +56,9 @@ export class Main extends Component {
   };
 
   onClickSetDataSource = (url, type, title) => {
-    this.dataUrl = url;
-    this.dataType = type;
     this.setState({ title: title });
+    this.setState({ dataUrl: url });
+    this.setState({ dataType: type });
   };
 
   render() {
@@ -215,25 +105,12 @@ export class Main extends Component {
         </div>
         {this.state.isReady && (
           <VideoControlPanel
-            onClickVideoSpeed={this.onClickVideoSpeed}
-            fps={this.state.fps}
-            currentTime={this.state.currentTime}
-            duration={this.state.duration}
-            title={this.state.title}
-            onChangeCurrentTime={this.onChangeCurrentTime}
-            onClickScale={this.onClickScale}
-            isVideoPlaying={this.state.isVideoPlaying}
+            classNames={this.state.classNames}
+            doD={this.doD}
+            dataUrl={this.state.dataUrl}
+            dataType={this.state.dataType}
           />
         )}
-        {/* canvas */}
-        <label className='btn btn-dark   badge ' onClick={this.onClickPlay}>
-          <canvas
-            className='visible'
-            ref={this.canvasRefVideo}
-            width=''
-            height=''
-          />
-        </label>
       </div>
     );
   }
