@@ -62,30 +62,29 @@ export class VideoControlPanel extends Component {
     return fps;
   }
   vfbfStreamerFrameCbk = (frame, currentTime, duration) => {
-    const pr = this.props.detectFrame(frame, currentTime, duration);
-    pr.then((reasultArrays) => {
-      let [selBboxes, scores, classIndices] = reasultArrays;
+    const detect = this.props.detectFrame(frame, currentTime, duration);
+    detect.then((detectResults) => {
+      const isVideoFrame = duration != 0;
 
-      this.doDetection(
-        frame,
-        selBboxes,
-        scores,
-        classIndices,
-        currentTime,
-        duration
-      );
+      this.doRender(frame, detectResults, currentTime, isVideoFrame);
+      // avoid if image (not a video):
+      if (isVideoFrame) {
+        this.statsDisplay(currentTime, duration);
+        this.vfbfStreamer.animationControl();
+      }
     });
   };
-  doDetection = (
-    frame,
-    selBboxes,
-    scores,
-    classIndices,
-    currentTime,
-    duration
-  ) => {
-    // this.yoloPredictor.detectFrame(frame).then((reasultArrays) => {
-    const isVideoFrame = duration != 0;
+  statsDisplay = (currentTime, duration) => {
+    const fps = this.findFps();
+    this.setState({
+      fps: fps,
+      currentTime: currentTime.toFixed(1),
+      duration: duration.toFixed(1),
+    });
+  };
+
+  doRender = (frame, detectResults, isVideoFrame) => {
+    let [selBboxes, scores, classIndices] = detectResults;
     var imageHeight =
       (isVideoFrame ? frame.videoHeight : frame.height) * this.state.scale;
     var imageWidth =
@@ -99,17 +98,6 @@ export class VideoControlPanel extends Component {
       imageWidth,
       imageHeight
     );
-
-    // avoid if image (not a video):
-    if (isVideoFrame) {
-      const fps = this.findFps();
-      this.setState({
-        fps: fps,
-        currentTime: currentTime.toFixed(1),
-        duration: duration.toFixed(1),
-      });
-      this.vfbfStreamer.animationControl();
-    }
   };
 
   vfbfStreamerEndedCbk = () => {
