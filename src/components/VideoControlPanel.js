@@ -25,9 +25,9 @@ export class VideoControlPanel extends Component {
   // elements callbacks:
   onClickPlay = () => {
     var isVideoPlaying =
-      this.props.dataType == 'video'
+      this.props.inputUrl['type'] == 'video'
         ? this.vfbfStreamer.playVideo(this.props.inputUrl['url'])
-        : this.vfbfStreamer.playImage(this.props.inputUrl['type']);
+        : this.vfbfStreamer.playImage(this.props.inputUrl['url']);
     this.setState({ isVideoPlaying: isVideoPlaying });
   };
 
