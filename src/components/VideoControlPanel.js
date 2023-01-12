@@ -6,8 +6,8 @@ export class VideoControlPanel extends Component {
   constructor(props) {
     super(props);
     this.vfbfStreamer = new VfbfStreamer(
-      this.vfbfStreamerFrameCallBack,
-      this.vfbfStreamerEndedCallback
+      this.vfbfStreamerFrameCbk,
+      this.vfbfStreamerEndedCbk
     );
 
     this.state = {
@@ -22,6 +22,35 @@ export class VideoControlPanel extends Component {
     this.draw = new Render(this.canvasRefVideo.current);
   }
 
+  // elements callbacks:
+  onClickPlay = () => {
+    var isVideoPlaying =
+      this.props.dataType == 'video'
+        ? this.vfbfStreamer.playVideo(this.props.dataUrl)
+        : this.vfbfStreamer.playImage(this.props.dataUrl);
+    this.setState({ isVideoPlaying: isVideoPlaying });
+  };
+
+  onChangeCurrentTime = (e) => {
+    this.setState({ currentTime: parseFloat(e.target.value) });
+    this.vfbfStreamer.setCurrentTime(e.target.value);
+  };
+
+  onClickScale = () => {
+    const [min, max, stride] = [0.125, 2, 2];
+    const newScale =
+      this.state.scale * stride > max ? min : this.state.scale * stride;
+    this.setState({ scale: newScale });
+  };
+  onClickVideoSpeed = () => {
+    const [min, max, stride] = [0.5, 2, 2];
+    const newRate =
+      this.state.videoRate * stride > max ? min : this.state.videoRate * stride;
+    this.setState({ videoRate: newRate });
+    this.vfbfStreamer.setPlaybackRate(newRate);
+  };
+
+  // vfbf
   findFps() {
     var thisLoop = new Date();
     const fps = (1000 / (thisLoop - this.lastLoop))
@@ -32,8 +61,8 @@ export class VideoControlPanel extends Component {
     this.lastLoop = thisLoop;
     return fps;
   }
-  vfbfStreamerFrameCallBack = (frame, currentTime, duration) => {
-    const pr = this.props.doD(frame, currentTime, duration);
+  vfbfStreamerFrameCbk = (frame, currentTime, duration) => {
+    const pr = this.props.detectFrame(frame, currentTime, duration);
     pr.then((reasultArrays) => {
       let [selBboxes, scores, classIndices] = reasultArrays;
 
@@ -83,35 +112,8 @@ export class VideoControlPanel extends Component {
     }
   };
 
-  vfbfStreamerEndedCallback = () => {
+  vfbfStreamerEndedCbk = () => {
     this.setState({ isVideoPlaying: false });
-  };
-
-  onClickPlay = () => {
-    var isVideoPlaying =
-      this.props.dataType == 'video'
-        ? this.vfbfStreamer.playVideo(this.props.dataUrl)
-        : this.vfbfStreamer.playImage(this.props.dataUrl);
-    this.setState({ isVideoPlaying: isVideoPlaying });
-  };
-
-  onChangeCurrentTime = (e) => {
-    this.setState({ currentTime: parseFloat(e.target.value) });
-    this.vfbfStreamer.setCurrentTime(e.target.value);
-  };
-
-  onClickScale = () => {
-    const [min, max, stride] = [0.125, 2, 2];
-    const newScale =
-      this.state.scale * stride > max ? min : this.state.scale * stride;
-    this.setState({ scale: newScale });
-  };
-  onClickVideoSpeed = () => {
-    const [min, max, stride] = [0.5, 2, 2];
-    const newRate =
-      this.state.videoRate * stride > max ? min : this.state.videoRate * stride;
-    this.setState({ videoRate: newRate });
-    this.vfbfStreamer.setPlaybackRate(newRate);
   };
 
   render() {

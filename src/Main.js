@@ -4,45 +4,28 @@ import ModelSelectionPanel from './components/ModelSelectionPanel';
 import ConfigurationsPanel from './components/ConfigurationsPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 import { VideoControlPanel } from './components/VideoControlPanel';
-// import VfbfStreamer from './VfbfStreamer';
-const { VfbfStreamer } = require('./VfbfStreamer');
 
 import Render from './utils/Render.js';
 export class Main extends Component {
   constructor(props) {
     super(props);
-    this.vfbfStreamer = new VfbfStreamer(
-      this.vfbfStreamerFrameCallBack,
-      this.vfbfStreamerEndedCallback
-    );
-
+    this.state = {};
+    this.title = ''; // vid/img display title - currently unused
+    this.dataUrl = '';
+    this.dataType = '';
     this.state = {
-      isVideoPlaying: false,
-      fps: 0,
-      currentTime: 0.0,
-      duration: 0.0,
-
-      duration: 0.0,
-      isReady: false,
-      title: '',
+      classNames: '',
     };
-    // this.canvasRefVideo = React.createRef();
-  }
-
-  componentDidMount() {
     this.yoloPredictor = new YoloPredictor();
-    // this.draw = new Render(this.canvasRefVideo.current);
-    this.setState({ isReady: true });
   }
 
-  doD = (frame, currentTime, duration) => {
+  detectFrame = (frame) => {
     return this.yoloPredictor.detectFrame(frame);
   };
 
   onLoadModel = (model, anchors, classNames) => {
     this.yoloPredictor.setModelParams(model, anchors, classNames.length);
     this.setState({ classNames: classNames });
-    this.classNames = classNames;
   };
 
   setScoreTHR = (val) => {
@@ -58,7 +41,8 @@ export class Main extends Component {
   onClickSetDataSource = (url, type, title) => {
     this.setState({ title: title });
     this.setState({ dataUrl: url });
-    this.setState({ dataType: type });
+    this.dataUrl = url;
+    this.dataType = type;
   };
 
   render() {
@@ -68,10 +52,7 @@ export class Main extends Component {
         <h2 className='text-center mb-1 mt-2'>Yolo TfJs Demo</h2>
         <Accordion />
         <div className='col '>
-          {/* enable after detector is ready */}
-          {this.state.isReady && (
-            <ModelSelectionPanel onLoadModel={this.onLoadModel} />
-          )}
+          <ModelSelectionPanel onLoadModel={this.onLoadModel} />
           <div className=' row text-center'>
             <div className=' col'>
               <div className=' col-sm text-center badge rounded-pill btn-outline-secondary text-dark text-center'>
@@ -103,14 +84,12 @@ export class Main extends Component {
             </div>
           </div>
         </div>
-        {this.state.isReady && (
-          <VideoControlPanel
-            classNames={this.state.classNames}
-            doD={this.doD}
-            dataUrl={this.state.dataUrl}
-            dataType={this.state.dataType}
-          />
-        )}
+        <VideoControlPanel
+          classNames={this.state.classNames}
+          detectFrame={this.detectFrame}
+          dataUrl={this.dataUrl}
+          dataType={this.dataType}
+        />
       </div>
     );
   }
