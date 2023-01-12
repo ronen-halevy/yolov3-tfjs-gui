@@ -1,7 +1,7 @@
 {
   "name": "react",
   "version": "0.0.0",
-  "homepage": "https://ronen-halevy.github.io/yolov3-tfjs",
+  "homepage": "https://ronen-halevy.github.io/yolov3-tfjs-gui",
   "private": true,
   "dependencies": {
     "@tensorflow/tfjs": "^4.0.0",
