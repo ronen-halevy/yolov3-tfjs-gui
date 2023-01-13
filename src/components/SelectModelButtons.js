@@ -75,10 +75,10 @@ export default class SelectModelButtons extends Component {
             onClick={this.onClickedSelectModel}
           >
             Select a model
-            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-danger'>
               {Object.keys(modelsTable)[this.state.selectedModelIndex]}
             </span>
-            <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
+            <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-danger'>
               {this.state.selectedModelIndex + 1}/
               {Object.keys(modelsTable).length}
             </span>
@@ -91,7 +91,7 @@ export default class SelectModelButtons extends Component {
             onClick={this.onClickSelectWeights}
           >
             Select weights
-            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-danger'>
               {
                 Object.keys(
                   modelsTable[
@@ -100,7 +100,7 @@ export default class SelectModelButtons extends Component {
                 )[this.state.selectedWeightsIndex]
               }
             </span>
-            <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
+            <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-danger'>
               {this.state.selectedWeightsIndex + 1} /
               {
                 Object.keys(

@@ -120,7 +120,7 @@ export class VideoControlPanel extends Component {
               >
                 {' '}
                 Speed
-                <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+                <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger '>
                   x{this.state.videoRate}
                 </span>
               </span>
@@ -129,14 +129,14 @@ export class VideoControlPanel extends Component {
 
             <div className='col-4 text-center'>
               {' '}
-              <span className='badge text-bg-secondary   position-relative'>
+              <span className='badge text-bg-light border border-dark   position-relative'>
                 <span className=' '>fps: {this.state.fps}</span>
               </span>
             </div>
             {/* time display */}
 
             <div className='col-4 text-center'>
-              <span className='badge text-bg-secondary  position-relative'>
+              <span className='badge text-bg-light border border-dark position-relative'>
                 <span className='text-center'>
                   {this.state.currentTime}/{this.state.duration}
                 </span>
@@ -164,7 +164,7 @@ export class VideoControlPanel extends Component {
               >
                 {' '}
                 Scale
-                <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success'>
+                <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger'>
                   x{this.state.scale}
                 </span>
               </span>

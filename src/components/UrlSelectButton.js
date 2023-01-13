@@ -40,13 +40,13 @@ export default class UrlSelectButton extends Component {
         onClick={this.onClick}
       >
         Select a url
-        <span className='position-absolute top-0  start-0 translate-middle badge rounded-pill bg-success'>
+        <span className='position-absolute top-0  start-0 translate-middle badge rounded-pill bg-danger'>
           {this.videoExamplesList[this.state.selectedExampleIndex].title}
         </span>
-        <span className='  badge rounded-pill  start-0 top-100 text-bg-secondary position-absolute'>
+        <span className='  badge rounded-pill  start-0 top-100  text-bg-light border border-dark position-absolute'>
           https://mixkit.co/
         </span>
-        <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-success'>
+        <span className='position-absolute top-0  start-100 translate-middle badge rounded-pill bg-danger'>
           {this.state.selectedExampleIndex + 1}/ {this.videoExamplesList.length}
         </span>
       </span>

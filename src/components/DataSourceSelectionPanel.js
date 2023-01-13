@@ -60,13 +60,13 @@ export default class DataSourceSelectionPanel extends Component {
               className='badge text-bg-dark position-relative  '
               onClick={this.onClickSetDataSource}
             >
-              <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success '>
+              <span className='position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger '>
                 {this.state.isFileSource
                   ? 'local storage files'
                   : 'fetch by urls'}
               </span>{' '}
               Data source
-              <span className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
+              <span className='  badge rounded-pill  start-50 top-100 text-bg-light border border-dark position-absolute'>
                 file or url
               </span>
             </span>

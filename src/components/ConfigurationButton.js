@@ -30,10 +30,10 @@ export default class ConfigurationButton extends Component {
         }}
       >
         {label}
-        <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success'>
+        <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'>
           {this.state.value}
         </span>
-        <span className='  badge rounded-pill  start-50 top-100 text-bg-secondary position-absolute'>
+        <span className='  badge rounded-pill  start-50 top-100 text-bg-light border border-dark position-absolute'>
           max: {max}{' '}
         </span>
       </span>

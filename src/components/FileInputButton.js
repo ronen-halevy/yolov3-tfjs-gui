@@ -31,7 +31,7 @@ export default class FileInputButton extends React.Component {
         <label className='btn btn-dark btn-lg  position-relative badge'>
           {'Select a file'}
           {this.state.fileName ? (
-            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-success'>
+            <span className='position-absolute top-0  start-50 translate-middle badge rounded-pill bg-danger'>
               {this.state.fileName}
             </span>
           ) : (
