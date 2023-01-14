@@ -1,19 +1,23 @@
-// import * as tf from '@tensorflow/tfjs';
+const configNms = {
+  maxBoxes: 100,
+  iouThreshold: 0.5,
+  scoreThreshold: 0.1,
+};
 
-tf.setBackend('webgl');
-import { decode } from './decode';
-import Render from '../utils/Render';
-import { createModel } from '../utils/createModel';
-import { nms } from './nms';
-import configNms from '../config/configNms.json';
+const configRender = {
+  font: '20px serif',
+  lineWidth: 3,
+  lineColor: 'yellow',
+  textColor: 'blue',
+  textBackgoundColor: 'white',
+};
+// tf.setBackend('webgl');
 
-export default class YoloPredictor {
-  constructor(canvasRefVideo) {
-    this.render = new Render(canvasRefVideo);
+class YoloV3 {
+  constructor() {
     this.scoreTHR = configNms.scoreThreshold;
     this.iouTHR = configNms.iouThreshold;
     this.maxBoxes = configNms.maxBoxes;
-    this.animationCallback = null;
   }
 
   setScoreTHR = (val) => {
@@ -26,24 +30,11 @@ export default class YoloPredictor {
   setMaxBoxes = (val) => {
     this.maxBoxes = val;
   };
-
-  // findFps();
-  createModel = (modelUrl, anchorsUrl, classNamesUrl) => {
-    const promise = createModel(modelUrl, anchorsUrl, classNamesUrl).then(
-      (res) => {
-        this.model = res[0];
-        this.anchors = res[1].anchor;
-        this.classNames = res[2].split(/\r?\n/);
-        this.nclasses = this.classNames.length;
-        return res;
-      }
-    );
-    return promise;
-  };
-
-  setAnimationCallback = (animationCallback_) => {
-    this.animationCallback = animationCallback_;
-  };
+  setModelParams(model, anchors, nClasses) {
+    this.model = model;
+    this.anchors = anchors;
+    this.nClasses = nClasses;
+  }
 
   imagePreprocess = (image) => {
     const imgTensor = tf.browser.fromPixels(image);
@@ -59,12 +50,13 @@ export default class YoloPredictor {
   detectFrame = (imageFrame) => {
     tf.engine().startScope();
     const imageTensor = this.imagePreprocess(imageFrame);
+    console.log(imageTensor);
     const modelOutputGrids = this.model.predict(imageTensor);
 
     // Decode predictions: combines all grids detection results
     let [bboxes, confidences, classProbs] = decode(
       modelOutputGrids,
-      this.nclasses,
+      this.nClasses,
       this.anchors
     );
     let axis = -1;
@@ -76,7 +68,7 @@ export default class YoloPredictor {
     classProbs.dispose();
     confidences.dispose();
 
-    nms(
+    const nmsPromise = nms(
       bboxes,
       scores,
       classIndices,
@@ -84,23 +76,133 @@ export default class YoloPredictor {
       this.scoreTHR,
       this.maxBoxes
     ).then((reasultArrays) => {
-      let [selBboxes, scores, classIndices] = reasultArrays;
-      this.render.renderOnImage(
-        imageFrame,
-        selBboxes,
-        scores,
-        classIndices,
-        this.classNames
-      );
-      if (imageFrame.tagName == 'VIDEO') {
-        if (this.animationCallback) {
-          this.animationCallback();
-        } else {
-          console.log('animationCallback was not set for video');
-        }
-      }
-
       tf.engine().endScope();
+
+      return reasultArrays;
     });
+    return nmsPromise;
   };
 }
+
+const nms = (bboxes, scores, classIndices, iouTHR, scoreTHR, maxBoxes) => {
+  const nmsPromise = new Promise((resolve) => {
+    const nmsResults = tf.image.nonMaxSuppressionAsync(
+      bboxes,
+      scores,
+      maxBoxes,
+      iouTHR,
+      scoreTHR
+    );
+    resolve(nmsResults);
+  }).then((nmsResults) => {
+    let selectedBboxes = bboxes.gather(nmsResults);
+    let selectedClasses = classIndices.gather(nmsResults);
+    let selectedScores = scores.gather(nmsResults);
+
+    const bboxesArray = selectedBboxes.array();
+    const scoresArray = selectedScores.array();
+    const classIndicesArray = selectedClasses.array();
+    let reasultArrays = Promise.all([
+      bboxesArray,
+      scoresArray,
+      classIndicesArray,
+    ]);
+
+    selectedBboxes.dispose();
+    selectedClasses.dispose();
+    selectedScores.dispose();
+    return reasultArrays;
+  });
+
+  return nmsPromise;
+};
+
+function decode(gridsOutputs, nClasses, anchors) {
+  const nanchors_per_scale = 3; // Large, Medium, Small
+  const anchor_entry_size = 2; // width, height
+  let anchors_table = tf.reshape(anchors, [
+    -1,
+    nanchors_per_scale,
+    anchor_entry_size,
+  ]);
+
+  let bboxes = [];
+  let confidences = [];
+  let classProbs = [];
+  for (let idx = 0; idx < gridsOutputs.length; idx++) {
+    let axis = -1;
+    let [xy, wh, obj, class_prob] = tf.split(
+      gridsOutputs[idx],
+      [2, 2, 1, nClasses],
+      axis
+    );
+    let anchors = tf.slice(anchors_table, [idx], 1);
+    const bboxes_in_grid = arrange_bbox(tf.sigmoid(xy), wh.exp().mul(anchors));
+
+    bboxes.push(
+      tf.reshape(bboxes_in_grid, [
+        bboxes_in_grid.shape[0],
+        -1,
+        bboxes_in_grid.shape[4],
+      ])
+    );
+
+    confidences.push(
+      tf.reshape(tf.sigmoid(obj), [obj.shape[0], -1, obj.shape[4]])
+    );
+    classProbs.push(
+      tf.reshape(tf.sigmoid(class_prob), [
+        class_prob.shape[0],
+        -1,
+        class_prob.shape[4],
+      ])
+    );
+  }
+
+  let axis = 1;
+  bboxes = tf.concat(bboxes, axis);
+  confidences = tf.concat(confidences, axis);
+  classProbs = tf.concat(classProbs, axis);
+
+  axis = 0;
+  bboxes = bboxes.squeeze(axis);
+  classProbs = classProbs.squeeze(axis);
+  confidences = confidences.squeeze(axis);
+
+  return [bboxes, confidences, classProbs];
+}
+
+function arrange_bbox(xy, wh) {
+  let grid_size = [xy.shape[1], xy.shape[1]];
+
+  let grid = tf.meshgrid(
+    tf.range(0, xy.shape[1], 1),
+    tf.range(0, xy.shape[1], 1)
+  );
+  var axis = -1;
+  grid = tf.stack(grid, axis);
+
+  axis = 2;
+  grid = grid.expandDims(axis);
+
+  xy = xy.add(tf.cast(grid, 'float32'));
+  xy = xy.div(tf.cast(grid_size, 'float32'));
+
+  let value1 = tf.scalar(2);
+  wh = wh.div(value1);
+  var xy_min = xy.sub(wh);
+  var xy_max = xy.add(wh);
+
+  var bbox = tf.concat([xy_min, xy_max], -1);
+  grid.dispose();
+  grid.dispose();
+
+  return bbox;
+}
+
+export default YoloV3;
+// const yolo = {
+//   YoloPredictor: YoloPredictor,
+// };
+
+// module.exports = yolo;
