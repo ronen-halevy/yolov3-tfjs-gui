@@ -1,5 +1,5 @@
 {
   "maxBoxes": 100,
-  "iouThreshold": 0.5,
+  "scoreTHR": 0.5,
   "iouTHR": 0.1
 }

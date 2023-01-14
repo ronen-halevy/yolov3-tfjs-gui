@@ -47,7 +47,6 @@ class YoloV3 {
   detectFrame = (imageFrame) => {
     tf.engine().startScope();
     const imageTensor = this.imagePreprocess(imageFrame);
-    console.log(imageTensor);
     const modelOutputGrids = this.model.predict(imageTensor);
 
     // Decode predictions: combines all grids detection results
@@ -197,7 +196,20 @@ function arrange_bbox(xy, wh) {
   return bbox;
 }
 
-export default YoloV3;
+const createModel = (modelUrl, anchorsUrl, classNamesUrl) => {
+  const modelPromise = tf.loadLayersModel(modelUrl);
+  const anchorsPromise = fetch(anchorsUrl).then((response) => response.json());
+  const classNamesPromise = fetch(classNamesUrl).then((x) => x.text());
+
+  const promise = Promise.all([
+    modelPromise,
+    anchorsPromise,
+    classNamesPromise,
+  ]);
+  return promise;
+};
+
+export { YoloV3, createModel };
 // const yolo = {
 //   YoloPredictor: YoloPredictor,
 // };

@@ -5,9 +5,9 @@ import ConfigurationsPanel from './components/ConfigurationsPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 import { VideoControlPanel } from './components/VideoControlPanel';
 
-import configNms from './config/configNms.js';
+import configNms from './config/configNms.json';
 
-import YoloV3 from './yolov3/YoloV3.js';
+import { YoloV3 } from './yolov3/YoloV3.js';
 
 import Render from './utils/Render.js';
 export class Main extends Component {
