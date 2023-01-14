@@ -1,9 +1,3 @@
-const configNms = {
-  maxBoxes: 100,
-  iouThreshold: 0.5,
-  scoreThreshold: 0.1,
-};
-
 const configRender = {
   font: '20px serif',
   lineWidth: 3,
@@ -14,10 +8,13 @@ const configRender = {
 // tf.setBackend('webgl');
 
 class YoloV3 {
-  constructor() {
-    this.scoreTHR = configNms.scoreThreshold;
-    this.iouTHR = configNms.iouThreshold;
-    this.maxBoxes = configNms.maxBoxes;
+  constructor(model, anchors, nClasses, scoreTHR, iouTHR, maxBoxes) {
+    this.model = model;
+    this.anchors = anchors;
+    this.nClasses = nClasses;
+    this.scoreTHR = scoreTHR;
+    this.iouTHR = iouTHR;
+    this.maxBoxes = maxBoxes;
   }
 
   setScoreTHR = (val) => {

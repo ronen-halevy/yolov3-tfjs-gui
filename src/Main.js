@@ -5,37 +5,54 @@ import ConfigurationsPanel from './components/ConfigurationsPanel';
 import DataSourceSelectionPanel from './components/DataSourceSelectionPanel';
 import { VideoControlPanel } from './components/VideoControlPanel';
 
+import configNms from './config/configNms.js';
+
+import YoloV3 from './yolov3/YoloV3.js';
+
 import Render from './utils/Render.js';
 export class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
     this.title = ''; // vid/img display title - currently unused
     this.dataUrl = '';
     this.dataType = '';
     this.state = {
       classNames: '',
     };
-    this.yoloPredictor = new YoloPredictor();
+    this.yoloCreated = false;
   }
 
   detectFrame = (frame) => {
-    return this.yoloPredictor.detectFrame(frame);
+    return this.yoloV3.detectFrame(frame);
   };
 
   onLoadModel = (model, anchors, classNames) => {
-    this.yoloPredictor.setModelParams(model, anchors, classNames.length);
+    if (!this.yoloCreated) {
+      // note: configNms values are expected to be overrided by config component on init:
+      this.yoloV3 = new YoloV3(
+        model,
+        anchors,
+        classNames.length,
+        configNms.scoreTHR,
+        configNms.iouTHR,
+        configNms.maxBoxes
+      );
+      this.yoloCreated = true;
+    } else {
+      this.yoloV3.setModelParams(model, anchors, classNames.length);
+    }
+
     this.setState({ classNames: classNames });
   };
 
   setScoreTHR = (val) => {
-    this.yoloPredictor.setScoreTHR(val);
+    this.yoloV3.setScoreTHR(val);
   };
   setIouTHR = (val) => {
-    this.yoloPredictor.setIouTHR(val);
+    this.yoloV3.setIouTHR(val);
   };
   setMaxBoxes = (val) => {
-    this.yoloPredictor.setMaxBoxes(val);
+    this.yoloV3.setMaxBoxes(val);
   };
 
   onClickSetDataSource = (url, type, title) => {
@@ -75,11 +92,14 @@ export class Main extends Component {
           </div>
           <div className='configButtons border border-1 border-secondary position-relative  bg-light'>
             <div className='row mb-2'>
-              <ConfigurationsPanel
-                setScoreTHR={this.setScoreTHR}
-                setIouTHR={this.setIouTHR}
-                setMaxBoxes={this.setMaxBoxes}
-              />
+              {/* send configs updates not before object is constructed */}
+              {this.yoloCreated && (
+                <ConfigurationsPanel
+                  setScoreTHR={this.setScoreTHR}
+                  setIouTHR={this.setIouTHR}
+                  setMaxBoxes={this.setMaxBoxes}
+                />
+              )}
             </div>
           </div>
         </div>
