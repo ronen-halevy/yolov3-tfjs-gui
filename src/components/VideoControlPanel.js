@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Render from '../utils/Render.js';
+import { loadImage } from '../utils/loadImage.js';
 
 export class VideoControlPanel extends Component {
 	constructor(props) {
